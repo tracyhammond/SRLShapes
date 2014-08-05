@@ -1,8 +1,12 @@
 package edu.tamu.srl.object.shape.stroke;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Set;
 
 import edu.tamu.srl.object.SrlInterpretation;
+import edu.tamu.srl.object.SrlObject;
 import edu.tamu.srl.object.shape.SrlShape;
 import edu.tamu.srl.object.shape.primitive.SrlLine;
 import edu.tamu.srl.object.shape.primitive.SrlPoint;
@@ -13,6 +17,12 @@ import edu.tamu.srl.object.shape.primitive.SrlPoint;
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlStroke extends SrlShape{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	
 	/**
 	 * List of points in the stroke
@@ -601,6 +611,35 @@ public class SrlStroke extends SrlShape{
 			p.translate(x, y);
 		}
 		translateSubShapes(x,y);
+	}
+
+	@Override
+	public boolean equalsByContent(SrlObject other) {
+		SrlStroke otherstroke = (SrlStroke)other;
+		int i = 0;
+		for(SrlPoint p : m_points){			
+			if(!p.equalsByContent(otherstroke.getPoint(i))){return false;}
+			i++;
+		}
+		return true;
+	}
+
+	@Override
+	protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void calculateBBox() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void paint(Graphics2D g) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

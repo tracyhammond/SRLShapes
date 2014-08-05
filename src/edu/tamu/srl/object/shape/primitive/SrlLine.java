@@ -1,6 +1,11 @@
 package edu.tamu.srl.object.shape.primitive;
 
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.util.Set;
+
+import edu.tamu.srl.object.SrlObject;
 import edu.tamu.srl.object.shape.SrlShape;
 
 /**
@@ -10,6 +15,12 @@ import edu.tamu.srl.object.shape.SrlShape;
  */
 public class SrlLine extends SrlShape{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	/**
 	 * Starting value of the line
 	 */
@@ -608,5 +619,36 @@ public class SrlLine extends SrlShape{
 		m_p1.translate(x, y);
 		m_p2.translate(x, y);
 		translateSubShapes(x,y);
+	}
+
+
+	@Override
+	public boolean equalsByContent(SrlObject other) {
+		if (!(other instanceof SrlLine)){return false;}
+		SrlLine otherline = (SrlLine)other;
+		if (!getP1().equalsByContent(otherline.getP1())){return false;}
+		if (!getP2().equalsByContent(otherline.getP2())){return false;}
+		return true;
+	}
+
+
+	@Override
+	protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void paint(Graphics2D g) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	protected void calculateBBox() {
+		// TODO Auto-generated method stub
+		
 	}
 }

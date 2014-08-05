@@ -1,11 +1,23 @@
 package edu.tamu.srl.object;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import edu.tamu.srl.object.shape.primitive.SrlPoint;
@@ -17,6 +29,23 @@ import edu.tamu.srl.object.shape.primitive.SrlRectangle;
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Serializable{
+	
+	/**
+	 * counter will be incremented by 0x10000 for each new SComponent that is
+	 * created counter is used as the most significant bits of the UUID
+	 * 
+	 * initialized to 0x4000 (the version -- 4: randomly generated UUID) along
+	 * with 3 bytes of randomness: Math.random()*0x1000 (0x0 - 0xFFF)
+	 * 
+	 * the randomness further reduces the chances of collision between multiple
+	 * sketches created on multiple computers simultaneously
+	 */
+	public static long counter = 0x4000L | (long) (Math.random() * 0x1000);
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Default comparator using time
@@ -44,7 +73,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 			};
 		return timeComparator;
 	}
-	
+
 	/**
 	 * Gets the comparator for the x-values.
 	 * 
@@ -62,6 +91,8 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 
 		};
 	}
+	
+
 
 	/**
 	 * Gets the comparator for the y-values.
@@ -81,29 +112,43 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		};
 	}
 	
+	/**
+	 * Generates a new UUID: based on a counter + time, version 4, variant bits
+	 * set time is nanoTime()
+	 * 
+	 * @return the UUID
+	 */
+	public static UUID nextID() {
 
+		counter += 0x10000L;
+		return new UUID(counter, System.nanoTime() | 0x8000000000000000L);
+	}
 
 	/**
 	 * Map of miscellaneous attributes (to store any attributes given for points
 	 * in a SketchML file that are not saved in other variables here).
 	 */
-	private Map<String, String> m_attributes = null;
-	
+	private HashMap<String, String> m_attributes = null;
+
+	protected transient SrlRectangle m_boundingBox;
+
 	/**
 	 * Stores the color of the object
 	 */
 	private Color m_color = null;
 
+	protected transient Polygon m_convexHull;
+
 	/**
 	 * Description of the object
 	 */
 	private String m_description = "";
-
+	
 	/**
 	 * Each object has a unique ID associated with it.
 	 */
 	private	UUID m_id = UUID.randomUUID();
-
+	
 	/**
 	 * An object can be created by a user 
 	 * (like drawing a shape, or speaking a phrase)
@@ -111,34 +156,75 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	 * (like a recognition of a higher level shape)
 	 */
 	private boolean m_isUserCreated = false;
-
+	
 	/**
 	 * The name of the object, such as "triangle1"
 	 */
 	private String m_name = "";
-
+	
 	/**
 	 * The creation time of the object.
 	 */
 	private long m_time = (new Date()).getTime();
-
+	//System.currentTimeMillis();
+	
 	/**
 	 * The type of the object (such as "Line", "Stroke", etc.)
 	 */
 	private String m_type = "";
+
+	public SrlObject(){
+		setId(nextID());
+		m_boundingBox = null;
+		m_convexHull = null;
+	}
 	
+	public SrlObject(Color color, String name, String description, String type){
+		setColor(color);
+		setName(name);
+		setType(type);
+		setDescription(description);
+	}
+
+	/**
+	 * Applies a 2D affine transform.
+	 * 
+	 * @param xform
+	 *            the 2D affine transform
+	 */
+	public void applyTransform(AffineTransform xform) {
+
+		applyTransform(xform, new HashSet<SrlObject>());
+	}
+
+	/**
+	 * Applies a 2D affine transform.
+	 * 
+	 * @param xform
+	 *            the 2D affine transform
+	 * @param xformed
+	 *            the SComponent objects to transform to (???)
+	 */
+	protected abstract void applyTransform(AffineTransform xform,
+			Set<SrlObject> xformed);
+
+	/**
+	 * Calculates the bounding box.
+	 */
+	protected abstract void calculateBBox();
+
 	/**
 	 * A list of possible interpretations for an object
 	 */
 	public abstract SrlObject clone();
-	
+
 	/**
 	 * Default uses time. You can also use x or y to compare
 	 */
 	public int compareTo(SrlObject o){
 		return getTimeComparator().compare(this, o);
 	}
-	
+
 	/**
 	 * Copies what A is into what B is
 	 * @param A
@@ -151,6 +237,8 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		B.m_time = A.m_time;
 		B.m_color = A.m_color;
 		B.m_attributes = A.getAttributes();
+		B.m_boundingBox = A.getBoundingBox();
+		B.m_convexHull = A.getConvexHull();
 	}
 	
 	/**
@@ -159,8 +247,9 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	 */
 	protected void copyFrom(SrlObject unchangedObject){
 		copyAIntoB(unchangedObject, this);
+		
 	}
-
+	
 	/**
 	 * Clones all of the information to the object sent in
 	 * @param cloned the new clone object
@@ -170,6 +259,52 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		copyAIntoB(this, editableObject);	
 	}
 	
+
+
+	/**
+		   	* Return the distance from the point specified by (x,y) to this point
+		   * @param x the x value of the other point
+		   * @param y the y value of the other point
+		   * @return the distance
+		   */
+		  public double distance(double x, double y) {
+		    double xdiff = x - getCenterX();
+		    double ydiff = y - getCenterY();
+		    return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+		  }
+	
+	/**
+	   * Return the distance from point rp to this point.
+	   * @param rp the other point
+	   * @return the distance
+	   */
+	  public double distance(SrlObject o) {
+	    return distance(o.getCenterX(), o.getCenterY());
+	  }
+	
+	public boolean equals(SrlObject o){
+		  if (getId().equals(o.getId())) {return true;}
+		  return false;
+	  }
+	
+	/**
+	 * Looks deep into two components to check equality.
+	 * 
+	 * @param other
+	 *            the other SComponent
+	 * @return true if content is equal, false otherwise
+	 */
+	public abstract boolean equalsByContent(SrlObject other);
+	/**
+	 * Flags an external update.
+	 * 
+	 */
+	public void flagExternalUpdate() {
+
+		setTime(-1);
+		m_boundingBox = null;
+		m_convexHull = null;
+	}
 	/**
 	 * Returns the length times the height
 	 * See also getLengthOfDiagonal()
@@ -178,7 +313,6 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public double getArea(){
 		return getHeight() * getWidth();
 	}
-
 	/**
 	 * Gets the value for the given attribute.
 	 * 
@@ -189,19 +323,19 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public String getAttribute(String key) {
 		return m_attributes.get(key);
 	}
-
+	
 	/**
 	 * Copy of the attributes. 
 	 * @return a clone of the attribute map
 	 */
-	public Map<String, String> getAttributes() {
-		Map<String, String> attrcopy = new HashMap<String, String>();
+	public HashMap<String, String> getAttributes() {
+		HashMap<String, String> attrcopy = new HashMap<String, String>();
 		if (m_attributes != null)
 			for (Map.Entry<String, String> entry : m_attributes.entrySet())
 				attrcopy.put(entry.getKey(), entry.getValue());
 		return attrcopy;
 	}
-
+	
 	/**
 	 * Get the bounding box of the stroke
 	 * This returns an awt shape. 
@@ -212,7 +346,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		return new SrlRectangle(new SrlPoint(getMinX(), getMinY()), 
 				new SrlPoint(getMinX() + getWidth(), getMinY() + getHeight()));
 	}
-
+	
 	/**
 	 * Returns the angle of the diagonal of the bounding box of the shape
 	 * @return angle of the diagonal of the bounding box of the shape
@@ -220,7 +354,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public double getBoundingBoxDiagonalAngle() {
 		return Math.atan(getHeight()/getWidth());
 	}
-
+	
 	/**
 	 * Returns the center x of a shape.
 	 * @return center x of a shape
@@ -228,7 +362,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public double getCenterX(){
 		return (getMinX() + getMaxX())/2.0;
 	}
-
+	
 	/**
 	 * Returns the center y of a shape
 	 * @return center y of a shape
@@ -244,6 +378,15 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public Color getColor() {
 		return m_color;
 	}
+
+	/**
+	 * Gets the convex hull.
+	 * @return the convex hull
+	 */
+	public Polygon getConvexHull() {
+
+		return m_convexHull;
+	}
 	
 	/**
 	 * Get the description for this object
@@ -253,8 +396,6 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		return m_description;
 	}
 	
-
-
 	/**
 	 * Returns the height of the object
 	 * @return the height of the object
@@ -280,10 +421,13 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	}
 	
 	public abstract double getMaxX();
+
 	public abstract double getMaxY();
+
 	public abstract double getMinX();
+
 	public abstract double getMinY();
-	
+
 	/**
 	 * An object can have a name, such as "triangle1". 
 	 * @return the string name of the object
@@ -291,7 +435,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public String getName() {
 		return m_name;
 	}
-	
+
 	/**
 	 * This function just returns the same thing as the length of the diagonal
 	 * as it is a good measure of size.
@@ -300,7 +444,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public double getSize(){
 		return getLengthOfDiagonal();
 	}
-	
+
 	/**
 	 * Gets the time associated with the object. 
 	 * The default time is the time it was created
@@ -317,6 +461,7 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public String getType() {
 		return m_type;
 	}
+	
 	
 	/**
 	 * Returns the width of the object
@@ -336,6 +481,11 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		return m_attributes.containsKey(key);
 	}
 
+	@Override
+	public int hashCode() {
+		return getId().hashCode();
+	}
+	
 	/**
 	 * An object can be created by a user 
 	 * (like drawing a shape, or speaking a phrase)
@@ -348,7 +498,57 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 		return m_isUserCreated;
 	}
 	
+	public void main(String args[]){
+		SrlObject o = new SrlPoint(5,4);
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream("/tmp/test.ser");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(o);
+			out.close();
+			fileOut.close();
+			System.out.println("File saved");
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			FileInputStream fileIn = new FileInputStream("/tmp/test.ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			SrlPoint p = (SrlPoint) in.readObject();
+			in.close();
+			fileIn.close();
+			System.out.println(p.toString());
+			System.out.println(p.toStringLong());
+		} catch (FileNotFoundException e) {
+		} catch (ClassNotFoundException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
+	 * Paints this component.
+	 * 
+	 * @param g
+	 *            the graphics component
+	 */
+	public void paint(Graphics g) {
+
+		paint((Graphics2D) g);
+	}
+	
+	/**
+	 * Paints this component.
+	 * 
+	 * @param g
+	 *            the 2D graphics component
+	 */
+	public abstract void paint(Graphics2D g);
+	
+
+	  /**
 	 * Removes the value and key of the specified attribute
 	 * 
 	 * @param key  the name of the attribute
@@ -357,94 +557,166 @@ public abstract class SrlObject implements Cloneable, Comparable<SrlObject>, Ser
 	public String removeAttribute(String key) {
 		return m_attributes.remove(key);
 	}
-	
-	/**
-	 * Sets an attribute value. Will overwrite any value currently set for that
-	 * attribute 
+
+	  /**
+	 * Rotates the SrlObject from the origin.
 	 * 
-	 * @param key   attribute name (Must be string)
-	 * @param value attribute value (Must be string)
-	 * @return the old value of the attribute, or null if none was set
+	 * @param radians
+	 *            the number of radians to rotate
 	 */
-	public String setAttribute(String key, String value) {
-		return m_attributes.put(key, value);
-	}
-	
-	/**
-	 * Sets the color of the object
-	 * @param color
-	 */
-	public void setColor(Color color) {
-		m_color = color;
-	}
-	
-	/**
-	 * Set the description for this object
-	 * @param description
-	 */
-	public void setDescription(String description) {
-		m_description = description;
-	}
-	
-	/**
-	 * In general you should not be setting a UUID unless you are
-	 * loading in pre-existing objects with pre-existing UUIDs.
-	 * @param id the unique id for the object
-	 */
-	public void setId(UUID id) {
-		m_id = UUID.fromString(id.toString());
-	}
+	public void rotate(double radians) {
 
-	/**
-	 * An object can have a name, such as "triangle1". 
-	 * @param name object name
-	 */
-	public void setName(String name) {
-		m_name = name;
+		applyTransform(AffineTransform.getRotateInstance(radians));
 	}
+	  
+		/**
+		 * Rotates the SComponent from the given x- and y-coordinate.
+		 * 
+		 * @param radians
+		 *            the number of radians to rotate
+		 * @param xcenter
+		 *            the x-coordinate to rotate from
+		 * @param ycenter
+		 *            the y-coordinate to rotate from
+		 */
+		public void rotate(double radians, double xcenter, double ycenter) {
 
-	/**
-	 * Sets the time the object was created. This probably should 
-	 * only be used when loading in pre-existing objects.
-	 * @param time the time the object was created.
-	 */
-	public void setTime(long time) {
-		m_time = time;
-	}
+			applyTransform(AffineTransform.getRotateInstance(radians, xcenter,
+					ycenter));
+		}
 
-	/**
-	 * Set the Type for this object
-	 * @param type
-	 */
-	public void setType(String type) {
-		m_type = type;
-	}
+		/**
+		 * Scales the SComponent by the given x- and y-factor.
+		 * 
+		 * @param xfactor
+		 *            the x-factor
+		 * @param yfactor
+		 *            the y-factor
+		 */
+		public void scale(double xfactor, double yfactor) {
 
-	/**
-	 * An object can be created by a user 
-	 * (like drawing a shape, or speaking a phrase)
-	 * or it can be created by a system
-	 * (like a recognition of a higher level shape)
-	 * @param isUserCreated true if the user created the shape, else false
-	 */
+			applyTransform(AffineTransform.getScaleInstance(xfactor, yfactor));
+		}
+		
+		/**
+		 * Sets an attribute value. Will overwrite any value currently set for that
+		 * attribute 
+		 * 
+		 * @param key   attribute name (Must be string)
+		 * @param value attribute value (Must be string)
+		 * @return the old value of the attribute, or null if none was set
+		 */
+		public String setAttribute(String key, String value) {
+			return m_attributes.put(key, value);
+		}
 
-	public void setUserCreated(boolean isUserCreated) {
-		m_isUserCreated = isUserCreated;
-	}
+		public void setBoundingBox(SrlRectangle r){
+			m_boundingBox = r;
+		}
 
-	/**
-	 * Translate the object by the amount x,y
-	 * @param x
-	 * @param y
-	 */
-	public abstract void translate(double x, double y);
 
-	/**
-	 * Should be overwritten, but doesn't have to be
-	 * Returns name and description of object
-	 */
-	public String toString(){
-		return "SrlObject Name:" + getName() + " Description: " + getDescription();
-	}
-	
+
+		/**
+		 * Translate the SComponent by the given x- and y-increment.
+		 * 
+		 * @param xincrement
+		 *            the x-increment
+		 * @param yincrement
+		 *            the y-increment
+		 */
+//		public void translate(double xincrement, double yincrement) {
+
+//			applyTransform(AffineTransform.getTranslateInstance(xincrement,
+//					yincrement));
+//		}
+
+		/**
+		 * Sets the color of the object
+		 * @param color
+		 */
+		public void setColor(Color color) {
+			m_color = color;
+		}
+
+		public void setConvexHull(Polygon p){
+			m_convexHull = p;
+		}
+		
+
+		/**
+		 * Set the description for this object
+		 * @param description
+		 */
+		public void setDescription(String description) {
+			m_description = description;
+		}
+
+		/**
+		 * In general you should not be setting a UUID unless you are
+		 * loading in pre-existing objects with pre-existing UUIDs.
+		 * @param id the unique id for the object
+		 */
+		public void setId(UUID id) {
+			m_id = UUID.fromString(id.toString());
+		}
+		
+		/**
+		 * An object can have a name, such as "triangle1". 
+		 * @param name object name
+		 */
+		public void setName(String name) {
+			m_name = name;
+		}
+		
+		/**
+		 * Sets the time the object was created. This probably should 
+		 * only be used when loading in pre-existing objects.
+		 * @param time the time the object was created.
+		 */
+		public void setTime(long time) {
+			m_time = time;
+		}
+		/**
+		 * Set the Type for this object
+		 * @param type
+		 */
+		public void setType(String type) {
+			m_type = type;
+		}
+		
+		/**
+		 * An object can be created by a user 
+		 * (like drawing a shape, or speaking a phrase)
+		 * or it can be created by a system
+		 * (like a recognition of a higher level shape)
+		 * @param isUserCreated true if the user created the shape, else false
+		 */
+
+		public void setUserCreated(boolean isUserCreated) {
+			m_isUserCreated = isUserCreated;
+		}
+		
+		/**
+		 * Should be overwritten, but doesn't have to be
+		 * Returns name and description of object
+		 */
+		public String toString(){
+			return "SrlObject Name:" + getName() + " Description: " + getDescription();
+		}
+
+
+		public String toStringLong(){
+			return "Type:" + getType() + " Name: " + " Description:" + getDescription() + 
+					" UUID:" + getId();
+		}
+		
+		/**
+		 * Translate the object by the amount x,y
+		 * @param x
+		 * @param y
+		 */
+		public abstract void translate(double x, double y);
+
+
+		
 }

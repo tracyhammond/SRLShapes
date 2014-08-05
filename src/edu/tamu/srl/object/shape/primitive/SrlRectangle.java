@@ -3,6 +3,10 @@
  */
 package edu.tamu.srl.object.shape.primitive;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.util.Set;
+
 import edu.tamu.srl.object.SrlObject;
 import edu.tamu.srl.object.shape.SrlShape;
 
@@ -13,6 +17,12 @@ import edu.tamu.srl.object.shape.SrlShape;
  */
 public class SrlRectangle extends SrlShape {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	private SrlPoint m_topLeftCorner = new SrlPoint(0,0);
 	private SrlPoint m_bottomRightCorner = new SrlPoint(0,0);
 	
@@ -112,5 +122,32 @@ public class SrlRectangle extends SrlShape {
 		m_topLeftCorner.translate(x, y);
 		m_bottomRightCorner.translate(x, y);
 		translateSubShapes(x,y);
+	}
+
+	@Override
+	public boolean equalsByContent(SrlObject other) {
+		if (!(other instanceof SrlRectangle)){return false;}
+		SrlRectangle otherrectangle = (SrlRectangle)other;
+		if(!getTopLeftCorner().equals(otherrectangle.getTopLeftCorner())){return false;}
+		if(!getBottomRightCorner().equals(otherrectangle.getBottomRightCorner())){return false;}
+		return true;
+	}
+
+	@Override
+	protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void calculateBBox() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void paint(Graphics2D g) {
+		// TODO Auto-generated method stub
+		
 	}
 }

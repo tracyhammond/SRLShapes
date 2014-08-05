@@ -17,6 +17,11 @@ import edu.tamu.srl.object.shape.stroke.SrlStroke;
 public abstract class SrlShape extends SrlObject{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Clones all of the information to the object sent in
 	 * @param cloned the new clone object
 	 * @return the same cloned object (superfluous return)
