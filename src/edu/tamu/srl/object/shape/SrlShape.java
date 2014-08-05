@@ -1,7 +1,9 @@
 package edu.tamu.srl.object.shape;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import edu.tamu.srl.object.SrlInterpretation;
 import edu.tamu.srl.object.SrlObject;
@@ -14,7 +16,7 @@ import edu.tamu.srl.object.shape.stroke.SrlStroke;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public abstract class SrlShape extends SrlObject{
+public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 
 	/**
 	 * 
@@ -79,6 +81,17 @@ public abstract class SrlShape extends SrlObject{
 	}
 	
 	/**
+	 * Removes a subcomponent from this container.
+	 * 
+	 * @param subcomponent subcomponent to remove
+	 * @return true if something was removed
+	 */
+	public boolean remove(SrlObject subcomponent) {
+		flagExternalUpdate();
+		return m_subShapes.remove(subcomponent);
+	}
+	
+	/**
 	 * Gets the list of subshapes
 	 * @return list of objects that make up this object
 	 */
@@ -108,6 +121,7 @@ public abstract class SrlShape extends SrlObject{
 	 */
 	public void addSubShapes(ArrayList<SrlShape> subshapes) {
 		m_subShapes.addAll(subshapes);
+		flagExternalUpdate();
 	}
 	
 	/**
@@ -268,5 +282,86 @@ public abstract class SrlShape extends SrlObject{
 			s.translate(x,y);
 		}
 	}
+	
+	/**
+	 * Adds a subshape to this object at the specified index.
+	 * 
+	 * @param index point to add the content
+	 * @param subcomponent the subshape
+	 */
+	public void addSubShape(int index, SrlShape subcomponent) {
+		m_subShapes.add(index, subcomponent);
+		flagExternalUpdate();
+	}
+
+	/**
+	 * Removes the ith Component from this SContainer
+	 * 
+	 * @param i
+	 *            the ith component of the container
+	 * @return the value removed
+	 */
+	public SrlObject remove(int i) {
+
+		flagExternalUpdate();
+		return m_subShapes.remove(i);
+	}
+	
+	/**
+	 * Removes a bunch of subcomponents from this SContainer.
+	 * 
+	 * @param subcomponents
+	 *            the collection of subcomponents
+	 * @return true if all target subcomponents were removed from myContents,
+	 *         false otherwise
+	 */
+	public boolean removeAll(Collection<? extends SrlObject> subcomponents) {
+
+		flagExternalUpdate();
+		return m_subShapes.removeAll(subcomponents);
+	}
+	
+
+	/**
+	 * Gets the size of the myContents.
+	 * 
+	 * @return the size of the myContents
+	 */
+	public int size() {
+
+		return m_subShapes.size();
+	}
+
+	/**
+	 * Clears the container.
+	 */
+	public void clear() {
+
+		m_subShapes.clear();
+		flagExternalUpdate();
+	}
+	
+	public Iterator<SrlShape> iterator() {
+
+		return m_subShapes.iterator();
+	}
+	
+	/**
+	 * Checks if this container contains the target component.
+	 * 
+	 * @param component
+	 *            the target component
+	 * @return true if this container contains the target component, false
+	 *         otherwise
+	 */
+	public boolean contains(SrlObject component) {
+
+		for (SrlObject sub : m_subShapes)
+			if (sub.equals(component))
+				return true;
+
+		return false;
+	}
+
 	
 }
