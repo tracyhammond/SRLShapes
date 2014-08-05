@@ -99,5 +99,14 @@ public class SrlCircle extends SrlShape {
 	    return cloned;
 	}
 		
+	/** 
+	 * Translates the center and the subshapes
+	 * @param x x amount to translate
+	 * @param y y amount to translate
+	 */
+	public void translate(double x, double y){
+		m_center.translate(x, y);
+		translateSubShapes(x,y);
+	}
 	
 }

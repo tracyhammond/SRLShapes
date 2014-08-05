@@ -103,4 +103,14 @@ public class SrlRectangle extends SrlShape {
 		m_topLeftCorner = topLeftCorner;
 	}
 
+	/**
+	 * Translates the saved corner points and the subshapes
+	 * @param x x amount to translate
+	 * @param y y amount to translate
+	 */
+	public void translate(double x, double y){
+		m_topLeftCorner.translate(x, y);
+		m_bottomRightCorner.translate(x, y);
+		translateSubShapes(x,y);
+	}
 }

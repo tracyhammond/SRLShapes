@@ -16,10 +16,15 @@ import edu.tamu.srl.object.SrlObject;
 public class SrlPoint extends SrlObject implements ISrlPoint, Serializable{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
+	/**
 	 * Because it is serializable, that means we can save to a file, but if we change this class
 	 * it might break the ability to read the file back in.
 	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	   * Return the distance from the point specified by (x,y) to this point
@@ -27,16 +32,16 @@ public class SrlPoint extends SrlObject implements ISrlPoint, Serializable{
 	   * @param y the y value of the other point
 	   * @return the distance
 	   */
-	  public static double distance(double x1, double y1 , double x2, double y2) {
-	    double xdiff = x1 -x2;
-	    double ydiff = y1 - y2;
+	public static double distance(double x1, double y1 , double x2, double y2) {
+		double xdiff = x1 -x2;
+		double ydiff = y1 - y2;
 	    return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	  }
 
 	/**
 	 * A counter that keeps track of where you are in the history of points
 	 */
-	private int m_currentElement = -1;
+	private transient int m_currentElement = -1;
 
 	/**
 	 * Points can have pressure depending on the input device
@@ -142,7 +147,7 @@ public class SrlPoint extends SrlObject implements ISrlPoint, Serializable{
 	      ylist.add((double)m_yList.get(i));
 	    }
 	    SrlPoint p = new SrlPoint(getX(), getY());
-	    super.makeInputAClone(p);
+	    super.copyInto(p);
 	    p.setTime(getTime());
 	    p.setPressure(getPressure());
 	    p.setTilt(getTiltX(), getTiltY());

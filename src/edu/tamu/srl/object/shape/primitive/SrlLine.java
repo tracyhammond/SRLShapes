@@ -599,4 +599,14 @@ public class SrlLine extends SrlShape{
 		return getP1().toString() + "," + getP2().toString();
 	}
 
+	/**
+	 * Translates end points and any subshapes
+	 * @param x x amount to translate
+	 * @param y y amount to translate
+	 */
+	public void translate(double x, double y){
+		m_p1.translate(x, y);
+		m_p2.translate(x, y);
+		translateSubShapes(x,y);
+	}
 }

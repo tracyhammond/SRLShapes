@@ -591,4 +591,16 @@ public class SrlStroke extends SrlShape{
 		}
 		return substroke;
 	}
+
+	/**
+	 * Translates each of the points in the stroke
+	 * Also translates each of the subshapes in case this stroke is made up of other strokes
+	 */
+	public void translate(double x, double y){
+		for(SrlPoint p : m_points){
+			p.translate(x, y);
+		}
+		translateSubShapes(x,y);
+	}
+	
 }

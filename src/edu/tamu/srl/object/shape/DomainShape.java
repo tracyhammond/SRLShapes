@@ -5,15 +5,13 @@ package edu.tamu.srl.object.shape;
 
 import java.util.ArrayList;
 
-import edu.tamu.srl.object.SrlObject;
-
 /**
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class JapaneseKanji extends SrlShape {
+public abstract class DomainShape extends SrlShape {
 
-	public JapaneseKanji(ArrayList<SrlShape> shapes){
+	public DomainShape(ArrayList<SrlShape> shapes){
 		for(SrlShape o : shapes){
 			addSubShape(o);
 		}
@@ -67,15 +65,7 @@ public class JapaneseKanji extends SrlShape {
 		return max;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.tamu.srl.object.SRL_Object#clone()
-	 */
-	@Override
-	public JapaneseKanji clone() {
-		JapaneseKanji cloned = new JapaneseKanji(getSubShapes("shape"));
-		super.clone(cloned);
-		return cloned;
-	}
+
 
 
 }

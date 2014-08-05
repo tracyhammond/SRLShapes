@@ -253,5 +253,15 @@ public abstract class SrlShape extends SrlObject{
 		return allPoints;
 	}
 	
-
+	/**
+	 * To be called by the classes that extend this 
+	 * @param x x amount to translate by
+	 * @param y y amount to translate by
+	 */
+	protected void translateSubShapes(double x, double y){
+		for(SrlShape s : getSubShapes()){
+			s.translate(x,y);
+		}
+	}
+	
 }
