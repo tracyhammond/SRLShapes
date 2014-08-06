@@ -1,16 +1,22 @@
-package edu.tamu.srl.object.shape.primitive;
+package edu.tamu.srl.object.shape;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
-import edu.tamu.srl.object.SrlObject;
+import edu.tamu.srl.settings.SrlInitialSettings;
 
 /**
  * Point data class
@@ -42,14 +48,65 @@ public class SrlPoint extends SrlObject implements Serializable{
 	    return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	  }
 
+	static public void main(String args[]){
+		SrlPoint p1 = new SrlPoint(3,4,1);
+		System.out.println(p1.toString());
+		p1.setAttribute("favorite", "yellow");
+		p1.setP(1, 2);		
+		System.out.println(p1.toString());
+		SrlPoint o = new SrlPoint(p1);
+		System.out.println(o.toString());
+		o.setAttribute("favorite", "orange");
+		p1.setP(6, 7);
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream("test.ser");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(o);
+			out.writeObject(p1);
+			out.close();
+			fileOut.close();
+			System.out.println("File saved");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			FileInputStream fileIn = new FileInputStream("test.ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			SrlPoint p = (SrlPoint) in.readObject();
+			SrlPoint p2 = (SrlPoint) in.readObject();
+			in.close();
+			fileIn.close();
+			System.out.println(p.toString());
+			System.out.println(p.toStringLong());
+			System.out.println(p.getOrigX() + ", " + p2.getOrigY());
+			System.out.println(p.getAttribute("favorite"));
+			p.setAttribute("favorite", "red");
+			System.out.println(p2.toString());
+			System.out.println(p2.toStringLong());
+			System.out.println(p2.getOrigX() + ", " + p2.getOrigY());
+			System.out.println(p2.getAttribute("favorite"));
+			System.out.println(p.getAttribute("favorite"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * A counter that keeps track of where you are in the history of points
 	 */
-	private transient int m_currentElement = -1;
+	private int m_currentElement = -1;
 
-	private int m_paintRadius = 5;
+	/**
+	 * When painting the point, what size should they be painted
+	 */
+	private int m_paintRadius = SrlInitialSettings.InitialPointRadius;
 
-	
 	/**
 	 * Points can have pressure depending on the input device
 	 */
@@ -59,18 +116,18 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * Tilt in the X direction when the point was created.
 	 */
 	private Double m_tiltX = null;
-	
+
 	/**
 	 * Tilt in the Y direction when the point was created.
 	 */
 	private Double m_tiltY = null;
-	
+
 	/**
 	 * Holds an history list of the x points 
 	 * Purpose is so that we can redo and undo and go back to the original points
 	 */
 	private ArrayList<Double> m_xList = new ArrayList<Double>();
-	
+
 	/**
 	 * Holds a history list of the y points 
 	 * Purpose is so that we can redo and undo and go back to the original points
@@ -85,8 +142,12 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 */
 	public SrlPoint(double x, double y) {
 		setP(x,y);
+		setColor(SrlInitialSettings.InitialPointColor);
+		setDescription("Initial Points: " + x + "," + y);
+		setType("Point");
+		setName("p");
 	}
-
+	
 	/**
 	 * Creates a point with the initial points at x,y
 	 * @param x the initial x point
@@ -94,7 +155,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @param time the time the point was made
 	 */
 	public SrlPoint(double x, double y, long time) {
-		setP(x,y);
+		this(x,y);
 		setTime(time);    
 	}
 	
@@ -115,6 +176,16 @@ public class SrlPoint extends SrlObject implements Serializable{
 		setId(id);
 	}
 	
+	/**
+	 * Creates a new point with the specified values
+	 * @param x
+	 * @param y
+	 * @param time
+	 * @param id
+	 * @param tiltX
+	 * @param tiltY
+	 * @param pressure
+	 */
 	public SrlPoint(double x, double y, long time, UUID id, double tiltX, double tiltY, double pressure){
 		this(x,y,time,id);
 		setTilt(tiltX, tiltY);
@@ -128,20 +199,22 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public SrlPoint(MouseEvent e) {
 		this(e.getX(), e.getY(), e.getWhen());
 	}
-	
-	
+
 	/**
 	 * Construct a new point with the same elements
 	 * @param p
 	 */
 	public SrlPoint(SrlPoint p){
-		this(p.getOrigX(), p.getOrigY(), p.getTime(), p.getId(), p.getTiltX(), p.getTiltY(), p.getPressure());
-		setName(p.getName());
-	    for(int i = 1; i < p.m_xList.size(); i++){
+		super(p);
+		this.m_currentElement = p.m_currentElement;
+		this.m_paintRadius = p.m_paintRadius;
+		this.m_pressure = p.m_pressure;
+		this.m_tiltX = p.m_tiltX;
+		this.m_tiltY = p.m_tiltY;
+	    for(int i = 0; i < p.m_xList.size(); i++){
 	      m_xList.add((double)p.m_xList.get(i));
 	      m_yList.add((double)p.m_yList.get(i));
 	    }
-	    m_currentElement = p.m_currentElement;
 	}
 	
 	@Override
@@ -154,21 +227,42 @@ public class SrlPoint extends SrlObject implements Serializable{
 		setP(point.getX(), point.getY());
 	}
 	
+	/**
+	 * Calculated the bounding box of the shape
+	 */
 	protected void calculateBBox() {
 		m_boundingBox = new SrlRectangle(this, this);
 	}
 
-
 	/**
-	 * Clone the point
-	 * return an exact copy of this point
+	 * Compare this point to another point based on time.
+	 * 
+	 * @param p
+	 *            point to compare to.
+	 * @return time difference between points.
 	 */
-	@Override
-	public SrlPoint clone() {
-		return new SrlPoint(this);
-	  }
+	public int compareTo(SrlPoint p) {
+		int timeDiff = (int) (this.getTime() - p.getTime());
+		if (timeDiff != 0)
+			return timeDiff;
 
+		int xDiff = (int) (this.getX() - p.getX());
+		if (xDiff != 0)
+			return xDiff;
 
+		int yDiff = (int) (this.getY() - p.getY());
+		if (yDiff != 0)
+			return yDiff;
+
+		int idDiff = this.getId().compareTo(p.getId());
+		// if(idDiff!=0)
+		return idDiff;
+
+	}
+	
+	/**
+	 * In this case the same as equalsBy Content
+	 */
 	public boolean equals(SrlObject o){
 		return equalsByContent(o);
 	}
@@ -187,17 +281,26 @@ public class SrlPoint extends SrlObject implements Serializable{
 	}
 
 
+	/**
+	 * Check if the x y t values match (probably the same initial point)
+	 * @param p
+	 * @return
+	 */
 	public boolean equalsXYTime(SrlPoint p) {
 		return (p.getX() == getX() && p.getY() == getY() && p.getTime() == getTime());
 	}
-	
-	 public void flagExternalUpdate() {
+
+	/**
+	 * If we translate, or rotate, we need to recompute values
+	 * We don't recompute time, because that does not need to be overwritten
+	 */
+	public void flagExternalUpdate() {
 		// Note: don't overwrite time
 		setBoundingBox(null);
 		setConvexHull(null);
 	}
-	  
-	  /**
+	
+	/**
 	 * Return an object drawable by AWT
 	 * return awt point
 	 */
@@ -205,7 +308,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 		return new Point((int)getX(),(int)getY());
 	}
 
-	  /**
+	/**
 	 * Get the x value for the first point in the history
 	 * @return
 	 */
@@ -215,8 +318,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 		}
 		return m_xList.get(0);
 	}
-  
-	  
+	
 	/**
 	 * Get the y value for the first point in the history
 	 * @return
@@ -227,7 +329,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 		}
 		return m_yList.get(0);
 	}
-	
+	  
 	@Override
 	/**
 	 * Just returns the x value 
@@ -236,8 +338,8 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public double getMaxX() {
 		return getX();
 	}
-	
-	@Override
+
+	 @Override
 	/**
 	 * Just returns the y value
 	 * return y value
@@ -245,7 +347,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public double getMaxY() {
 		return getY();
 	}
-	
+  
 	@Override
 	/**
 	 * Just returns the x value 
@@ -267,11 +369,11 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public double getOrigX(){
 		return m_xList.get(0);
 	}
-
+	
 	public double getOrigY(){
 		return m_yList.get(0);
 	}
-	  
+	
 	public int getPaintRadius(){
 		return m_paintRadius;
 	}
@@ -292,7 +394,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public Double getTiltX() {
 		return m_tiltX;
 	}
-
+	  
 	/**
 	 * Get the tilt in the Y direction.
 	 * 
@@ -301,7 +403,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public Double getTiltY() {
 		return m_tiltY;
 	}
-
+	
 	/**
 	 * Get the current x value of the point
 	 * @return current x value of the point
@@ -311,13 +413,29 @@ public class SrlPoint extends SrlObject implements Serializable{
 	}
 
 	/**
+	 * We keep a history of the x values as the point is transformed
+	 * @return the history of the x values
+	 */
+	public ArrayList<Double> getxList() {
+		return m_xList;
+	}
+
+	/**
 	 * Get the current y value of the point
 	 * @return current y value of the point
 	 */
 	public double getY(){
 		return m_yList.get(m_currentElement);
 	}
-	
+
+	/**
+	 * We keep a history of the y values as the point is transformed
+	 * @return the history of the y values
+	 */
+	public ArrayList<Double> getyList() {
+		return m_yList;
+	}
+
 	/**
 	 * Get the original value of the point
 	 * @return a point where getx and gety return the first values that were added to the history
@@ -333,11 +451,6 @@ public class SrlPoint extends SrlObject implements Serializable{
 
 		return (int) getX() + (int) getY() + (int) getTime();
 	}
-
-	public void main(){
-		SrlPoint p = new SrlPoint(3,4,1);
-		System.out.println(p.toString());
-	}
 	
 	@Override
 	public void paint(Graphics2D g) {
@@ -346,7 +459,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 		int diameter = m_paintRadius * 2;
 		g.fillOval((int) getY() - getPaintRadius(), (int) getY() - getPaintRadius(), diameter, diameter);
 	}
-
+	
 	/** 
 	 * Scales the point by the amount x and y. 
 	 * Having x and y specified allows one to change the 
@@ -378,7 +491,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	  m_yList = new ArrayList<Double>();
 	  setP(x, y);
 	}
-	
+
 	/**
 	 * Updates the location of the point
 	 * Also add this point to the history of the points 
@@ -391,11 +504,11 @@ public class SrlPoint extends SrlObject implements Serializable{
 	    m_yList.add(y);
 	    m_currentElement = m_xList.size() - 1;
 	  }
-	
+
 	public void setPaintRadius(int radius){
 		m_paintRadius = radius;
 	}
-
+	
 	/**
 	 * Set the pressure of the point.
 	 * 
@@ -403,6 +516,14 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 *            pressure of the point.
 	 */
 	public void setPressure(double pressure) {
+		m_pressure = pressure;
+	}
+	
+	/**
+	 * Sets the pressure of the point
+	 * @param pressure
+	 */
+	public void setPressure(Double pressure) {
 		m_pressure = pressure;
 	}
 	
@@ -428,7 +549,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public void setTiltX(double tiltX) {
 		m_tiltX = tiltX;
 	}
-	
+
 	/**
 	 * Set the tilt in the Y direction.
 	 * 
@@ -438,6 +559,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public void setTiltY(double tiltY) {
 		m_tiltY = tiltY;
 	}
+
 	
 	/**
 	 * Converts the Core Sketch Point object to the equivalent AWT Point .
@@ -487,34 +609,5 @@ public class SrlPoint extends SrlObject implements Serializable{
 	  m_currentElement -= 1;
 	  return this;
 	}
-	
-
-	/**
-	 * Compare this point to another point based on time.
-	 * 
-	 * @param p
-	 *            point to compare to.
-	 * @return time difference between points.
-	 */
-	public int compareTo(SrlPoint p) {
-		int timeDiff = (int) (this.getTime() - p.getTime());
-		if (timeDiff != 0)
-			return timeDiff;
-
-		int xDiff = (int) (this.getX() - p.getX());
-		if (xDiff != 0)
-			return xDiff;
-
-		int yDiff = (int) (this.getY() - p.getY());
-		if (yDiff != 0)
-			return yDiff;
-
-		int idDiff = this.getId().compareTo(p.getId());
-		// if(idDiff!=0)
-		return idDiff;
-
-	}
-	
-	
 	
 }

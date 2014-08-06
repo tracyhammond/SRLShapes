@@ -5,7 +5,7 @@ package edu.tamu.srl.object;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlInterpretation implements Comparable<SrlInterpretation>, Cloneable{
+public class SrlInterpretation implements Comparable<SrlInterpretation>{
 
 	/**
 	 * A string description of the interpretation
@@ -55,6 +55,18 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>, Cloneab
 		m_complexity = complexity;
 	}
 
+	/**
+	 * This constructor should be used instead of the clone method
+	 * @param i
+	 */
+	public SrlInterpretation(SrlInterpretation i){
+		this.m_complexity = i.m_complexity;
+		this.m_confidence = i.m_confidence;
+		this.m_interpretation = i.m_interpretation;
+		this.m_note = i.m_note;
+		
+	}
+	
 	@Override
 	/**
 	 * Compares two interpretations. 
@@ -119,13 +131,5 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>, Cloneab
 	public String toString(){
 		return "Interpretation " + m_interpretation + ": confidence = " + m_confidence + ", complexity = " + m_complexity + ", note: " + m_note;
 	}
-	
-	/**
-	 * Returns a cloned version of this
-	 * return a clone
-	 */
-	public SrlInterpretation clone(){
-		return new SrlInterpretation(m_interpretation, m_confidence, m_complexity);
-	}	
 
 }

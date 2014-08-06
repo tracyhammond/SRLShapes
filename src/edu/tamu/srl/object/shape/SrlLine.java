@@ -1,19 +1,16 @@
-package edu.tamu.srl.object.shape.primitive;
+package edu.tamu.srl.object.shape;
 
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.Set;
 
-import edu.tamu.srl.object.SrlObject;
-import edu.tamu.srl.object.shape.SrlShape;
-
 /**
  * Line data class
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlLine extends SrlShape{
+public class SrlLine extends SrlInterpretedShape{
 
 	/**
 	 * 
@@ -29,18 +26,6 @@ public class SrlLine extends SrlShape{
 	 * Ending value of the line
 	 */
 	private SrlPoint m_p2;  
-
-	/**
-	 * Clone the line by cloning a shape in general 
-	 * then its two endpoints
-	 * return clone of the line
-	 */
-	public SrlLine clone(){
-		SrlLine cloned = new SrlLine(m_p1.clone(), m_p2.clone());
-		super.clone(cloned);
-	    return cloned;
-	}
-
 
 	/**
 	 * Get the starting point of the line

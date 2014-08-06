@@ -1,14 +1,12 @@
 /**
  * 
  */
-package edu.tamu.srl.object.shape.primitive;
+package edu.tamu.srl.object.shape;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 import java.util.Set;
-
-import edu.tamu.srl.object.SrlObject;
-import edu.tamu.srl.object.shape.SrlShape;
 
 
 /**
@@ -89,14 +87,6 @@ public class SrlRectangle extends SrlShape {
 		return Math.max(m_topLeftCorner.getY(), m_bottomRightCorner.getY());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.tamu.srl.object.SRL_Object#clone()
-	 */
-	@Override
-	public SrlObject clone() {
-		return new SrlRectangle(m_topLeftCorner.clone(), m_bottomRightCorner.clone());
-	}
-
 	/**
 	 * Gets the top left corner point
 	 * @return
@@ -150,4 +140,5 @@ public class SrlRectangle extends SrlShape {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

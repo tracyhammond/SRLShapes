@@ -2,13 +2,8 @@ package edu.tamu.srl.object.shape;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-
-import edu.tamu.srl.object.SrlInterpretation;
-import edu.tamu.srl.object.SrlObject;
-import edu.tamu.srl.object.shape.primitive.SrlPoint;
-import edu.tamu.srl.object.shape.stroke.SrlStroke;
+import java.util.UUID;
 
 
 /**
@@ -16,49 +11,14 @@ import edu.tamu.srl.object.shape.stroke.SrlStroke;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
+public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 
 	/**
-	 * 
+	 * This is for serializable. Note that if the code is recompiled with different 
+	 * member methods, the serializable will not be able to load in previously saved 
+	 * information
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Clones all of the information to the object sent in
-	 * @param cloned the new clone object
-	 * @return the same cloned object (superfluous return)
-	 */
-	protected SrlShape clone(SrlShape cloned){
-		cloned.setId(getId());
-		cloned.setUserCreated(isUserCreated());
-		cloned.setName(getName());
-		cloned.setTime(getTime());
-		for(SrlInterpretation i : m_interpretations){
-			cloned.m_interpretations.add(i.clone());
-		}
-		for(SrlShape o : m_subShapes){
-			cloned.m_subShapes.add((SrlShape) o.clone());
-		}
-		return cloned;
-	}
-	
-	public SrlShape(){super();}
-	
-	private ArrayList<SrlInterpretation> m_interpretations = new ArrayList<SrlInterpretation>();
-
-	/**
-	 * @return the interpretations
-	 */
-	public ArrayList<SrlInterpretation> getInterpretations() {
-		return m_interpretations;
-	}
-
-	/**
-	 * @param interpretations the interpretations to set
-	 */
-	public void setInterpretations(ArrayList<SrlInterpretation> interpretations) {
-		m_interpretations = interpretations;
-	}
 
 	/**
 	 * Was this object made up from a collection of subObjects? 
@@ -67,8 +27,55 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 	 * This list can be examined hierarchically.
 	 * e.g., an arrow might have three lines inside, and each line might have a stroke.
 	 */
-	private ArrayList<SrlShape> m_subShapes = new ArrayList<SrlShape>();
+	private ArrayList<SrlObject> m_subShapes = new ArrayList<SrlObject>();
 	
+
+	public Iterator<SrlObject> iterator() {
+		return getSubShapes().iterator();
+	}
+	
+	/**
+	 * Constructor specifically to replace the clone() method
+	 * @param s
+	 */
+	public SrlShape(SrlShape s){
+		super(s);
+		for(SrlObject sub : s.getSubShapes()){
+			if(sub instanceof SrlPoint){
+				this.add(new SrlPoint((SrlPoint)sub));
+			} else if (sub instanceof SrlStroke){
+				this.add(new SrlStroke((SrlStroke)sub));
+			}
+		}
+	}
+	
+	/**
+	 * Empty super constructor must exist for later
+	 */
+	public SrlShape(){
+		super();
+	}
+	
+	/**
+	 * Adds a subshape to this object at the specified index.
+	 * 
+	 * @param index point to add the content
+	 * @param subcomponent the subshape
+	 */
+	public void addSubShape(int index, SrlObject subcomponent) {
+		m_subShapes.add(index, subcomponent);
+		flagExternalUpdate();
+	}
+
+	/**
+	 * Adds a subshape to this object. 
+	 * This usually happens during recognition, when a new object
+	 * is made up from one or more objects
+	 * @param subshape
+	 */
+	public void addSubShape(SrlObject subShape){
+		m_subShapes.add(subShape);
+	}
 	
 	/**
 	 * Adds a subshape to this object. 
@@ -76,42 +83,9 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 	 * is made up from one or more objects
 	 * @param subshape
 	 */
-	public void addSubShape(SrlShape subShape){
-		m_subShapes.add(subShape);
-	}
-	
-	/**
-	 * Removes a subcomponent from this container.
-	 * 
-	 * @param subcomponent subcomponent to remove
-	 * @return true if something was removed
-	 */
-	public boolean remove(SrlObject subcomponent) {
+	public void add(SrlObject subShape){
 		flagExternalUpdate();
-		return m_subShapes.remove(subcomponent);
-	}
-	
-	/**
-	 * Gets the list of subshapes
-	 * @return list of objects that make up this object
-	 */
-	public ArrayList<SrlShape> getSubShapes(){
-		return m_subShapes;
-	}
-	
-	/**
-	 * Gets the list of subshapes
-	 * @param type the interpretation of the object
-	 * @return list of objects that make up this object
-	 */
-	public ArrayList<SrlShape> getSubShapes(String type){
-		ArrayList<SrlShape> shapes = new ArrayList<SrlShape>();
-		for(SrlShape o : getSubShapes()){
-			if(o.hasInterpretation(type)){
-				shapes.add((SrlShape)o);
-			}
-		}
-		return shapes;
+		m_subShapes.add(subShape);
 	}
 	
 	
@@ -119,9 +93,84 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 	 * adds a list of subobjects to this object
 	 * @param subobjects list of subobjects to add
 	 */
-	public void addSubShapes(ArrayList<SrlShape> subshapes) {
+	public void addSubShapes(ArrayList<SrlObject> subshapes) {
 		m_subShapes.addAll(subshapes);
 		flagExternalUpdate();
+	}
+	
+	/**
+	 * adds a list of subobjects to this object
+	 * @param subobjects list of subobjects to add
+	 */
+	public void addAll(ArrayList<SrlObject> subshapes) {
+		m_subShapes.addAll(subshapes);
+		flagExternalUpdate();
+	}
+	/**
+	 * Clears the container.
+	 */
+	public void clear() {
+		m_subShapes.clear();
+		flagExternalUpdate();
+	}
+	
+	/**
+	 * Checks if this container contains the target component.
+	 * 
+	 * @param component
+	 *            the target component
+	 * @return true if this container contains the target component, false
+	 *         otherwise
+	 */
+	public boolean contains(SrlObject component) {
+		for (SrlObject sub : m_subShapes)
+			if (sub.equals(component)){
+				return true;
+			} else if(sub instanceof SrlShape){
+				if(((SrlShape)sub).contains(component)){return true;}
+			}
+		return false;
+	}
+	
+	
+	/**
+	 * Gets the ith component.
+	 * 
+	 * @param i
+	 *            the index
+	 * @return the ith component
+	 */
+	public SrlObject get(int i) {
+
+		return m_subShapes.get(i);
+	}
+
+	/**
+	 * Gets the number of components.
+	 * 
+	 * @return the number of components
+	 */
+	public int getComponentCount() {
+
+		return m_subShapes.size();
+	}
+
+	/**
+	 * Gets a list of all of the points that make up this object.
+	 * It searches recursively to get all of the strokes of this object.
+	 * If it does not have any strokes, and then returns the points in those strokes.
+	 * @return
+	 */
+	public ArrayList<SrlPoint> getPoints(){
+		ArrayList<SrlPoint> allPoints = new ArrayList<SrlPoint>();
+		for(SrlObject o: m_subShapes){
+			if(o instanceof SrlPoint){
+				allPoints.add((SrlPoint)o);
+			} else if (o instanceof SrlShape){
+				allPoints.addAll((ArrayList<SrlPoint>)((SrlShape)o).getPoints());
+			}
+		}
+		return allPoints;
 	}
 	
 	/**
@@ -130,111 +179,30 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 	 * This objects is also included on the list.
 	 * @return
 	 */
-	public ArrayList<SrlShape> getRecursiveSubShapeList(){
-		ArrayList<SrlShape> completeList = new ArrayList<SrlShape>();
-		completeList.add(this);
-		for(SrlShape o : m_subShapes){
-			completeList.addAll(o.getRecursiveSubShapeList());
+	public ArrayList<SrlInterpretedShape> getRecursiveSubShapeList(){
+		ArrayList<SrlInterpretedShape> completeList = new ArrayList<SrlInterpretedShape>();
+		completeList.add((SrlInterpretedShape)this);
+		for(SrlObject o : m_subShapes){
+			if(o instanceof SrlInterpretedShape){
+				SrlInterpretedShape sis = (SrlInterpretedShape) o;				
+				completeList.addAll(sis.getRecursiveSubShapeList());
+			}
 		}
 		return completeList;
 	}
 	
-	
 	/**
-	 * add an interpretation for an object
-	 * @param interpretation a string name representing the interpretation
-	 * @param confidence a double representing the confidence
-	 * @param complexity a double representing the complexity
+	 * Find the stroke by ID.
+	 * 
+	 * @param id
+	 *            the ID
+	 * @return the stroke with the given ID
 	 */
-	public void addInterpretation(String interpretation, double confidence, int complexity){
-		m_interpretations.add(new SrlInterpretation(interpretation, confidence, complexity));
-	}
-	
-	/**
-	 * Checks if it contains an interpretation of a certain type
-	 * @param interpretation the string name of the interpretation
-	 * @return a boolean if it has such an interpretation or not
-	 */
-	public boolean hasInterpretation(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
-			if(i.getInterpretation().toLowerCase().equals(interpretation.toLowerCase())){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Returns the interpretation with the highest complexity
-	 * and among those the one with the highest confidence
-	 * @return best interpretation
-	 */
-	public SrlInterpretation getBestInterpretation(){
-		Collections.sort(m_interpretations);
-		return m_interpretations.get(0);
-/**		if(m_interpretations.size() == 0) return null;
-		SRL_Interpretation bestInterpretation = m_interpretations.get(0);
-		for(SRL_Interpretation i : m_interpretations){
-			if(i.compareTo(bestInterpretation) > 0){
-				bestInterpretation = i;
-			}
-		}
-		return bestInterpretation;
-		**/
-	}
-	
-	/**
-	 * Checks if it has a particular interpretation, if so, 
-	 * it returns it, else it returns null.
-	 * @param interpretation the string name of the interpretation
-	 * @return the interpretation requested (complete with confidence and complexity)
-	 */
-	public SrlInterpretation getInterpretation(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
-			if(i.getInterpretation().equals(interpretation)){
-				return i;
-			}
-		}
+	public SrlStroke getStroke(UUID id) {
+		for (SrlObject comp : getRecursiveSubShapeList())
+			if (comp instanceof SrlStroke && comp.getId().equals(id))
+				return (SrlStroke) comp;
 		return null;
-	}
-	
-	/**
-	 * Returns the confidence of a particular interpretation.
-	 * If the interpretation does not exist, it return -1.
-	 * @param interpretation the string name of the interpretation
-	 * @return the confidence of that interpretation
-	 */
-	public double getInterpretationConfidence(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
-			if(i.getInterpretation().equals(interpretation)){
-				return i.getConfidence();
-			}
-		}
-		return -1;
-	}
-	
-	/**
-	 * Returns the complexity of a particular interpretation.
-	 * If the interpretation does not exist, it return -1.
-	 * @param interpretation the string name of the interpretation
-	 * @return the complexity of that interpretation
-	 */
-	public double getInterpretationComplexity(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
-			if(i.getInterpretation().equals(interpretation)){
-				return i.getComplexity();
-			}
-		}
-		return -1;
-	}
-	
-	/**
-	 * Gets a list of all of the interpretations available for the object
-	 * @return the list of interpretations
-	 */
-	public ArrayList<SrlInterpretation> getAllInterpretations(){
-		Collections.sort(m_interpretations);
-		return m_interpretations;
 	}
 	
 	/**
@@ -245,55 +213,39 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 	 */
 	public ArrayList<SrlStroke> getStrokes(){
 		ArrayList<SrlStroke> completeList = new ArrayList<SrlStroke>();
-		for(SrlShape o : getRecursiveSubShapeList()){
-			try {
-				if(o.getClass() == Class.forName("edu.tamu.srl.object.shape.stroke.SRL_Stroke")){
-					completeList.add((SrlStroke)o);
-				}
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+		for(SrlObject o : m_subShapes){
+			if(o instanceof SrlStroke){
+				completeList.add((SrlStroke)o);
+			} else if(o instanceof SrlShape){
+				completeList.addAll(((SrlShape)o).getStrokes());
 			}
 		}
 		return completeList;
 	}
 	
 	/**
-	 * Gets a list of all of the points that make up this object.
-	 * It searches recursively to get all of the strokes of this object.
-	 * If it does not have any strokes, and then returns the points in those strokes.
-	 * @return
+	 * Gets the list of subshapes
+	 * @return list of objects that make up this object
 	 */
-	public ArrayList<SrlPoint> getPoints(){
-		ArrayList<SrlStroke> strokes = getStrokes();
-		ArrayList<SrlPoint> allPoints = new ArrayList<SrlPoint>();
-		for(SrlStroke stroke : strokes){
-			allPoints.addAll(stroke.getPoints());
-		}
-		return allPoints;
+	public ArrayList<SrlObject> getSubShapes(){
+		return m_subShapes;
 	}
 	
 	/**
-	 * To be called by the classes that extend this 
-	 * @param x x amount to translate by
-	 * @param y y amount to translate by
+	 * Returns the most recent time of any of the subcomponents
 	 */
-	protected void translateSubShapes(double x, double y){
-		for(SrlShape s : getSubShapes()){
-			s.translate(x,y);
-		}
-	}
-	
-	/**
-	 * Adds a subshape to this object at the specified index.
-	 * 
-	 * @param index point to add the content
-	 * @param subcomponent the subshape
-	 */
-	public void addSubShape(int index, SrlShape subcomponent) {
-		m_subShapes.add(index, subcomponent);
-		flagExternalUpdate();
-	}
+	public long getTime() {
 
+		if (getTime() == -1L) {
+			for (SrlObject comp : m_subShapes)
+				setTime(Math.max(getTime(), comp.getTime()));
+		}
+		return getTime();
+	}
+	
+
+
+	
 	/**
 	 * Removes the ith Component from this SContainer
 	 * 
@@ -306,6 +258,18 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 		flagExternalUpdate();
 		return m_subShapes.remove(i);
 	}
+	
+	/**
+	 * Removes a subcomponent from this container.
+	 * 
+	 * @param subcomponent subcomponent to remove
+	 * @return true if something was removed
+	 */
+	public boolean remove(SrlObject subcomponent) {
+		flagExternalUpdate();
+		return m_subShapes.remove(subcomponent);
+	}
+
 	
 	/**
 	 * Removes a bunch of subcomponents from this SContainer.
@@ -321,7 +285,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 		return m_subShapes.removeAll(subcomponents);
 	}
 	
-
+	
 	/**
 	 * Gets the size of the myContents.
 	 * 
@@ -331,37 +295,102 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlShape>{
 
 		return m_subShapes.size();
 	}
-
+	
 	/**
-	 * Clears the container.
+	 * To be called by the classes that extend this 
+	 * @param x x amount to translate by
+	 * @param y y amount to translate by
 	 */
-	public void clear() {
-
-		m_subShapes.clear();
-		flagExternalUpdate();
+	protected void translateSubShapes(double x, double y){
+		for(SrlObject s : getSubShapes()){
+			s.translate(x,y);
+		}
 	}
-	
-	public Iterator<SrlShape> iterator() {
 
-		return m_subShapes.iterator();
-	}
-	
 	/**
-	 * Checks if this container contains the target component.
+	 * Calculates the bounding box of the shape
+	 */
+	protected void calculateBBox() {
+		setBoundingBox(new SrlRectangle(new SrlPoint(getMinX(), getMinY()), 
+				new SrlPoint(getMaxX(), getMaxY())));
+	}
+
+	/**
+	 * Checks if this container contains any of the given components.
 	 * 
-	 * @param component
-	 *            the target component
-	 * @return true if this container contains the target component, false
-	 *         otherwise
+	 * @param components
+	 *            the target components
+	 * @return true if this container contains any of the target components,
+	 *         false otherwise
 	 */
-	public boolean contains(SrlObject component) {
+	public boolean containsAny(Collection<? extends SrlObject> components) {
 
-		for (SrlObject sub : m_subShapes)
-			if (sub.equals(component))
+		for (SrlObject component : components)
+			if (contains(component))
 				return true;
 
 		return false;
 	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see edu.tamu.srl.object.shape.SRL_Shape#getMinX()
+	 */
+	@Override
+	public double getMinX() {
+		double min = Double.POSITIVE_INFINITY;
+		for(SrlObject shape : getSubShapes()){
+			min = Math.min(min, shape.getMinX());
+		}
+		return min;
+	}
 
+	/* (non-Javadoc)
+	 * @see edu.tamu.srl.object.shape.SRL_Shape#getMinY()
+	 */
+	@Override
+	public double getMinY() {
+		double min = Double.POSITIVE_INFINITY;
+		for(SrlObject shape : getSubShapes()){
+			min = Math.min(min, shape.getMinY());
+		}
+		return min;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.tamu.srl.object.shape.SRL_Shape#getMaxX()
+	 */
+	@Override
+	public double getMaxX() {
+		double max = Double.NEGATIVE_INFINITY;
+		for(SrlObject shape : getSubShapes()){
+			max = Math.max(max, shape.getMaxX());
+		}
+		return max;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.tamu.srl.object.shape.SRL_Shape#getMaxY()
+	 */
+	@Override
+	public double getMaxY() {
+		double max = Double.NEGATIVE_INFINITY;
+		for(SrlObject shape : getSubShapes()){
+			max = Math.max(max, shape.getMaxY());
+		}
+		return max;
+	}
+
+	/**
+	 * Translate the object by the amount x,y
+	 * @param x
+	 * @param y
+	 */
+	public void translate(double x, double y){
+		for(SrlObject o : getSubShapes()){
+			o.translate(x,y);
+		}
+	}
 	
 }

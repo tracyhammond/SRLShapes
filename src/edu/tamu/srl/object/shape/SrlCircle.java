@@ -1,20 +1,18 @@
 /**
  * 
  */
-package edu.tamu.srl.object.shape.primitive;
+package edu.tamu.srl.object.shape;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 import java.util.Set;
-
-import edu.tamu.srl.object.SrlObject;
-import edu.tamu.srl.object.shape.SrlShape;
 
 /**
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlCircle extends SrlShape {
+public class SrlCircle extends SrlInterpretedShape {
 
 	/**
 	 * 
@@ -97,16 +95,6 @@ public class SrlCircle extends SrlShape {
 	public double getMaxY() {
 		return m_center.getY() + m_radius;
 	}
-
-	/* (non-Javadoc)
-	 * @see edu.tamu.srl.object.SRL_Object#clone()
-	 */
-	@Override
-	public SrlObject clone() {
-		SrlCircle cloned = new SrlCircle(m_center, m_radius);
-		super.clone(cloned);
-	    return cloned;
-	}
 		
 	/** 
 	 * Translates the center and the subshapes
@@ -139,10 +127,4 @@ public class SrlCircle extends SrlShape {
 		
 	}
 
-	@Override
-	protected void calculateBBox() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }
