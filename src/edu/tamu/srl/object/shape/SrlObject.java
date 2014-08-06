@@ -327,8 +327,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	/**
-	 * Returns the length times the height See also getLengthOfDiagonal() return
-	 * area of shape
+	 * Returns the length times the height See also getLengthOfDiagonal() 
+	 * returns area of shape
 	 */
 	public double getArea() {
 		return getHeight() * getWidth();
@@ -728,10 +728,15 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 				+ getDescription();
 	}
 
+	/**
+	 * String that provides the name, description and guid
+	 * @return
+	 */
 	public String toStringLong() {
-		return "Type:" + getType() + " Name: " + " Description:"
+		return "Type:" + getType() + " Name: " + getName() + " Description:"
 				+ getDescription() + " UUID:" + getId();
 	}
+
 
 	/**
 	 * Translate the object by the amount x,y
@@ -741,4 +746,97 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	public abstract void translate(double x, double y);
 
+	/**
+	 * Get the perimeter of the bounding box.
+	 * @return the perimeter of the bounding box.
+	 */
+	public double getPerimeter() {
+		return 2 * getWidth() + 2 * getHeight();
+	}
+	
+	/**
+	 * Get the y value for the top of the box.
+	 * 
+	 * @return the y value for the top of the box.
+	 */
+	public double getTop() {
+		return getMinY();
+	}
+
+	/**
+	 * Get the y value for the bottom of the box.
+	 * 
+	 * @return the y value for the bottom of the box.
+	 */
+	public double getBottom() {
+		return getMaxY();
+	}
+
+	/**
+	 * Get the x value for the left of the box.
+	 * 
+	 * @return the x value for the left of the box.
+	 */
+	public double getLeft() {
+		return getMinX();
+	}
+
+	/**
+	 * Get the x value for the right of the box.
+	 * 
+	 * @return the x value for the right of the box.
+	 */
+	public double getRight() {
+		return getMaxX();
+	}
+	
+	/**
+	 * This bounding box is above the given value
+	 * 
+	 * @param y
+	 *            the y value to compare against.
+	 * @return if the bottom edge of the bounding box is above the
+	 *         given value; otherwise.
+	 */
+	public boolean isAbove(double y) {
+		return getBottom() < y;
+	}
+
+	/**
+	 * This bounding box is below the given value.
+	 * 
+	 * @param y
+	 *            the y value to compare against.
+	 * @return  if the top edge of the bounding box is below the
+	 *         given value; otherwise.
+	 */
+	public boolean isBelow(double y) {
+		return getTop() > y;
+	}
+
+	/**
+	 * This bounding box is to the left of the given value.
+	 * 
+	 * @param x
+	 *            the x value to compare against.
+	 * @return  if the right edge of the bounding box is to the left
+	 *         of the given value;  otherwise.
+	 */
+	public boolean isLeftOf(double x) {
+		return getRight() < x;
+	}
+
+	/**
+	 * This bounding box is to the right of the given value.
+	 * 
+	 * @param x
+	 *            the x value to compare against.
+	 * @return if the left edge of the bounding box is to the right
+	 *         of the given value; otherwise.
+	 */
+	public boolean isRightOf(double x) {
+		return getLeft() > x;
+	}
+
+	
 }

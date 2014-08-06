@@ -3,10 +3,13 @@
  */
 package edu.tamu.srl.object.shape;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.util.Iterator;
 import java.util.Set;
+
+import edu.tamu.srl.settings.SrlInitialSettings;
 
 
 /**
@@ -30,9 +33,22 @@ public class SrlRectangle extends SrlShape {
 	 * @param bottomRightCorner
 	 */
 	public SrlRectangle(SrlPoint topLeftCorner, SrlPoint bottomRightCorner){
+		setColor(SrlInitialSettings.IntialRectangleColor);
 		setTopLeftCorner(topLeftCorner);
 		setBottomRightCorner(bottomRightCorner);
 	}
+
+	/**
+	 * Constructor 
+	 * @param minX
+	 * @param minY
+	 * @param maxX
+	 * @param maxY
+	 */
+	public SrlRectangle(double minX, double minY, double maxX, double maxY){
+		this(new SrlPoint(minX, minY), new SrlPoint(maxX, maxY));
+	}
+	
 
 	/**
 	 * Gets the bottom right corner
@@ -129,16 +145,79 @@ public class SrlRectangle extends SrlShape {
 		
 	}
 
+	/**
+	 * This method just returns itself
+	 * Overwrites this method to prevent an infinite loop
+	 */
+	public SrlRectangle getBoundingBox(){
+		return this;
+	}
+	
+	
+
+
+	/**
+	 * Get the line segment along the top edge of this box.
+	 * 
+	 * @return the segment along the top edge of this box.
+	 */
+	public SrlLine getTopSegment() {
+		return new SrlLine(getMinX(), getMinY(), getMaxX(), getMinY());
+	}
+
+
+
+
+	/**
+	 * Get the line segment along the bottom edge of this box.
+	 * 
+	 * @return The segment along the bottom edge of this box.
+	 */
+	public SrlLine getBottomSegment() {
+		return new SrlLine(getMinX(), getMaxY(), getMaxX(), getMaxY());
+	}
+
+	/**
+	 * Get the line segment along the left edge of this box.
+	 * 
+	 * @return The segment along the left edge of this box.
+	 */
+	public SrlLine getLeftSegment() {
+		return new SrlLine(getMinX(), getMinY(), getMinX(), getMaxY());
+	}
+
+	/**
+	 * Get the line segment along the right edge of this box.
+	 * 
+	 * @return The segment along the right edge of this box.
+	 */
+	public SrlLine getRightSegment() {
+		return new SrlLine(getMaxX(), getMinY(), getMaxX(), getMaxY());
+	}
+	
+	/*
+	 * This method doesn't do anything because it would cause an infinite loop
+	 * (non-Javadoc)
+	 * @see edu.tamu.srl.object.shape.SrlShape#calculateBBox()
+	 */
 	@Override
 	protected void calculateBBox() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void paint(Graphics2D g) {
-		// TODO Auto-generated method stub
-		
+		if (getColor() != null)
+			g.setColor(getColor());
+		g.setStroke(new BasicStroke(SrlInitialSettings.InitialRectangleBorderThickness));
+		g.drawRect((int)getMinX(), (int)getMinY(), (int)getWidth(), (int)getHeight());
+		if(m_fill){
+			if (getColor() != null)
+				g.setColor(m_fillColor);
+			g.fillRect((int)getMinX(), (int)getMinY(), (int)getWidth(), (int)getHeight());
+		}
 	}
 
+	private Color m_fillColor = SrlInitialSettings.InitialRectangleFillColor;
+	private boolean m_fill = SrlInitialSettings.InitialRectangleFill;
+	
 }
