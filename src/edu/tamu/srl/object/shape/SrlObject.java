@@ -839,4 +839,16 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	
+	/**
+	 * Get the angle of the diagonal of the bounding box, i.e. the angle between
+	 * the line along the bottom of the bounding box and the line through the
+	 * bottom left and top right corners of the box.
+	 * 
+	 * @return angle of the diagonal of the bounding box.
+	 */
+	public double getDiagonalAngle() {
+		return Math.atan2(getHeight(), getWidth());
+	}
+
+	
 }
