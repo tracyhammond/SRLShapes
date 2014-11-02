@@ -232,45 +232,17 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		return getTimeComparator().compare(this, o);
 	}
 
-	/**
-	 * Copies what A is into what B is.
-	 * TODO: look into if this needed
-	 * @param A
-	 * @param B
-	 */
-    @SuppressWarnings("checkstyle:designforextension")
-	protected static void copyAIntoB(final SrlObject A, final SrlObject B) {
-		B.mId = A.mId;
-		B.mIsUserCreated = A.mIsUserCreated;
-		B.mName = A.mName;
-		B.mTime = A.mTime;
-		B.mAttributes = A.getAttributes();
-		B.mBoundingBox = A.getBoundingBox();
-		B.mConvexHull = A.getConvexHull();
-	}
+    /**
+     * @return A cloned object that is an instance of {@link SrlObject}.  This cloned object is only a shallow copy.
+     * @throws CloneNotSupportedException if cloning is not allowed.
+     */
+    @Override
+    public abstract Object clone() throws CloneNotSupportedException;
 
-	/**
-	 * Copy the information from the argument into this object
-	 * TODO: look into if this needed
-	 * @param unchangedObject
-	 */
-    @SuppressWarnings("checkstyle:designforextension")
-	protected void copyFrom(final SrlObject unchangedObject) {
-		copyAIntoB(unchangedObject, this);
-
-	}
-
-	/**
-	 * Clones all of the information to the object sent in
-	 * TODO: look into if this needed
-	 * @param editableObject
-	 *            the new clone object
-	 * @return the same cloned object (superfluous return)
-	 */
-    @SuppressWarnings("checkstyle:designforextension")
-	protected void copyInto(final SrlObject editableObject) {
-		copyAIntoB(this, editableObject);
-	}
+    /**
+     * @return performs a deep clone of the object cloning all objects contained as well.
+     */
+    public abstract SrlObject deepClone();
 
 	/**
 	 * Return the distance from the point specified by (x,y) to the center of this object.
