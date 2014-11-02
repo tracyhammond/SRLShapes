@@ -138,6 +138,11 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		};
 	}
 
+    /**
+     * Default constructor.
+     *
+     * Creates an object with an id and a time.
+     */
 	public SrlObject() {
         mId = UUID.randomUUID();
         mTime = System.currentTimeMillis();
@@ -186,6 +191,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
     public SrlObject(final UUID id, final long time) {
         this.mId = id;
         this.mTime = time;
+        mBoundingBox = null;
+        mConvexHull = null;
     }
 
 	/**
@@ -220,17 +227,19 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
      * @param o The object that this instance is being compared to.
      * @return a value that depends on the result of the comparator used.
 	 */
+    @SuppressWarnings("checkstyle:designforextension")
 	public int compareTo(final SrlObject o) {
 		return getTimeComparator().compare(this, o);
 	}
 
 	/**
 	 * Copies what A is into what B is.
-	 *
+	 * TODO: look into if this needed
 	 * @param A
 	 * @param B
 	 */
-	protected static void copyAIntoB(SrlObject A, SrlObject B) {
+    @SuppressWarnings("checkstyle:designforextension")
+	protected static void copyAIntoB(final SrlObject A, final SrlObject B) {
 		B.mId = A.mId;
 		B.mIsUserCreated = A.mIsUserCreated;
 		B.mName = A.mName;
@@ -242,27 +251,29 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 
 	/**
 	 * Copy the information from the argument into this object
-	 * 
+	 * TODO: look into if this needed
 	 * @param unchangedObject
 	 */
-	protected void copyFrom(SrlObject unchangedObject) {
+    @SuppressWarnings("checkstyle:designforextension")
+	protected void copyFrom(final SrlObject unchangedObject) {
 		copyAIntoB(unchangedObject, this);
 
 	}
 
 	/**
 	 * Clones all of the information to the object sent in
-	 * 
+	 * TODO: look into if this needed
 	 * @param editableObject
 	 *            the new clone object
 	 * @return the same cloned object (superfluous return)
 	 */
-	protected void copyInto(SrlObject editableObject) {
+    @SuppressWarnings("checkstyle:designforextension")
+	protected void copyInto(final SrlObject editableObject) {
 		copyAIntoB(this, editableObject);
 	}
 
 	/**
-	 * Return the distance from the point specified by (x,y) to this point
+	 * Return the distance from the point specified by (x,y) to the center of this object.
 	 * 
 	 * @param x
 	 *            the x value of the other point
@@ -270,35 +281,45 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            the y value of the other point
 	 * @return the distance
 	 */
-	public double distance(double x, double y) {
-		double xdiff = x - getCenterX();
-		double ydiff = y - getCenterY();
+    @SuppressWarnings("checkstyle:designforextension")
+	public double distance(final double x, final double y) {
+		final double xdiff = x - getCenterX();
+		final double ydiff = y - getCenterY();
 		return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
 	}
 
 	/**
 	 * Return the distance from point rp to this point.
-	 * 
+	 *
 	 * @param o
 	 *            the other point
 	 * @return the distance
 	 */
-	public double distance(SrlObject o) {
+    @SuppressWarnings("checkstyle:designforextension")
+	public double distance(final SrlObject o) {
 		return distance(o.getCenterX(), o.getCenterY());
 	}
 
-	public boolean equals(SrlObject o) {
-		if (getId().equals(o.getId())) {
-			return true;
-		}
-		return false;
+    @Override
+    /**
+     * Checks if two {@link SrlObject} are equal.
+     * This default implementation only checks that the two ids equal.
+     * @param other the other object.
+     * @return by default. true if the two ids are equal.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+	public boolean equals(final Object other) {
+        if (!(other instanceof SrlObject)) {
+            return false;
+        }
+        return getId().equals(((SrlObject) other).getId());
 	}
 
 	/**
 	 * Looks deep into two components to check equality.
 	 * 
 	 * @param other
-	 *            the other SComponent
+	 *            the other SrlObject.
 	 * @return true if content is equal, false otherwise
 	 */
 	public abstract boolean equalsByContent(SrlObject other);
@@ -317,7 +338,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * Returns the length times the height See also getLengthOfDiagonal() 
 	 * returns area of shape
 	 */
-	public double getArea() {
+	public final double getArea() {
 		return getHeight() * getWidth();
 	}
 
@@ -329,7 +350,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return the value of the given attribute, or null if that attribute is
 	 *         not set.
 	 */
-	public String getAttribute(String key) {
+	public final String getAttribute(String key) {
 		return mAttributes.get(key);
 	}
 
@@ -338,8 +359,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return a clone of the attribute map
 	 */
-	public HashMap<String, String> getAttributes() {
-		HashMap<String, String> attrcopy = new HashMap<String, String>();
+	public final Map<String, String> getAttributes() {
+		final HashMap<String, String> attrcopy = new HashMap<String, String>();
 		if (mAttributes != null)
 			for (Map.Entry<String, String> entry : mAttributes.entrySet())
 				attrcopy.put(entry.getKey(), entry.getValue());
@@ -361,9 +382,9 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	/**
 	 * Gets the center point of the stroke
 	 * 
-	 * @return the center of the bounding box
+	 * @return the center of the bounding box.
 	 */
-	public SrlPoint getCenter() {
+	public final SrlPoint getCenter() {
 		return new SrlPoint(getCenterX(), getCenterY());
 	}
 
@@ -372,7 +393,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return center x of a shape
 	 */
-	public double getCenterX() {
+	public final double getCenterX() {
 		return (getMinX() + getMaxX()) / 2.0;
 	}
 
@@ -381,7 +402,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return center y of a shape
 	 */
-	public double getCenterY() {
+	public final double getCenterY() {
 		return (getMinY() + getMaxY()) / 2.0;
 	}
 
@@ -400,7 +421,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return
 	 */
-	public String getDescription() {
+	public final String getDescription() {
 		return mDescription;
 	}
 
@@ -409,14 +430,14 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the height of the object
 	 */
-	public double getHeight() {
+	public final double getHeight() {
 		return getMaxY() - getMinY();
 	}
 
 	/**
 	 * @return unique UUID for an object
 	 */
-	public UUID getId() {
+	public final UUID getId() {
 		return mId;
 	}
 
@@ -426,7 +447,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return Euclidean distance of bounding box diagonal
 	 */
-	public double getLengthOfDiagonal() {
+	public final double getLengthOfDiagonal() {
 		return Math.sqrt(getHeight() * getHeight() + getWidth() * getWidth());
 	}
 
@@ -443,7 +464,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the string name of the object
 	 */
-	public String getName() {
+	public final String getName() {
 		return mName;
 	}
 
@@ -453,7 +474,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return size of the object.
 	 */
-	public double getSize() {
+	public final double getSize() {
 		return getLengthOfDiagonal();
 	}
 
@@ -463,7 +484,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the time the object was created.
 	 */
-	public long getTime() {
+	public final long getTime() {
 		return mTime;
 	}
 
@@ -472,7 +493,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return
 	 */
-	public String getType() {
+	public final String getType() {
 		return mType;
 	}
 
@@ -481,7 +502,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the width of the object
 	 */
-	public double getWidth() {
+	public final double getWidth() {
 		return getMaxX() - getMinX();
 	}
 
@@ -492,7 +513,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            The string name of the key of the attribute
 	 * @return true if this object has the given key
 	 */
-	public boolean hasAttribute(String key) {
+	public final boolean hasAttribute(final String key) {
 		return mAttributes.containsKey(key);
 	}
 
@@ -508,7 +529,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return true if a user created the shape
 	 */
-	public boolean isUserCreated() {
+	public final boolean isUserCreated() {
 		return mIsUserCreated;
 	}
 
@@ -519,7 +540,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            the name of the attribute
 	 * @return the value for the removed key, or null if key did not exist
 	 */
-	public String removeAttribute(String key) {
+	public final String removeAttribute(String key) {
 		return mAttributes.remove(key);
 	}
 
@@ -530,7 +551,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            the number of radians to rotate
 	 */
 	public void rotate(double radians) {
-
 		applyTransform(AffineTransform.getRotateInstance(radians));
 	}
 
@@ -573,7 +593,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            attribute value (Must be string)
 	 * @return the old value of the attribute, or null if none was set
 	 */
-	public String setAttribute(String key, String value) {
+	public final String setAttribute(String key, String value) {
 		return mAttributes.put(key, value);
 	}
 
@@ -591,7 +611,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	// yincrement));
 	// }
 
-	public void setBoundingBox(SrlRectangle r) {
+	public final void setBoundingBox(final SrlRectangle r) {
 		mBoundingBox = r;
 	}
 
@@ -604,7 +624,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @param description
 	 */
-	public void setDescription(String description) {
+	public final void setDescription(final String description) {
 		mDescription = description;
 	}
 
@@ -614,7 +634,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @param name
 	 *            object name
 	 */
-	public void setName(String name) {
+	public final void setName(final String name) {
 		mName = name;
 	}
 
@@ -623,7 +643,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @param type
 	 */
-	public void setType(String type) {
+	public final void setType(final String type) {
 		mType = type;
 	}
 
@@ -636,7 +656,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            true if the user created the shape, else false
 	 */
 
-	public void setUserCreated(boolean isUserCreated) {
+	public final void setUserCreated(final boolean isUserCreated) {
 		mIsUserCreated = isUserCreated;
 	}
 
@@ -671,7 +691,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * Get the perimeter of the bounding box.
 	 * @return the perimeter of the bounding box.
 	 */
-	public double getPerimeter() {
+	public final double getPerimeter() {
 		return 2 * getWidth() + 2 * getHeight();
 	}
 	
@@ -680,7 +700,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the y value for the top of the box.
 	 */
-	public double getTop() {
+	public final double getTop() {
 		return getMinY();
 	}
 
@@ -689,7 +709,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the y value for the bottom of the box.
 	 */
-	public double getBottom() {
+	public final double getBottom() {
 		return getMaxY();
 	}
 
@@ -698,7 +718,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the x value for the left of the box.
 	 */
-	public double getLeft() {
+	public final double getLeft() {
 		return getMinX();
 	}
 
@@ -707,7 +727,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * 
 	 * @return the x value for the right of the box.
 	 */
-	public double getRight() {
+	public final double getRight() {
 		return getMaxX();
 	}
 	
@@ -719,7 +739,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return if the bottom edge of the bounding box is above the
 	 *         given value; otherwise.
 	 */
-	public boolean isAbove(double y) {
+	public final boolean isAbove(double y) {
 		return getBottom() < y;
 	}
 
@@ -731,7 +751,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return  if the top edge of the bounding box is below the
 	 *         given value; otherwise.
 	 */
-	public boolean isBelow(double y) {
+	public final boolean isBelow(double y) {
 		return getTop() > y;
 	}
 
@@ -743,7 +763,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return  if the right edge of the bounding box is to the left
 	 *         of the given value;  otherwise.
 	 */
-	public boolean isLeftOf(double x) {
+	public final boolean isLeftOf(double x) {
 		return getRight() < x;
 	}
 
@@ -755,7 +775,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return if the left edge of the bounding box is to the right
 	 *         of the given value; otherwise.
 	 */
-	public boolean isRightOf(double x) {
+	public final boolean isRightOf(double x) {
 		return getLeft() > x;
 	}
 
