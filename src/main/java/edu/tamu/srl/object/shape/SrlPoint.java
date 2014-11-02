@@ -1,9 +1,6 @@
 package edu.tamu.srl.object.shape;
 
-import edu.tamu.srl.settings.SrlInitialSettings;
-
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
@@ -25,12 +22,12 @@ public class SrlPoint extends SrlObject implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * A counter that keeps track of where you are in the history of points
+     * A counter that keeps track of where you are in the history of points.
      */
     private int mCurrentElement = -1;
 
     /**
-     * Points can have pressure depending on the input device
+     * Points can have pressure depending on the input device.
      */
     private Double mPressure = null;
 
@@ -45,25 +42,20 @@ public class SrlPoint extends SrlObject implements Serializable {
     private Double mTiltY = null;
 
     /**
-     * Holds an history list of the x points
+     * Holds an history list of the x points.
      * Purpose is so that we can redo and undo and go back to the original points
      */
     private ArrayList<Double> mXList = new ArrayList<Double>();
 
     /**
-     * Holds a history list of the y points
+     * Holds a history list of the y points.
      * Purpose is so that we can redo and undo and go back to the original points
      * Note that this means that we cannot just set one value, and not the other.
      */
     private ArrayList<Double> mYList = new ArrayList<Double>();
 
     /**
-     * Because it is serializable, that means we can save to a file, but if we change this class
-     * it might break the ability to read the file back in.
-     */
-
-    /**
-     * Creates a point with the initial points at x,y
+     * Creates a point with the initial points at x,y.
      *
      * @param x the initial x point
      * @param y the initial y point
@@ -73,7 +65,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Creates a point with the initial points at x,y
+     * Creates a point with the initial points at x,y.
      *
      * @param x    the initial x point
      * @param y    the initial y point
@@ -90,7 +82,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param x    x value of the point.
      * @param y    y value of the point.
      * @param time time stamp.
-     * @param id   point ID (.equals)
+     * @param id   point ID
      */
     public SrlPoint(final double x, final double y, final long time, final UUID id) {
         super(time, id);
@@ -98,15 +90,15 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Creates a new point with the specified values
+     * Creates a new point with the specified values.
      *
-     * @param x
-     * @param y
-     * @param time
-     * @param id
-     * @param tiltX
-     * @param tiltY
-     * @param pressure
+     * @param x    x value of the point.
+     * @param y    y value of the point.
+     * @param time time stamp.
+     * @param id   point ID
+     * @param tiltX the pen tiltX of the point.
+     * @param tiltY the pen tiltY of the point.
+     * @param pressure the pressure at which the point was created.
      */
     public SrlPoint(final double x, final double y, final long time, final UUID id, final double tiltX,
             final double tiltY, final double pressure) {
@@ -145,34 +137,37 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Return the distance from the point specified by (x1, y1 ) to the specified by (x2, y2)
+     * Return the distance from the point specified by (x1, y1 ) to the specified by (x2, y2).
      *
-     * @param x2 the x value of the other point
-     * @param y2 the y value of the other point
+     * @param x1 the x value of the first point.
+     * @param y1 the y value of the first point.
+     * @param x2 the x value of the other point.
+     * @param y2 the y value of the other point.
      * @return the distance
      */
-    public static double distance(double x1, double y1, double x2, double y2) {
+    public static double distance(final double x1, final double y1, final double x2, final double y2) {
         double xdiff = x1 - x2;
         double ydiff = y1 - y2;
         return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     }
 
     @Override
-    protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
+    protected void applyTransform(final AffineTransform xform, final Set<SrlObject> xformed) {
         if (xformed.contains(this)) {
             return;
         }
         xformed.add(this);
-        Point2D point = xform.transform(new Point2D.Double(getX(), getY()),
+        final Point2D point = xform.transform(new Point2D.Double(getX(), getY()),
                 new Point2D.Double());
         setP(point.getX(), point.getY());
     }
 
     /**
-     * Calculated the bounding box of the shape
+     * Calculated the bounding box of the shape.
+     * For a point all edges are identical.
      */
-    protected void calculateBBox() {
-        mBoundingBox = new SrlRectangle(this, this);
+    protected final void calculateBBox() {
+       setBoundingBox(new SrlRectangle(this, this));
     }
 
     /**
@@ -199,12 +194,12 @@ public class SrlPoint extends SrlObject implements Serializable {
 
     /**
      * Compare this point to another point based on time.
-     *
+     * unless they have the same time then it is compared based on location (starting with X).
      * @param p point to compare to.
      * @return time difference between points.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public int compareTo(SrlPoint p) {
+    public int compareTo(final SrlPoint p) {
         final int timeDiff = (int) (this.getTime() - p.getTime());
         if (timeDiff != 0) {
             return timeDiff;
@@ -229,16 +224,16 @@ public class SrlPoint extends SrlObject implements Serializable {
     /**
      * In this case the same as equalsBy Content
      */
-    public boolean equals(SrlObject o) {
+    public boolean equals(final SrlObject o) {
         return equalsByContent(o);
     }
 
     @Override
-    public boolean equalsByContent(SrlObject other) {
+    public boolean equalsByContent(final SrlObject other) {
         if (!(other instanceof SrlPoint)) {
             return false;
         }
-        SrlPoint otherpoint = (SrlPoint) other;
+        final SrlPoint otherpoint = (SrlPoint) other;
         if (getPressure() != otherpoint.getPressure()) {
             return false;
         }
@@ -266,7 +261,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param p
      * @return
      */
-    public boolean equalsXYTime(SrlPoint p) {
+    public final boolean equalsXYTime(final SrlPoint p) {
         return (p.getX() == getX() && p.getY() == getY() && p.getTime() == getTime());
     }
 
@@ -274,7 +269,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Return an object drawable by AWT
      * return awt point
      */
-    public Point getAWT() {
+    public final Point getAWT() {
         return new Point((int) getX(), (int) getY());
     }
 
@@ -283,7 +278,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return
      */
-    public double getInitialX() {
+    public final double getInitialX() {
         if (mXList.size() == 0) {
             return Double.NaN;
         }
@@ -295,7 +290,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return
      */
-    public double getInitialY() {
+    public final double getInitialY() {
         if (mYList.size() == 0) {
             return Double.NaN;
         }
@@ -307,7 +302,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Just returns the x value
      * return x value
      */
-    public double getMaxX() {
+    public final double getMaxX() {
         return getX();
     }
 
@@ -316,7 +311,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Just returns the y value
      * return y value
      */
-    public double getMaxY() {
+    public final double getMaxY() {
         return getY();
     }
 
@@ -334,15 +329,15 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Just returns the y value
      * return y value
      */
-    public double getMinY() {
+    public final double getMinY() {
         return getY();
     }
 
-    public double getOrigX() {
+    public final double getOrigX() {
         return mXList.get(0);
     }
 
-    public double getOrigY() {
+    public final double getOrigY() {
         return mYList.get(0);
     }
 
@@ -351,7 +346,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return the pressure of the point
      */
-    public Double getPressure() {
+    public final Double getPressure() {
         return mPressure;
     }
 
@@ -360,7 +355,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @param pressure
      */
-    public void setPressure(Double pressure) {
+    public final void setPressure(final Double pressure) {
         mPressure = pressure;
     }
 
@@ -369,7 +364,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return tilt in the X direction.
      */
-    public Double getTiltX() {
+    public final Double getTiltX() {
         return mTiltX;
     }
 
@@ -378,7 +373,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @param tiltX tilt in the X direction.
      */
-    public void setTiltX(double tiltX) {
+    public final void setTiltX(final double tiltX) {
         mTiltX = tiltX;
     }
 
@@ -387,7 +382,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return tilt in the Y direction.
      */
-    public Double getTiltY() {
+    public final Double getTiltY() {
         return mTiltY;
     }
 
@@ -396,7 +391,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @param tiltY tilt in the Y direction.
      */
-    public void setTiltY(double tiltY) {
+    public final void setTiltY(final double tiltY) {
         mTiltY = tiltY;
     }
 
@@ -405,7 +400,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return current x value of the point
      */
-    public double getX() {
+    public final double getX() {
         return mXList.get(mCurrentElement);
     }
 
@@ -414,7 +409,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return the history of the x values
      */
-    public ArrayList<Double> getxList() {
+    public final ArrayList<Double> getXList() {
         return mXList;
     }
 
@@ -423,7 +418,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return current y value of the point
      */
-    public double getY() {
+    public final double getY() {
         return mYList.get(mCurrentElement);
     }
 
@@ -432,7 +427,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return the history of the y values
      */
-    public ArrayList<Double> getyList() {
+    public final ArrayList<Double> getYList() {
         return mYList;
     }
 
@@ -441,7 +436,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return a point where getx and gety return the first values that were added to the history
      */
-    public SrlPoint goBackToInitial() {
+    public final SrlPoint goBackToInitial() {
         if (mCurrentElement >= 0) {
             mCurrentElement = 0;
         }
@@ -477,7 +472,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param x new initial x location
      * @param y new initial y location
      */
-    public void setOrigP(double x, double y) {
+    public final void setOrigP(double x, double y) {
         mXList = new ArrayList<Double>();
         mYList = new ArrayList<Double>();
         setP(x, y);
@@ -491,7 +486,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param x the new x location for the point
      * @param y the new y location for the point
      */
-    public void setP(double x, double y) {
+    public final void setP(double x, double y) {
         mXList.add(x);
         mYList.add(y);
         mCurrentElement = mXList.size() - 1;
@@ -502,7 +497,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @param pressure pressure of the point.
      */
-    public void setPressure(double pressure) {
+    public final void setPressure(double pressure) {
         mPressure = pressure;
     }
 
@@ -512,7 +507,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param tiltX tilt in the X direction.
      * @param tiltY tilt in the Y direction.
      */
-    public void setTilt(double tiltX, double tiltY) {
+    public final void setTilt(double tiltX, double tiltY) {
         setTiltX(tiltX);
         setTiltY(tiltY);
     }
@@ -524,7 +519,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      */
     public java.awt.Point toAWTpoint() {
 
-        java.awt.Point awtPoint = new java.awt.Point(new Double(getX()).intValue(),
+        final java.awt.Point awtPoint = new java.awt.Point(new Double(getX()).intValue(),
                 new Double(getY()).intValue());
 
         return awtPoint;
