@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Stroke data class
+ * Stroke data class.
+ *
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlStroke extends SrlInterpretedShape {
+public class SrlStroke extends SrlShape {
 
     /**
      * This variable is simply to save the multiple recomputing of things over and over
