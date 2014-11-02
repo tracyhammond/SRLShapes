@@ -109,18 +109,42 @@ public class SrlPoint extends SrlObject implements Serializable {
 
     /**
      * Construct a new point with the same elements.
+     * This performs a deep copy.
      *
      * @param p the point that is being copied.
      */
     public SrlPoint(final SrlPoint p) {
+        this(p, true);
+    }
+
+    /**
+     * Construct a new point with the same elements.
+     * This can perform a deep copy.
+     * The shallow copy only copies the first point and the current point in the history of points.
+     * @param deep True if a deep copy is wanted otherwise a shallow copy is performed.
+     * @param p The point that is being copied.
+     */
+    public SrlPoint(final SrlPoint p, final boolean deep) {
         super(p);
         this.mCurrentElement = p.mCurrentElement;
         this.mPressure = p.mPressure;
         this.mTiltX = p.mTiltX;
         this.mTiltY = p.mTiltY;
-        for (int i = 0; i < p.mXList.size(); i++) {
-            mXList.add((double) p.mXList.get(i));
-            mYList.add((double) p.mYList.get(i));
+        if (deep) {
+            for (int i = 0; i < p.mXList.size(); i++) {
+                mXList.add((double) p.mXList.get(i));
+                mYList.add((double) p.mYList.get(i));
+            }
+        } else {
+            // original point.
+            mXList.add((double) p.mXList.get(0));
+            mYList.add((double) p.mYList.get(0));
+
+            // current point (if it exist)
+            if (mXList.size() > 1 && mYList.size() > 1) {
+                mXList.add((double) p.mXList.get(p.mXList.size() - 1));
+                mYList.add((double) p.mYList.get(p.mYList.size() - 1));
+            }
         }
     }
 
@@ -180,16 +204,17 @@ public class SrlPoint extends SrlObject implements Serializable {
     /**
      * @return A cloned object that is an instance of {@link edu.tamu.srl.object.shape.SrlObject}.
      * This cloned object is only a shallow copy.
+     * This copies all values and only the original location and the current location.
      */
     @Override public Object clone() {
-        return new SrlPoint(this);
+        return new SrlPoint(this, false);
     }
 
     /**
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
     @Override public SrlObject deepClone() {
-        return new SrlPoint(this);
+        return new SrlPoint(this, true);
     }
 
     /**
