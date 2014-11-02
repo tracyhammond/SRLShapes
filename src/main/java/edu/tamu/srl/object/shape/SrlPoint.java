@@ -470,11 +470,6 @@ public class SrlPoint extends SrlObject implements Serializable {
         mCurrentElement = mXList.size() - 1;
     }
 
-    public void set(double x, double y, long time) {
-        setP(x, y);
-        setTime(time);
-    }
-
     /**
      * Delete the entire point history and
      * use these values as the starting point
