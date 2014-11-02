@@ -445,8 +445,8 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return the history of the x values
      */
-    public final ArrayList<Double> getXList() {
-        return mXList;
+    public final List<Double> getXList() {
+        return new ArrayList<>(mXList);
     }
 
     /**
@@ -463,8 +463,8 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return the history of the y values
      */
-    public final ArrayList<Double> getYList() {
-        return mYList;
+    public final List<Double> getYList() {
+        return new ArrayList<>(mYList);
     }
 
     /**
