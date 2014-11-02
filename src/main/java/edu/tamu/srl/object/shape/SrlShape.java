@@ -34,7 +34,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject> 
     /**
      * Copy Constructor.
      *
-     * @param s the shape being copied.
+     * @param s    the shape being copied.
      * @param deep true if a deep copy is being performed.  Otherwise a shallow copy is performed.
      */
     public SrlShape(final SrlShape s, final boolean deep) {

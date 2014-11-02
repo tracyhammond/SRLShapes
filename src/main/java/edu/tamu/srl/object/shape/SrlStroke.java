@@ -12,7 +12,7 @@ public class SrlStroke extends SrlShape {
 
     /**
      * Holds the list of points contained within the stroke.
-     *
+     * <p/>
      * Note that the actual
      */
     private transient ArrayList<SrlPoint> mPoints = null;

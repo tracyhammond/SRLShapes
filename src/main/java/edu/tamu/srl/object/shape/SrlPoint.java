@@ -141,19 +141,6 @@ public class SrlPoint extends SrlObject {
     }
 
     /**
-     * Takes the points and sets them (these values can be defined from multiple constructors.
-     *
-     * @param x The location in the x direction of the point.
-     * @param y The location in the y direction of the point.
-     */
-    private void setPointDataFromConstructor(final double x, final double y) {
-        setP(x, y);
-        setDescription("Initial Points: " + x + "," + y);
-        setType("Point");
-        setName("p");
-    }
-
-    /**
      * Return the distance from the point specified by (x1, y1 ) to the specified by (x2, y2).
      *
      * @param x1 the x value of the first point.
@@ -166,6 +153,19 @@ public class SrlPoint extends SrlObject {
         final double xdiff = x1 - x2;
         final double ydiff = y1 - y2;
         return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+    }
+
+    /**
+     * Takes the points and sets them (these values can be defined from multiple constructors.
+     *
+     * @param x The location in the x direction of the point.
+     * @param y The location in the y direction of the point.
+     */
+    private void setPointDataFromConstructor(final double x, final double y) {
+        setP(x, y);
+        setDescription("Initial Points: " + x + "," + y);
+        setType("Point");
+        setName("p");
     }
 
     /**
@@ -360,6 +360,15 @@ public class SrlPoint extends SrlObject {
     }
 
     /**
+     * Set the pressure of the point.
+     *
+     * @param pressure pressure of the point.
+     */
+    public final void setPressure(final double pressure) {
+        mPressure = pressure;
+    }
+
+    /**
      * Sets the pressure of the point.
      *
      * @param pressure The pressure of the point.
@@ -514,15 +523,6 @@ public class SrlPoint extends SrlObject {
         mXList.add(x);
         mYList.add(y);
         mCurrentElement = mXList.size() - 1;
-    }
-
-    /**
-     * Set the pressure of the point.
-     *
-     * @param pressure pressure of the point.
-     */
-    public final void setPressure(final double pressure) {
-        mPressure = pressure;
     }
 
     /**

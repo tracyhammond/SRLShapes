@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.tamu.srl.object.shape;
 
@@ -11,11 +11,10 @@ import java.util.ArrayList;
  */
 public abstract class DomainShape extends SrlInterpretedShape {
 
-	public DomainShape(ArrayList<SrlInterpretedShape> shapes){
-		for(SrlInterpretedShape o : shapes){
-			addSubShape(o);
-		}
-	}
-
+    public DomainShape(ArrayList<SrlInterpretedShape> shapes) {
+        for (SrlInterpretedShape o : shapes) {
+            addSubShape(o);
+        }
+    }
 
 }

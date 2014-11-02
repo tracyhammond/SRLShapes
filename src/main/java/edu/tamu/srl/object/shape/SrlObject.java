@@ -284,6 +284,7 @@ public abstract class SrlObject implements Comparable<SrlObject> {
 
     /**
      * Returns the length times the height See also getLengthOfDiagonal().
+     *
      * @return area of shape.
      */
     public final double getArea() {
@@ -632,6 +633,7 @@ public abstract class SrlObject implements Comparable<SrlObject> {
     /**
      * Can be overwritten, but doesn't have to be return the name and
      * description of object.
+     *
      * @return By default returns the name and description of the object.
      */
     @SuppressWarnings("checkstyle:designforextension")
