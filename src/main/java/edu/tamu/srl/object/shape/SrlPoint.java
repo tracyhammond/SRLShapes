@@ -271,16 +271,6 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * If we translate, or rotate, we need to recompute values
-     * We don't recompute time, because that does not need to be overwritten
-     */
-    public void flagExternalUpdate() {
-        // Note: don't overwrite time
-        setBoundingBox(null);
-        setConvexHull(null);
-    }
-
-    /**
      * Return an object drawable by AWT
      * return awt point
      */
