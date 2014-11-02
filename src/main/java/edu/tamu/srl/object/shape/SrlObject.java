@@ -341,15 +341,35 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 
 	/**
 	 * Get the bounding box of the object.
-     * Use
-	 * getBoundingSRLRectangle to get the SRL shape
-	 * 
-	 * @return the bounding box of the stroke
+     *
+	 * Calculates the bounding box if the rectangle is null and does not exist using {@link #calculateBBox()}.
+	 * @return the bounding box of the object.  This method will never return null.
 	 */
-	public SrlRectangle getBoundingBox() {
-		return new SrlRectangle(new SrlPoint(getMinX(), getMinY()),
-				new SrlPoint(getMinX() + getWidth(), getMinY() + getHeight()));
+	public final SrlRectangle getBoundingBox() {
+        if (this.mBoundingBox == null) {
+            this.calculateBBox();
+        }
+        // if calculating the bounding box did not set the bounding box.
+        if (this.mBoundingBox == null) {
+            this.mBoundingBox = new SrlRectangle(new SrlPoint(getMinX(), getMinY()),
+                    new SrlPoint(getMinX() + getWidth(), getMinY() + getHeight()));
+        }
+		return this.mBoundingBox;
 	}
+
+    /**
+     * Returns the bounding box of the object as a clone to the actual instance.
+     * If the bounding box has not been calculated or one does not exist this may return null.
+     *
+     * If a method that never returns null is needed call {@link #getBoundingBox()}.
+     * @return A clone of the internal bounding box.  null if the internal bounding box is null.
+     */
+    protected final SrlRectangle getRawBoundingBox() {
+        if (this.mBoundingBox == null) {
+            return null;
+        }
+        return (SrlRectangle) this.mBoundingBox.clone();
+    }
 
 	/**
 	 * Gets the center point of the stroke
