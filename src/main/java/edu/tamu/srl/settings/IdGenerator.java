@@ -57,7 +57,7 @@ public class IdGenerator {
      *
      * @return the UUID.
      */
-    public static UUID nextID() {
+    public static UUID nextId() {
         counter += COUNTER_INCREMENT;
         return new UUID(counter, System.nanoTime() | MAX_TIME_VALUE);
     }

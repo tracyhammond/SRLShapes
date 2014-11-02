@@ -23,6 +23,38 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
+    /**
+     * A counter that keeps track of where you are in the history of points
+     */
+    private int mCurrentElement = -1;
+
+    /**
+     * Points can have pressure depending on the input device
+     */
+    private Double mPressure = null;
+
+    /**
+     * Tilt in the X direction when the point was created.
+     */
+    private Double mTiltX = null;
+
+    /**
+     * Tilt in the Y direction when the point was created.
+     */
+    private Double mTiltY = null;
+
+    /**
+     * Holds an history list of the x points
+     * Purpose is so that we can redo and undo and go back to the original points
+     */
+    private ArrayList<Double> mXList = new ArrayList<Double>();
+
+    /**
+     * Holds a history list of the y points
+     * Purpose is so that we can redo and undo and go back to the original points
+     * Note that this means that we cannot just set one value, and not the other.
+     */
+    private ArrayList<Double> mYList = new ArrayList<Double>();
 
 	/**
 	 * Because it is serializable, that means we can save to a file, but if we change this class
@@ -31,8 +63,8 @@ public class SrlPoint extends SrlObject implements Serializable{
 
 	/**
 	   * Return the distance from the point specified by (x,y) to this point
-	   * @param x the x value of the other point
-	   * @param y the y value of the other point
+	   * @param x2 the x value of the other point
+	   * @param y2 the y value of the other point
 	   * @return the distance
 	   */
 	public static double distance(double x1, double y1 , double x2, double y2) {
@@ -40,41 +72,6 @@ public class SrlPoint extends SrlObject implements Serializable{
 		double ydiff = y1 - y2;
 	    return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	  }
-
-
-
-	/**
-	 * A counter that keeps track of where you are in the history of points
-	 */
-	private int m_currentElement = -1;
-
-	/**
-	 * Points can have pressure depending on the input device
-	 */
-	private Double m_pressure = null;
-
-	/**
-	 * Tilt in the X direction when the point was created.
-	 */
-	private Double m_tiltX = null;
-
-	/**
-	 * Tilt in the Y direction when the point was created.
-	 */
-	private Double m_tiltY = null;
-
-	/**
-	 * Holds an history list of the x points 
-	 * Purpose is so that we can redo and undo and go back to the original points
-	 */
-	private ArrayList<Double> m_xList = new ArrayList<Double>();
-
-	/**
-	 * Holds a history list of the y points 
-	 * Purpose is so that we can redo and undo and go back to the original points
-	 * Note that this means that we cannot just set one value, and not the other.
-	 */
-	private ArrayList<Double> m_yList = new ArrayList<Double>();
 
 	/**
 	 * Creates a point with the initial points at x,y
@@ -147,13 +144,13 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 */
 	public SrlPoint(SrlPoint p){
 		super(p);
-		this.m_currentElement = p.m_currentElement;
-		this.m_pressure = p.m_pressure;
-		this.m_tiltX = p.m_tiltX;
-		this.m_tiltY = p.m_tiltY;
-	    for(int i = 0; i < p.m_xList.size(); i++){
-	      m_xList.add((double)p.m_xList.get(i));
-	      m_yList.add((double)p.m_yList.get(i));
+		this.mCurrentElement = p.mCurrentElement;
+		this.mPressure = p.mPressure;
+		this.mTiltX = p.mTiltX;
+		this.mTiltY = p.mTiltY;
+	    for(int i = 0; i < p.mXList.size(); i++){
+	      mXList.add((double) p.mXList.get(i));
+	      mYList.add((double) p.mYList.get(i));
 	    }
 	}
 	
@@ -171,7 +168,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * Calculated the bounding box of the shape
 	 */
 	protected void calculateBBox() {
-		m_boundingBox = new SrlRectangle(this, this);
+		mBoundingBox = new SrlRectangle(this, this);
 	}
 
 	/**
@@ -253,10 +250,10 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return
 	 */
 	public double getInitialX(){
-		if(m_xList.size() == 0){
+		if(mXList.size() == 0){
 			return Double.NaN;
 		}
-		return m_xList.get(0);
+		return mXList.get(0);
 	}
 	
 	/**
@@ -264,10 +261,10 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return
 	 */
 	public double getInitialY(){
-		if(m_yList.size() == 0){
+		if(mYList.size() == 0){
 			return Double.NaN;
 		}
-		return m_yList.get(0);
+		return mYList.get(0);
 	}
 	  
 	@Override
@@ -307,11 +304,11 @@ public class SrlPoint extends SrlObject implements Serializable{
 	}
 	
 	public double getOrigX(){
-		return m_xList.get(0);
+		return mXList.get(0);
 	}
 	
 	public double getOrigY(){
-		return m_yList.get(0);
+		return mYList.get(0);
 	}
 
 	/**
@@ -319,7 +316,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return the pressure of the point
 	 */
 	public Double getPressure() {
-		return m_pressure;
+		return mPressure;
 	}
 
 	/**
@@ -328,7 +325,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return tilt in the X direction.
 	 */
 	public Double getTiltX() {
-		return m_tiltX;
+		return mTiltX;
 	}
 	  
 	/**
@@ -337,7 +334,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return tilt in the Y direction.
 	 */
 	public Double getTiltY() {
-		return m_tiltY;
+		return mTiltY;
 	}
 	
 	/**
@@ -345,7 +342,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return current x value of the point
 	 */
 	public double getX(){
-		return m_xList.get(m_currentElement);
+		return mXList.get(mCurrentElement);
 	}
 
 	/**
@@ -353,7 +350,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return the history of the x values
 	 */
 	public ArrayList<Double> getxList() {
-		return m_xList;
+		return mXList;
 	}
 
 	/**
@@ -361,7 +358,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return current y value of the point
 	 */
 	public double getY(){
-		return m_yList.get(m_currentElement);
+		return mYList.get(mCurrentElement);
 	}
 
 	/**
@@ -369,7 +366,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return the history of the y values
 	 */
 	public ArrayList<Double> getyList() {
-		return m_yList;
+		return mYList;
 	}
 
 	/**
@@ -377,12 +374,13 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return a point where getx and gety return the first values that were added to the history
 	 */
 	public SrlPoint goBackToInitial(){
-		if(m_currentElement >= 0){
-			m_currentElement = 0;
+		if(mCurrentElement >= 0){
+			mCurrentElement = 0;
 		}
 		return this;
 	}
-	
+
+    @Override
 	public int hashCode() {
 
 		return (int) getX() + (int) getY() + (int) getTime();
@@ -398,9 +396,9 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @param y the amount to scale in the y direction
 	 */
 	public void scale(double x, double y) {
-	    m_xList.add(x * getX());
-	    m_yList.add(y * getY());
-	    m_currentElement = m_xList.size() - 1;
+	    mXList.add(x * getX());
+	    mYList.add(y * getY());
+	    mCurrentElement = mXList.size() - 1;
 	}
 
 	public void set(double x, double y, long time) {
@@ -415,8 +413,8 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @param y new initial y location 
 	 */
 	public void setOrigP(double x, double y) {
-	  m_xList = new ArrayList<Double>();
-	  m_yList = new ArrayList<Double>();
+	  mXList = new ArrayList<Double>();
+	  mYList = new ArrayList<Double>();
 	  setP(x, y);
 	}
 
@@ -428,9 +426,9 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @param y the new y location for the point
 	 */
 	  public void setP(double x, double y) {
-	    m_xList.add(x);
-	    m_yList.add(y);
-	    m_currentElement = m_xList.size() - 1;
+	    mXList.add(x);
+	    mYList.add(y);
+	    mCurrentElement = mXList.size() - 1;
 	  }
 	
 	/**
@@ -440,7 +438,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 *            pressure of the point.
 	 */
 	public void setPressure(double pressure) {
-		m_pressure = pressure;
+		mPressure = pressure;
 	}
 	
 	/**
@@ -448,7 +446,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @param pressure
 	 */
 	public void setPressure(Double pressure) {
-		m_pressure = pressure;
+		mPressure = pressure;
 	}
 	
 	/**
@@ -471,7 +469,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 *            tilt in the X direction.
 	 */
 	public void setTiltX(double tiltX) {
-		m_tiltX = tiltX;
+		mTiltX = tiltX;
 	}
 
 	/**
@@ -481,7 +479,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 *            tilt in the Y direction.
 	 */
 	public void setTiltY(double tiltY) {
-		m_tiltY = tiltY;
+		mTiltY = tiltY;
 	}
 
 	
@@ -503,7 +501,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @return a string of [x,t,time]
 	 */
 	public String toString(){
-		return "<"+ getX() + "," + getY() + "," + getTime() + ">";
+		return "<" + getX() + "," + getY() + "," + getTime() + ">";
 	}
 	
 	
@@ -514,9 +512,9 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * @param y amount to move in the y direction
 	 */
 	public void translate(double x, double y) {
-	    m_xList.add(x + getX());
-	    m_yList.add(y + getY());
-	    m_currentElement = m_xList.size() - 1;
+	    mXList.add(x + getX());
+	    mYList.add(y + getY());
+	    mCurrentElement = mXList.size() - 1;
 	}
 	
 	/**
@@ -526,11 +524,11 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * Returns the updated shape (this)
 	 */
 	public SrlPoint undoLastChange() {
-	  if (m_xList.size() < 2) { return this; }
-	  if (m_yList.size() < 2) { return this; }
-	  m_xList.remove(m_xList.size() - 1);
-	  m_yList.remove(m_yList.size() - 1);
-	  m_currentElement -= 1;
+	  if (mXList.size() < 2) { return this; }
+	  if (mYList.size() < 2) { return this; }
+	  mXList.remove(mXList.size() - 1);
+	  mYList.remove(mYList.size() - 1);
+	  mCurrentElement -= 1;
 	  return this;
 	}
 	

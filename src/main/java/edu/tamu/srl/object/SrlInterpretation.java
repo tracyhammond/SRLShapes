@@ -10,36 +10,36 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	/**
 	 * A string description of the interpretation
 	 */
-	private String m_interpretation;
+	private String mInterpretation;
 	
 	/**
 	 * A numerical measurement of confidence of an interpretation
 	 */
-	private double m_confidence;
+	private double mConfidence;
 
 	/**
 	 * A numerical measurement of complexity of an interpretation
 	 * (Obviously more complex interpretations are preferred.)
 	 */
-	private int m_complexity;
+	private int mComplexity;
 	
 	/**
 	 * A string holding information about this interpretation
 	 */
-	private String m_note;
+	private String mNote;
 	
 	/**
 	 * @return the note
 	 */
 	public String getNote() {
-		return m_note;
+		return mNote;
 	}
 
 	/**
 	 * @param note the note to set
 	 */
 	public void setNote(String note) {
-		m_note = note;
+		mNote = note;
 	}
 
 	/**
@@ -50,9 +50,9 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 */
 	public SrlInterpretation(String interpretation, double confidence,
 			int complexity) {
-		m_interpretation = interpretation;
-		m_confidence = confidence;
-		m_complexity = complexity;
+		mInterpretation = interpretation;
+		mConfidence = confidence;
+		mComplexity = complexity;
 	}
 
 	/**
@@ -60,10 +60,10 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @param i
 	 */
 	public SrlInterpretation(SrlInterpretation i){
-		this.m_complexity = i.m_complexity;
-		this.m_confidence = i.m_confidence;
-		this.m_interpretation = i.m_interpretation;
-		this.m_note = i.m_note;
+		this.mComplexity = i.mComplexity;
+		this.mConfidence = i.mConfidence;
+		this.mInterpretation = i.mInterpretation;
+		this.mNote = i.mNote;
 		
 	}
 	
@@ -74,10 +74,10 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * If the complexities are equal, it prefers interpretations of higher confidence
 	 */
 	public int compareTo(SrlInterpretation other) {
-		if(Double.compare(m_complexity, other.getComplexity()) == 0){
-			return -1 * Double.compare(m_confidence, other.getConfidence());
+		if(Double.compare(mComplexity, other.getComplexity()) == 0){
+			return -1 * Double.compare(mConfidence, other.getConfidence());
 		}
-		return -1 * Double.compare(m_complexity, other.getComplexity());
+		return -1 * Double.compare(mComplexity, other.getComplexity());
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @return a string name for the interpretation
 	 */
 	public String getInterpretation() {
-		return m_interpretation;
+		return mInterpretation;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @param interpretation a string name of the interpretation
 	 */
 	public void setInterpretation(String interpretation) {
-		m_interpretation = interpretation;
+		mInterpretation = interpretation;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @return a number representing the complexity of an interpretation
 	 */
 	public int getComplexity() {
-		return m_complexity;
+		return mComplexity;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @param complexity a number representing the complexity of an interpretation
 	 */
 	public void setComplexity(int complexity) {
-		m_complexity = complexity;
+		mComplexity = complexity;
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @return a number representing the confidence of an interpretation
 	 */
 	public double getConfidence() {
-		return m_confidence;
+		return mConfidence;
 	}
 
 	/**
@@ -125,11 +125,11 @@ public class SrlInterpretation implements Comparable<SrlInterpretation>{
 	 * @param confidence a number representing the confidence of an interpretation
 	 */
 	public void setConfidence(double confidence) {
-		m_confidence = confidence;
+		mConfidence = confidence;
 	}
 	
 	public String toString(){
-		return "Interpretation " + m_interpretation + ": confidence = " + m_confidence + ", complexity = " + m_complexity + ", note: " + m_note;
+		return "Interpretation " + mInterpretation + ": confidence = " + mConfidence + ", complexity = " + mComplexity + ", note: " + mNote;
 	}
 
 }

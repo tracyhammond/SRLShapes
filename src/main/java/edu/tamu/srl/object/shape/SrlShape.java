@@ -27,7 +27,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 * This list can be examined hierarchically.
 	 * e.g., an arrow might have three lines inside, and each line might have a stroke.
 	 */
-	private ArrayList<SrlObject> m_subShapes = new ArrayList<SrlObject>();
+	private ArrayList<SrlObject> mSubShapes = new ArrayList<SrlObject>();
 	
 
 	public Iterator<SrlObject> iterator() {
@@ -63,7 +63,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 * @param subcomponent the subshape
 	 */
 	public void addSubShape(int index, SrlObject subcomponent) {
-		m_subShapes.add(index, subcomponent);
+		mSubShapes.add(index, subcomponent);
 		flagExternalUpdate();
 	}
 
@@ -74,7 +74,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 * @param subshape
 	 */
 	public void addSubShape(SrlObject subShape){
-		m_subShapes.add(subShape);
+		mSubShapes.add(subShape);
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public void add(SrlObject subShape){
 		flagExternalUpdate();
-		m_subShapes.add(subShape);
+		mSubShapes.add(subShape);
 	}
 	
 	
@@ -94,7 +94,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 * @param subobjects list of subobjects to add
 	 */
 	public void addSubShapes(ArrayList<SrlObject> subshapes) {
-		m_subShapes.addAll(subshapes);
+		mSubShapes.addAll(subshapes);
 		flagExternalUpdate();
 	}
 	
@@ -103,14 +103,14 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 * @param subobjects list of subobjects to add
 	 */
 	public void addAll(ArrayList<SrlObject> subshapes) {
-		m_subShapes.addAll(subshapes);
+		mSubShapes.addAll(subshapes);
 		flagExternalUpdate();
 	}
 	/**
 	 * Clears the container.
 	 */
 	public void clear() {
-		m_subShapes.clear();
+		mSubShapes.clear();
 		flagExternalUpdate();
 	}
 	
@@ -123,7 +123,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 *         otherwise
 	 */
 	public boolean contains(SrlObject component) {
-		for (SrlObject sub : m_subShapes)
+		for (SrlObject sub : mSubShapes)
 			if (sub.equals(component)){
 				return true;
 			} else if(sub instanceof SrlShape){
@@ -142,7 +142,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public SrlObject get(int i) {
 
-		return m_subShapes.get(i);
+		return mSubShapes.get(i);
 	}
 
 	/**
@@ -152,7 +152,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public int getComponentCount() {
 
-		return m_subShapes.size();
+		return mSubShapes.size();
 	}
 
 	/**
@@ -163,7 +163,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public ArrayList<SrlPoint> getPoints(){
 		ArrayList<SrlPoint> allPoints = new ArrayList<SrlPoint>();
-		for(SrlObject o: m_subShapes){
+		for(SrlObject o: mSubShapes){
 			if(o instanceof SrlPoint){
 				allPoints.add((SrlPoint)o);
 			} else if (o instanceof SrlShape){
@@ -182,7 +182,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	public ArrayList<SrlInterpretedShape> getRecursiveSubShapeList(){
 		ArrayList<SrlInterpretedShape> completeList = new ArrayList<SrlInterpretedShape>();
 		completeList.add((SrlInterpretedShape)this);
-		for(SrlObject o : m_subShapes){
+		for(SrlObject o : mSubShapes){
 			if(o instanceof SrlInterpretedShape){
 				SrlInterpretedShape sis = (SrlInterpretedShape) o;				
 				completeList.addAll(sis.getRecursiveSubShapeList());
@@ -213,7 +213,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public ArrayList<SrlStroke> getStrokes(){
 		ArrayList<SrlStroke> completeList = new ArrayList<SrlStroke>();
-		for(SrlObject o : m_subShapes){
+		for(SrlObject o : mSubShapes){
 			if(o instanceof SrlStroke){
 				completeList.add((SrlStroke)o);
 			} else if(o instanceof SrlShape){
@@ -228,7 +228,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 * @return list of objects that make up this object
 	 */
 	public ArrayList<SrlObject> getSubShapes(){
-		return m_subShapes;
+		return mSubShapes;
 	}
 	
 	/**
@@ -237,7 +237,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	public long getTime() {
 
 		if (getTime() == -1L) {
-			for (SrlObject comp : m_subShapes)
+			for (SrlObject comp : mSubShapes)
 				setTime(Math.max(getTime(), comp.getTime()));
 		}
 		return getTime();
@@ -256,7 +256,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	public SrlObject remove(int i) {
 
 		flagExternalUpdate();
-		return m_subShapes.remove(i);
+		return mSubShapes.remove(i);
 	}
 	
 	/**
@@ -267,7 +267,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public boolean remove(SrlObject subcomponent) {
 		flagExternalUpdate();
-		return m_subShapes.remove(subcomponent);
+		return mSubShapes.remove(subcomponent);
 	}
 
 	
@@ -282,7 +282,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	public boolean removeAll(Collection<? extends SrlObject> subcomponents) {
 
 		flagExternalUpdate();
-		return m_subShapes.removeAll(subcomponents);
+		return mSubShapes.removeAll(subcomponents);
 	}
 	
 	
@@ -293,7 +293,7 @@ public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 	 */
 	public int size() {
 
-		return m_subShapes.size();
+		return mSubShapes.size();
 	}
 	
 	/**

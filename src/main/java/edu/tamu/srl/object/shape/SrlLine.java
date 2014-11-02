@@ -1,7 +1,6 @@
 package edu.tamu.srl.object.shape;
 
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.util.Set;
 
 import edu.tamu.srl.processing.LineProcessing;
@@ -365,6 +364,6 @@ public class SrlLine extends SrlInterpretedShape{
 	 */
 	@Override
 	protected void calculateBBox() {
-		m_boundingBox = new SrlRectangle(getP1(), getP2());
+		mBoundingBox = new SrlRectangle(getP1(), getP2());
 	}
 }

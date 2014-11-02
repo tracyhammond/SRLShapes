@@ -7,7 +7,8 @@ import edu.tamu.srl.object.SrlInterpretation;
 
 public abstract class SrlInterpretedShape extends SrlShape {
 
-	
+    private ArrayList<SrlInterpretation> mInterpretations = new ArrayList<SrlInterpretation>();
+
 	/**
 	 * Needed for serialization
 	 * Note that if member variables are added
@@ -24,7 +25,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @param complexity a double representing the complexity
 	 */
 	public void addInterpretation(String interpretation, double confidence, int complexity){
-		m_interpretations.add(new SrlInterpretation(interpretation, confidence, complexity));
+		mInterpretations.add(new SrlInterpretation(interpretation, confidence, complexity));
 	}
 
 	/**
@@ -33,7 +34,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 */	
 	public SrlInterpretedShape(SrlInterpretedShape s){
 		super(s);
-		this.m_interpretations = s.copyInterpretations();
+		this.mInterpretations = s.copyInterpretations();
 		for(SrlObject sub : s.getSubShapes()){
 			if(sub instanceof SrlPoint){
 				this.add(new SrlPoint((SrlPoint)sub));
@@ -58,8 +59,8 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return the list of interpretations
 	 */
 	public ArrayList<SrlInterpretation> getAllInterpretations(){
-		Collections.sort(m_interpretations);
-		return m_interpretations;
+		Collections.sort(mInterpretations);
+		return mInterpretations;
 	}
 	
 
@@ -69,7 +70,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 */
 	public ArrayList<SrlInterpretation> copyInterpretations(){
 		ArrayList<SrlInterpretation> interps = new ArrayList<SrlInterpretation>();
-		for(SrlInterpretation i : m_interpretations){
+		for(SrlInterpretation i : mInterpretations){
 			interps.add(new SrlInterpretation(i));
 		}
 		return interps;
@@ -81,11 +82,11 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return best interpretation
 	 */
 	public SrlInterpretation getBestInterpretation(){
-		Collections.sort(m_interpretations);
-		return m_interpretations.get(0);
-/**		if(m_interpretations.size() == 0) return null;
-		SRL_Interpretation bestInterpretation = m_interpretations.get(0);
-		for(SRL_Interpretation i : m_interpretations){
+		Collections.sort(mInterpretations);
+		return mInterpretations.get(0);
+/**		if(mInterpretations.size() == 0) return null;
+		SRL_Interpretation bestInterpretation = mInterpretations.get(0);
+		for(SRL_Interpretation i : mInterpretations){
 			if(i.compareTo(bestInterpretation) > 0){
 				bestInterpretation = i;
 			}
@@ -101,7 +102,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return the interpretation requested (complete with confidence and complexity)
 	 */
 	public SrlInterpretation getInterpretation(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
+		for(SrlInterpretation i : mInterpretations){
 			if(i.getInterpretation().equals(interpretation)){
 				return i;
 			}
@@ -116,7 +117,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return the complexity of that interpretation
 	 */
 	public double getInterpretationComplexity(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
+		for(SrlInterpretation i : mInterpretations){
 			if(i.getInterpretation().equals(interpretation)){
 				return i.getComplexity();
 			}
@@ -132,7 +133,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return the confidence of that interpretation
 	 */
 	public double getInterpretationConfidence(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
+		for(SrlInterpretation i : mInterpretations){
 			if(i.getInterpretation().equals(interpretation)){
 				return i.getConfidence();
 			}
@@ -144,7 +145,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return the interpretations
 	 */
 	public ArrayList<SrlInterpretation> getInterpretations() {
-		return m_interpretations;
+		return mInterpretations;
 	}
 	
 
@@ -172,7 +173,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @return a boolean if it has such an interpretation or not
 	 */
 	public boolean hasInterpretation(String interpretation){
-		for(SrlInterpretation i : m_interpretations){
+		for(SrlInterpretation i : mInterpretations){
 			if(i.getInterpretation().toLowerCase().equals(interpretation.toLowerCase())){
 				return true;
 			}
@@ -185,11 +186,7 @@ public abstract class SrlInterpretedShape extends SrlShape {
 	 * @param interpretations the interpretations to set
 	 */
 	public void setInterpretations(ArrayList<SrlInterpretation> interpretations) {
-		m_interpretations = interpretations;
+		mInterpretations = interpretations;
 	}
-	
 
-	private ArrayList<SrlInterpretation> m_interpretations = new ArrayList<SrlInterpretation>();
-	
-	
 }

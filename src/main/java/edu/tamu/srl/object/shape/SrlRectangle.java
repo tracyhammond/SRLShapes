@@ -20,11 +20,10 @@ public class SrlRectangle extends SrlShape {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
-	private SrlPoint m_topLeftCorner = new SrlPoint(0,0);
-	private SrlPoint m_bottomRightCorner = new SrlPoint(0,0);
-	
+
+	private SrlPoint mTopLeftCorner = new SrlPoint(0,0);
+	private SrlPoint mBottomRightCorner = new SrlPoint(0,0);
+
 	/**
 	 * Constructor takes two points, and constructs a horizontal rectangle from this.
 	 * @param topLeftCorner
@@ -53,7 +52,7 @@ public class SrlRectangle extends SrlShape {
 	 * @return
 	 */
 	public SrlPoint getBottomRightCorner() {
-		return m_bottomRightCorner;
+		return mBottomRightCorner;
 	}
 
 	/**
@@ -61,7 +60,7 @@ public class SrlRectangle extends SrlShape {
 	 * @param bottomRightCorner
 	 */
 	public void setBottomRightCorner(SrlPoint bottomRightCorner) {
-		m_bottomRightCorner = bottomRightCorner;
+		mBottomRightCorner = bottomRightCorner;
 	}
 
 	/* 
@@ -70,7 +69,7 @@ public class SrlRectangle extends SrlShape {
 	 */
 	@Override
 	public double getMinX() {
-		return Math.min(m_topLeftCorner.getX(), m_bottomRightCorner.getX());
+		return Math.min(mTopLeftCorner.getX(), mBottomRightCorner.getX());
 	}
 
 	/* 
@@ -79,7 +78,7 @@ public class SrlRectangle extends SrlShape {
 	 */
 	@Override
 	public double getMinY() {
-		return Math.min(m_topLeftCorner.getY(), m_bottomRightCorner.getY());
+		return Math.min(mTopLeftCorner.getY(), mBottomRightCorner.getY());
 	}
 
 	/* 
@@ -89,7 +88,7 @@ public class SrlRectangle extends SrlShape {
 	 */
 	@Override
 	public double getMaxX() {
-		return Math.max(m_topLeftCorner.getX(), m_bottomRightCorner.getX());
+		return Math.max(mTopLeftCorner.getX(), mBottomRightCorner.getX());
 	}
 
 	/* (non-Javadoc)
@@ -98,7 +97,7 @@ public class SrlRectangle extends SrlShape {
 	 */
 	@Override
 	public double getMaxY() {
-		return Math.max(m_topLeftCorner.getY(), m_bottomRightCorner.getY());
+		return Math.max(mTopLeftCorner.getY(), mBottomRightCorner.getY());
 	}
 
 	/**
@@ -106,7 +105,7 @@ public class SrlRectangle extends SrlShape {
 	 * @return
 	 */
 	public SrlPoint getTopLeftCorner() {
-		return m_topLeftCorner;
+		return mTopLeftCorner;
 	}
 
 	/**
@@ -114,7 +113,7 @@ public class SrlRectangle extends SrlShape {
 	 * @param topLeftCorner
 	 */
 	public void setTopLeftCorner(SrlPoint topLeftCorner) {
-		m_topLeftCorner = topLeftCorner;
+		mTopLeftCorner = topLeftCorner;
 	}
 
 	/**
@@ -123,8 +122,8 @@ public class SrlRectangle extends SrlShape {
 	 * @param y y amount to translate
 	 */
 	public void translate(double x, double y){
-		m_topLeftCorner.translate(x, y);
-		m_bottomRightCorner.translate(x, y);
+		mTopLeftCorner.translate(x, y);
+		mBottomRightCorner.translate(x, y);
 		translateSubShapes(x,y);
 	}
 

@@ -17,8 +17,8 @@ public class SrlCircle extends SrlInterpretedShape {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private SrlPoint m_center;
-	private double m_radius;
+	private SrlPoint mCenter;
+	private double mRadius;
 
 	
 	/**
@@ -26,7 +26,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 * @return the center
 	 */
 	public SrlPoint getCenter() {
-		return m_center;
+		return mCenter;
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 * @param center the center to set
 	 */
 	public void setCenter(SrlPoint center) {
-		m_center = center;
+		mCenter = center;
 	}
 
 	/**
@@ -42,14 +42,14 @@ public class SrlCircle extends SrlInterpretedShape {
 	 * @return the radius
 	 */
 	public double getRadius() {
-		return m_radius;
+		return mRadius;
 	}
 
 	/**
 	 * @param radius the radius to set
 	 */
 	public void setRadius(double radius) {
-		m_radius = radius;
+		mRadius = radius;
 	}
 
 	
@@ -58,8 +58,8 @@ public class SrlCircle extends SrlInterpretedShape {
 	 * @param radius
 	 */
 	public SrlCircle(SrlPoint center, double radius) {
-		m_center = center;
-		m_radius = radius;
+		mCenter = center;
+		mRadius = radius;
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 */
 	@Override
 	public double getMinX() {
-		return m_center.getX() - m_radius;
+		return mCenter.getX() - mRadius;
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +75,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 */
 	@Override
 	public double getMinY() {
-		return m_center.getY() - m_radius;
+		return mCenter.getY() - mRadius;
 	}
 
 	/* (non-Javadoc)
@@ -83,7 +83,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 */
 	@Override
 	public double getMaxX() {
-		return m_center.getX() + m_radius;
+		return mCenter.getX() + mRadius;
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +91,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 */
 	@Override
 	public double getMaxY() {
-		return m_center.getY() + m_radius;
+		return mCenter.getY() + mRadius;
 	}
 		
 	/** 
@@ -100,7 +100,7 @@ public class SrlCircle extends SrlInterpretedShape {
 	 * @param y y amount to translate
 	 */
 	public void translate(double x, double y){
-		m_center.translate(x, y);
+		mCenter.translate(x, y);
 		translateSubShapes(x,y);
 	}
 

@@ -1,8 +1,8 @@
 package edu.tamu.srl.object.shape;
 
+import edu.tamu.srl.settings.IdGenerator;
+
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Object data class
+ * Object data class.
  * 
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
@@ -27,18 +27,73 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default comparator using time
+    /**
+	 * Default comparator using time.
 	 */
-	protected static Comparator<SrlObject> timeComparator;
+	private static Comparator<SrlObject> timeComparator;
+
+
+    /**
+     * Map of miscellaneous attributes (to store any attributes given for points
+     * in a SketchML file that are not saved in other variables here).
+     */
+    private HashMap<String, String> mAttributes = new HashMap<String, String>();
+
+    /**
+     * The bounding box of the objects
+     */
+    protected transient SrlRectangle mBoundingBox;
+
+    /**
+     * Stores the color of the object
+     */
+    private Color mColor = null;
+
+    /**
+     * The convex hull of the objects
+     */
+    protected transient Polygon mConvexHull;
+
+    /**
+     * Description of the object
+     */
+    private String mDescription = "";
+
+    /**
+     * Each object has a unique ID associated with it.
+     */
+    private UUID mId = UUID.randomUUID();
+
+    /**
+     * An object can be created by a user (like drawing a shape, or speaking a
+     * phrase) or it can be created by a system (like a recognition of a higher
+     * level shape)
+     */
+    private boolean mIsUserCreated = false;
+
+    /**
+     * The name of the object, such as "triangle1"
+     */
+    private String mName = "";
+
+    /**
+     * The creation time of the object.
+     */
+    private long mTime = (new Date()).getTime();
+    // System.currentTimeMillis();
+
+    /**
+     * The type of the object (such as "Line", "Stroke", etc.)
+     */
+    private String mType = "";
 
 	/**
 	 * Gets the comparator for the time values. Compares two objects based on
 	 * their time stamps. Might be better to compare based on another method,
 	 * but haven't decided yet what that is.
-	 * 
-	 * @param o
-	 *            the object to compare it to return 0 if they are equal
+	 *
+     * The Comparator will return 0 if the times are equal.
+     *
 	 * @return the comparator for the time values
 	 */
 	public static Comparator<SrlObject> getTimeComparator() {
@@ -46,7 +101,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		if (timeComparator == null)
 			timeComparator = new Comparator<SrlObject>() {
 				@Override
-				public int compare(SrlObject arg0, SrlObject arg1) {
+				public int compare(final SrlObject arg0, final SrlObject arg1) {
 					return (arg0.getTime() < arg1.getTime()) ? -1 : (arg0
 							.getTime() > arg1.getTime()) ? 1 : 0;
 				}
@@ -64,7 +119,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		return new Comparator<SrlObject>() {
 
 			@Override
-			public int compare(SrlObject arg0, SrlObject arg1) {
+			public int compare(final SrlObject arg0, final SrlObject arg1) {
 				return Double.compare(arg0.getBoundingBox().getMinX(), arg1
 						.getBoundingBox().getMinX());
 			}
@@ -82,7 +137,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		return new Comparator<SrlObject>() {
 
 			@Override
-			public int compare(SrlObject arg0, SrlObject arg1) {
+			public int compare(final SrlObject arg0, final SrlObject arg1) {
 				return Double.compare(arg0.getBoundingBox().getMinY(), arg1
 						.getBoundingBox().getMinY());
 			}
@@ -90,78 +145,23 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		};
 	}
 
-
-	/**
-	 * Map of miscellaneous attributes (to store any attributes given for points
-	 * in a SketchML file that are not saved in other variables here).
-	 */
-	private HashMap<String, String> m_attributes = new HashMap<String, String>();
-
-	/**
-	 * The bounding box of the objects
-	 */
-	protected transient SrlRectangle m_boundingBox;
-
-	/**
-	 * Stores the color of the object
-	 */
-	private Color m_color = null;
-
-	/**
-	 * The convex hull of the objects
-	 */
-	protected transient Polygon m_convexHull;
-
-	/**
-	 * Description of the object
-	 */
-	private String m_description = "";
-
-	/**
-	 * Each object has a unique ID associated with it.
-	 */
-	private UUID m_id = UUID.randomUUID();
-
-	/**
-	 * An object can be created by a user (like drawing a shape, or speaking a
-	 * phrase) or it can be created by a system (like a recognition of a higher
-	 * level shape)
-	 */
-	private boolean m_isUserCreated = false;
-
-	/**
-	 * The name of the object, such as "triangle1"
-	 */
-	private String m_name = "";
-
-	/**
-	 * The creation time of the object.
-	 */
-	private long m_time = (new Date()).getTime();
-	// System.currentTimeMillis();
-
-	/**
-	 * The type of the object (such as "Line", "Stroke", etc.)
-	 */
-	private String m_type = "";
-
 	public SrlObject() {
-		setId(nextID());
-		m_boundingBox = null;
-		m_convexHull = null;
+		setId(IdGenerator.nextId());
+		mBoundingBox = null;
+		mConvexHull = null;
 	}
 
 	public SrlObject(SrlObject o) {
-		this.m_attributes = o.getAttributes();
-		this.m_boundingBox = o.getBoundingBox();
-		this.m_color = o.getColor();
-		this.m_convexHull = o.getConvexHull();
-		this.m_description = o.getDescription();
-		this.m_id = o.getId();
-		this.m_isUserCreated = o.isUserCreated();
-		this.m_name = o.getName();
-		this.m_time = o.getTime();
-		this.m_type = o.getType();
+		this.mAttributes = o.getAttributes();
+		this.mBoundingBox = o.getBoundingBox();
+		this.mColor = o.getColor();
+		this.mConvexHull = o.getConvexHull();
+		this.mDescription = o.getDescription();
+		this.mId = o.getId();
+		this.mIsUserCreated = o.isUserCreated();
+		this.mName = o.getName();
+		this.mTime = o.getTime();
+		this.mType = o.getType();
 	}
 
 	/**
@@ -220,14 +220,14 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @param B
 	 */
 	protected void copyAIntoB(SrlObject A, SrlObject B) {
-		B.m_id = A.m_id;
-		B.m_isUserCreated = A.m_isUserCreated;
-		B.m_name = A.m_name;
-		B.m_time = A.m_time;
-		B.m_color = A.m_color;
-		B.m_attributes = A.getAttributes();
-		B.m_boundingBox = A.getBoundingBox();
-		B.m_convexHull = A.getConvexHull();
+		B.mId = A.mId;
+		B.mIsUserCreated = A.mIsUserCreated;
+		B.mName = A.mName;
+		B.mTime = A.mTime;
+		B.mColor = A.mColor;
+		B.mAttributes = A.getAttributes();
+		B.mBoundingBox = A.getBoundingBox();
+		B.mConvexHull = A.getConvexHull();
 	}
 
 	/**
@@ -243,7 +243,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	/**
 	 * Clones all of the information to the object sent in
 	 * 
-	 * @param cloned
+	 * @param editableObject
 	 *            the new clone object
 	 * @return the same cloned object (superfluous return)
 	 */
@@ -269,7 +269,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	/**
 	 * Return the distance from point rp to this point.
 	 * 
-	 * @param rp
+	 * @param o
 	 *            the other point
 	 * @return the distance
 	 */
@@ -299,8 +299,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	public void flagExternalUpdate() {
 		setTime(-1);
-		m_boundingBox = null;
-		m_convexHull = null;
+		mBoundingBox = null;
+		mConvexHull = null;
 	}
 
 	/**
@@ -320,7 +320,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *         not set.
 	 */
 	public String getAttribute(String key) {
-		return m_attributes.get(key);
+		return mAttributes.get(key);
 	}
 
 	/**
@@ -330,8 +330,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	public HashMap<String, String> getAttributes() {
 		HashMap<String, String> attrcopy = new HashMap<String, String>();
-		if (m_attributes != null)
-			for (Map.Entry<String, String> entry : m_attributes.entrySet())
+		if (mAttributes != null)
+			for (Map.Entry<String, String> entry : mAttributes.entrySet())
 				attrcopy.put(entry.getKey(), entry.getValue());
 		return attrcopy;
 	}
@@ -389,7 +389,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return
 	 */
 	public Color getColor() {
-		return m_color;
+		return mColor;
 	}
 
 	/**
@@ -399,7 +399,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	public Polygon getConvexHull() {
 
-		return m_convexHull;
+		return mConvexHull;
 	}
 
 	/**
@@ -408,7 +408,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return
 	 */
 	public String getDescription() {
-		return m_description;
+		return mDescription;
 	}
 
 	/**
@@ -424,7 +424,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return unique UUID for an object
 	 */
 	public UUID getId() {
-		return m_id;
+		return mId;
 	}
 
 	/**
@@ -451,7 +451,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return the string name of the object
 	 */
 	public String getName() {
-		return m_name;
+		return mName;
 	}
 
 	/**
@@ -471,7 +471,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return the time the object was created.
 	 */
 	public long getTime() {
-		return m_time;
+		return mTime;
 	}
 
 	/**
@@ -480,7 +480,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return
 	 */
 	public String getType() {
-		return m_type;
+		return mType;
 	}
 
 	/**
@@ -500,7 +500,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return true if this object has the given key
 	 */
 	public boolean hasAttribute(String key) {
-		return m_attributes.containsKey(key);
+		return mAttributes.containsKey(key);
 	}
 
 	@Override
@@ -516,7 +516,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return true if a user created the shape
 	 */
 	public boolean isUserCreated() {
-		return m_isUserCreated;
+		return mIsUserCreated;
 	}
 
 	/**
@@ -527,7 +527,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return the value for the removed key, or null if key did not exist
 	 */
 	public String removeAttribute(String key) {
-		return m_attributes.remove(key);
+		return mAttributes.remove(key);
 	}
 
 	/**
@@ -581,7 +581,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @return the old value of the attribute, or null if none was set
 	 */
 	public String setAttribute(String key, String value) {
-		return m_attributes.put(key, value);
+		return mAttributes.put(key, value);
 	}
 
 	/**
@@ -599,7 +599,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	// }
 
 	public void setBoundingBox(SrlRectangle r) {
-		m_boundingBox = r;
+		mBoundingBox = r;
 	}
 
 	/**
@@ -608,11 +608,11 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @param color
 	 */
 	public void setColor(Color color) {
-		m_color = color;
+		mColor = color;
 	}
 
 	public void setConvexHull(Polygon p) {
-		m_convexHull = p;
+		mConvexHull = p;
 	}
 
 	/**
@@ -621,7 +621,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @param description
 	 */
 	public void setDescription(String description) {
-		m_description = description;
+		mDescription = description;
 	}
 
 	/**
@@ -632,7 +632,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            the unique id for the object
 	 */
 	public void setId(UUID id) {
-		m_id = UUID.fromString(id.toString());
+		mId = UUID.fromString(id.toString());
 	}
 
 	/**
@@ -642,7 +642,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            object name
 	 */
 	public void setName(String name) {
-		m_name = name;
+		mName = name;
 	}
 
 	/**
@@ -653,7 +653,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 *            the time the object was created.
 	 */
 	public void setTime(long time) {
-		m_time = time;
+		mTime = time;
 	}
 
 	/**
@@ -662,7 +662,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @param type
 	 */
 	public void setType(String type) {
-		m_type = type;
+		mType = type;
 	}
 
 	/**
@@ -675,7 +675,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 
 	public void setUserCreated(boolean isUserCreated) {
-		m_isUserCreated = isUserCreated;
+		mIsUserCreated = isUserCreated;
 	}
 
 	/**
@@ -809,5 +809,10 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		return Math.atan2(getHeight(), getWidth());
 	}
 
-	
+    /**
+     * @return the counter that is used in the creation of a UUID for each new {@linkplain SrlObject} that is created.
+     */
+    public static long getCounter() {
+        return counter;
+    }
 }

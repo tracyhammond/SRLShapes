@@ -5,14 +5,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
-import edu.tamu.srl.settings.SrlInitialSettings;
-
 /**
  * Stroke data class
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlStroke extends SrlInterpretedShape implements Serializable{
+public class SrlStroke extends SrlInterpretedShape implements Serializable {
 	
 	/**
 	 * This is for serialization of the stroke. 
@@ -25,7 +23,7 @@ public class SrlStroke extends SrlInterpretedShape implements Serializable{
 	 * This variable is simply to save the multiple recomputing of things over and over
 	 * It is reset when the points change
 	 */
-	private transient ArrayList<SrlPoint> m_points = null;
+	private transient ArrayList<SrlPoint> mPoints = null;
 	
 	/**
 	 * General constructor added because it is needed by superclasses
@@ -103,7 +101,7 @@ public class SrlStroke extends SrlInterpretedShape implements Serializable{
 	 */
 	public void flagExternalUpdate() {
 		super.flagExternalUpdate();
-		m_points = null;
+		mPoints = null;
 	}
 	
 	/**
@@ -169,14 +167,14 @@ public class SrlStroke extends SrlInterpretedShape implements Serializable{
 	 */
 	@Override
 	public ArrayList<SrlPoint> getPoints(){
-		if(m_points != null){return m_points;}
+		if(mPoints != null){return mPoints;}
 		ArrayList<SrlPoint> allPoints = new ArrayList<SrlPoint>();
 		for(SrlObject o: getSubShapes()){
 			if(o instanceof SrlPoint){
 				allPoints.add((SrlPoint)o);
 			}
 		}
-		m_points = allPoints;
+		mPoints = allPoints;
 		return allPoints;
 	}
 }
