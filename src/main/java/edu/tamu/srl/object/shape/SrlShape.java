@@ -7,7 +7,7 @@ import java.util.UUID;
 
 
 /**
- * Shape data class
+ * Shape data class.
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */

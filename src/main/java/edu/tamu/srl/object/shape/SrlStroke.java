@@ -13,22 +13,23 @@ import java.util.Set;
 public class SrlStroke extends SrlShape {
 
     /**
-     * This variable is simply to save the multiple recomputing of things over and over
-     * It is reset when the points change
+     * Holds the list of points contained within the stroke.
+     *
+     * Note that the actual
      */
     private transient ArrayList<SrlPoint> mPoints = null;
 
     /**
-     * General constructor added because it is needed by superclasses
+     * General constructor added because it is needed by superclasses.
      */
     public SrlStroke() {
         super();
     }
 
     /**
-     * @param resampled
+     * @param resampled a resampled list of points stored for the stroke.
      */
-    public SrlStroke(ArrayList<SrlPoint> resampled) {
+    public SrlStroke(final ArrayList<SrlPoint> resampled) {
         super();
         for (SrlPoint p : resampled) {
             addPoint(p);
@@ -36,17 +37,17 @@ public class SrlStroke extends SrlShape {
     }
 
     /**
-     * Constructor setting the initial point in the stroke
+     * Constructor setting the initial point in the stroke.
      *
-     * @param startPoint
+     * @param startPoint The starting point of the stroke.
      */
-    public SrlStroke(SrlPoint startPoint) {
+    public SrlStroke(final SrlPoint startPoint) {
         add(startPoint);
         startPoint.setName("p" + getPoints().size());
     }
 
     /**
-     * This is a constructor to be used in place of the clone method
+     * This is a constructor to be used in place of the clone method.
      *
      * @param s
      */
@@ -59,7 +60,7 @@ public class SrlStroke extends SrlShape {
      *
      * @param point
      */
-    public void addPoint(SrlPoint point) {
+    public void addPoint(final SrlPoint point) {
         flagExternalUpdate();
         add(point);
         point.setName("p" + getPoints().size());
@@ -70,7 +71,8 @@ public class SrlStroke extends SrlShape {
      *
      * @param points points to add to the stroke
      */
-    public void addPoints(ArrayList<SrlPoint> points) {
+    public void addPoints(final ArrayList<SrlPoint> points) {
+        flagExternalUpdate();
         getPoints().addAll(points);
 
     }
@@ -174,7 +176,7 @@ public class SrlStroke extends SrlShape {
      * @param i the index of the stroke
      * @return the point at index i
      */
-    public SrlPoint getPoint(int i) {
+    public SrlPoint getPoint(final int i) {
         if (i >= getPoints().size()) {
             return null;
         }
@@ -191,7 +193,7 @@ public class SrlStroke extends SrlShape {
         if (mPoints != null) {
             return mPoints;
         }
-        ArrayList<SrlPoint> allPoints = new ArrayList<SrlPoint>();
+        final ArrayList<SrlPoint> allPoints = new ArrayList<SrlPoint>();
         for (SrlObject o : getSubShapes()) {
             if (o instanceof SrlPoint) {
                 allPoints.add((SrlPoint) o);
