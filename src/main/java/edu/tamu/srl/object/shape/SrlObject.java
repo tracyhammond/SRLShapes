@@ -139,7 +139,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	public SrlObject() {
-        mId = IdGenerator.nextId();
+        mId = UUID.randomUUID();
         mTime = System.currentTimeMillis();
 		mBoundingBox = null;
 		mConvexHull = null;
