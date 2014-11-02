@@ -296,14 +296,6 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Return an object drawable by AWT
-     * return awt point
-     */
-    public final Point getAWT() {
-        return new Point((int) getX(), (int) getY());
-    }
-
-    /**
      * Get the x value for the first point in the history
      *
      * @return
@@ -553,7 +545,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @return the Core Sketch-to-AWT converted point
      */
-    public java.awt.Point toAWTpoint() {
+    public final java.awt.Point toAWTpoint() {
 
         final java.awt.Point awtPoint = new java.awt.Point(new Double(getX()).intValue(),
                 new Double(getY()).intValue());
