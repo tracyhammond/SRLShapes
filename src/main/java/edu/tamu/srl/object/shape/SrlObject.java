@@ -653,7 +653,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * String that provides the name, description and guid
 	 * @return
 	 */
-	public String toStringLong() {
+	public String toStringDetailed() {
 		return "Type:" + getType() + " Name: " + getName() + " Description:"
 				+ getDescription() + " UUID:" + getId();
 	}

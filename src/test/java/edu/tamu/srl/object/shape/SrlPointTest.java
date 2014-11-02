@@ -42,12 +42,12 @@ public class SrlPointTest {
             in.close();
             fileIn.close();
             System.out.println(p.toString());
-            System.out.println(p.toStringLong());
+            System.out.println(p.toStringDetailed());
             System.out.println(p.getOrigX() + ", " + p2.getOrigY());
             System.out.println(p.getAttribute("favorite"));
             p.setAttribute("favorite", "red");
             System.out.println(p2.toString());
-            System.out.println(p2.toStringLong());
+            System.out.println(p2.toStringDetailed());
             System.out.println(p2.getOrigX() + ", " + p2.getOrigY());
             System.out.println(p2.getAttribute("favorite"));
             System.out.println(p.getAttribute("favorite"));
