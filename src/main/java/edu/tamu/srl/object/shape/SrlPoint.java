@@ -92,12 +92,12 @@ public class SrlPoint extends SrlObject implements Serializable {
     /**
      * Creates a new point with the specified values.
      *
-     * @param x    x value of the point.
-     * @param y    y value of the point.
-     * @param time time stamp.
-     * @param id   point ID
-     * @param tiltX the pen tiltX of the point.
-     * @param tiltY the pen tiltY of the point.
+     * @param x        x value of the point.
+     * @param y        y value of the point.
+     * @param time     time stamp.
+     * @param id       point ID
+     * @param tiltX    the pen tiltX of the point.
+     * @param tiltY    the pen tiltY of the point.
      * @param pressure the pressure at which the point was created.
      */
     public SrlPoint(final double x, final double y, final long time, final UUID id, final double tiltX,
@@ -121,8 +121,9 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Construct a new point with the same elements.
      * This can perform a deep copy.
      * The shallow copy only copies the first point and the current point in the history of points.
+     *
      * @param deep True if a deep copy is wanted otherwise a shallow copy is performed.
-     * @param p The point that is being copied.
+     * @param p    The point that is being copied.
      */
     public SrlPoint(final SrlPoint p, final boolean deep) {
         super(p);
@@ -150,6 +151,7 @@ public class SrlPoint extends SrlObject implements Serializable {
 
     /**
      * Takes the points and sets them (these values can be defined from multiple constructors.
+     *
      * @param x The location in the x direction of the point.
      * @param y The location in the y direction of the point.
      */
@@ -192,7 +194,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * For a point all edges are identical.
      */
     protected final void calculateBBox() {
-       setBoundingBox(new SrlRectangle(this, this));
+        setBoundingBox(new SrlRectangle(this, this));
     }
 
     /**
@@ -223,6 +225,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     /**
      * Compare this point to another point based on time.
      * unless they have the same time then it is compared based on location (starting with X).
+     *
      * @param p point to compare to.
      * @return time difference between points.
      */
@@ -251,6 +254,7 @@ public class SrlPoint extends SrlObject implements Serializable {
 
     /**
      * In this case the same as equalsBy Content.
+     *
      * @param o The object this is being compared to.
      * @return true if the objects are equal.
      */
@@ -581,6 +585,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Remove last point update.
      * If there is only one x,y value in the history,
      * then it does nothing
+     *
      * @return The updated shape (this).
      */
     public final SrlPoint undoLastChange() {
