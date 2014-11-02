@@ -217,7 +217,7 @@
         <!-- testing -->
         <testLevel>85</testLevel>
         <minTestLevel>70</minTestLevel>
-        <averageTestLevel>90</averageTestLevel>
+        <averageTestLevel>80</averageTestLevel>
         <projectBranchLevel>${averageTestLevel}</projectBranchLevel>
         <projectLineLevel>${averageTestLevel}</projectLineLevel>
         <packageBranchLevel>${averageTestLevel}</packageBranchLevel>

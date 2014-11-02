@@ -4,6 +4,8 @@ package srl.sketch.graphics;
  * Created by gigemjt on 10/29/14.
  */
 
+import srl.sketch.core.SrlSketch;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,14 +16,13 @@ import java.io.OutputStream;
  * @author George R. Lucchese
  *
  */
-class SvgSketchCanvas extends SVGCanvas{
-    @Element
+class SvgSketchCanvas { /*extends SVGCanvas {
     SrlSketch sketch;
 
-    private SVGSketchCanvas(){
+    private SvgSketchCanvas(){
 
     }
-    public SVGSketchCanvas(SrlSketch sketch){
+    public SvgSketchCanvas(SrlSketch sketch){
         super();
         setSketch(sketch);
     }
@@ -29,6 +30,7 @@ class SvgSketchCanvas extends SVGCanvas{
     /**
      * @return the sketch
      */
+    /*
     public SrlSketch getSketch() {
         return sketch;
     }
@@ -36,15 +38,17 @@ class SvgSketchCanvas extends SVGCanvas{
     /**
      * @param sketch the sketch to set
      */
+    /*
     public void setSketch(SrlSketch sketch) {
         this.sketch = sketch;
-        this.addShape(sketch.toSVGShape());
+        //this.addShape(sketch.toSVGShape());
     }
 
 
     /*
      * SERIALIZATION
      */
+    /*
     public static SVGSketchCanvas deserialize(InputStream in) throws Exception{
         Persister persister = new Persister(buildXMLTypeMatcher());
         return persister.read(SVGSketchCanvas.class, in);
@@ -70,5 +74,5 @@ class SvgSketchCanvas extends SVGCanvas{
         return SVGCanvas.buildXMLTypeMatcher().extend(SrlSketch.buildXMLTypeMatcher());
     }
 
-
+*/
 }
