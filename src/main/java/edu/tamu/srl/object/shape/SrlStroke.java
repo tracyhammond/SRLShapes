@@ -1,8 +1,6 @@
 package edu.tamu.srl.object.shape;
 
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Stroke data class.
@@ -77,12 +75,6 @@ public class SrlStroke extends SrlShape {
 
     }
 
-    @Override
-    protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * Called to calculate the convex hull of the object.
      */
@@ -123,6 +115,29 @@ public class SrlStroke extends SrlShape {
     public void flagExternalUpdate() {
         super.flagExternalUpdate();
         mPoints = null;
+    }
+
+    /**
+     * Rotates the SComponent from the given x- and y-coordinate.
+     *
+     * @param radians the number of radians to rotate
+     * @param xCenter the x-coordinate to rotate from
+     * @param yCenter the y-coordinate to rotate from
+     */
+    @Override public void rotate(double radians, double xCenter, double yCenter) {
+        // TODO implement
+        throw new UnsupportedOperationException("rotate is not supported");
+    }
+
+    /**
+     * Scales the SComponent by the given x- and y-factor.
+     *
+     * @param xfactor the x-factor
+     * @param yfactor the y-factor
+     */
+    @Override public void scale(double xfactor, double yfactor) {
+        // TODO implement
+        throw new UnsupportedOperationException("scale is not supported");
     }
 
     /**

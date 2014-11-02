@@ -1,12 +1,9 @@
 package edu.tamu.srl.object.shape;
 
 import java.awt.Polygon;
-import java.awt.geom.AffineTransform;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -194,24 +191,6 @@ public abstract class SrlObject implements Comparable<SrlObject> {
 
         };
     }
-
-    /**
-     * Applies a 2D affine transform.
-     *
-     * @param xform the 2D affine transform
-     */
-    public final void applyTransform(final AffineTransform xform) {
-        applyTransform(xform, new HashSet<SrlObject>());
-    }
-
-    /**
-     * Applies a 2D affine transform.
-     *
-     * @param xform   the 2D affine transform
-     * @param xformed the SComponent objects to transform to (???)
-     */
-    protected abstract void applyTransform(AffineTransform xform,
-            Set<SrlObject> xformed);
 
     /**
      * Calculates the bounding box.
@@ -617,7 +596,7 @@ public abstract class SrlObject implements Comparable<SrlObject> {
      * @param radians the number of radians to rotate
      */
     public final void rotate(final double radians) {
-        applyTransform(AffineTransform.getRotateInstance(radians));
+        rotate(radians, 0, 0);
     }
 
     /**
@@ -627,10 +606,7 @@ public abstract class SrlObject implements Comparable<SrlObject> {
      * @param xCenter the x-coordinate to rotate from
      * @param yCenter the y-coordinate to rotate from
      */
-    public final void rotate(final double radians, final double xCenter, final double yCenter) {
-        applyTransform(AffineTransform.getRotateInstance(radians, xCenter,
-                yCenter));
-    }
+    public abstract void rotate(final double radians, final double xCenter, final double yCenter);
 
     /**
      * Scales the SComponent by the given x- and y-factor.
@@ -639,9 +615,7 @@ public abstract class SrlObject implements Comparable<SrlObject> {
      * @param yfactor the y-factor
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public void scale(final double xfactor, final double yfactor) {
-        applyTransform(AffineTransform.getScaleInstance(xfactor, yfactor));
-    }
+    public abstract void scale(final double xfactor, final double yfactor);
 
     /**
      * Sets an attribute value. Will overwrite any value currently set for that

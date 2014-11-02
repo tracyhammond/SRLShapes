@@ -1,10 +1,7 @@
 package edu.tamu.srl.object.shape;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -169,18 +166,6 @@ public class SrlPoint extends SrlObject {
         final double xdiff = x1 - x2;
         final double ydiff = y1 - y2;
         return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-    }
-
-    @SuppressWarnings("checkstyle:designforextension")
-    @Override
-    protected void applyTransform(final AffineTransform xform, final Set<SrlObject> xformed) {
-        if (xformed.contains(this)) {
-            return;
-        }
-        xformed.add(this);
-        final Point2D point = xform.transform(new Point2D.Double(getX(), getY()),
-                new Point2D.Double());
-        setP(point.getX(), point.getY());
     }
 
     /**
@@ -474,6 +459,18 @@ public class SrlPoint extends SrlObject {
     public int hashCode() {
 
         return (int) getX() + (int) getY() + (int) getTime();
+    }
+
+    /**
+     * Rotates the SComponent from the given x- and y-coordinate.
+     *
+     * @param radians the number of radians to rotate
+     * @param xCenter the x-coordinate to rotate from
+     * @param yCenter the y-coordinate to rotate from
+     */
+    @Override public final void rotate(final double radians, final double xCenter, final double yCenter) {
+        // TODO rotation stuff...
+        throw new UnsupportedOperationException("rotate is not supported");
     }
 
     /**

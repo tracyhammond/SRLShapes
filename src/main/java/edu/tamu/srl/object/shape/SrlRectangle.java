@@ -4,8 +4,6 @@
 package edu.tamu.srl.object.shape;
 
 import java.awt.Color;
-import java.awt.geom.AffineTransform;
-import java.util.Set;
 
 import edu.tamu.srl.settings.SrlInitialSettings;
 
@@ -76,11 +74,34 @@ public class SrlRectangle extends SrlShape {
 		return Math.min(mTopLeftCorner.getY(), mBottomRightCorner.getY());
 	}
 
-	/* 
-	 * Returns the maximum x. This works even if the topleft and bottomright are switched
-	 * (non-Javadoc)
-	 * @see edu.tamu.srl.object.shape.SRL_Shape#getMaxX()
-	 */
+    /**
+     * Rotates the SComponent from the given x- and y-coordinate.
+     *
+     * @param radians the number of radians to rotate
+     * @param xCenter the x-coordinate to rotate from
+     * @param yCenter the y-coordinate to rotate from
+     */
+    @Override public void rotate(double radians, double xCenter, double yCenter) {
+        // TODO implement
+        throw new UnsupportedOperationException("rotate is not supported");
+    }
+
+    /**
+     * Scales the SComponent by the given x- and y-factor.
+     *
+     * @param xfactor the x-factor
+     * @param yfactor the y-factor
+     */
+    @Override public void scale(double xfactor, double yfactor) {
+        // TODO implement
+        throw new UnsupportedOperationException("scale is not supported");
+    }
+
+    /*
+     * Returns the maximum x. This works even if the topleft and bottomright are switched
+     * (non-Javadoc)
+     * @see edu.tamu.srl.object.shape.SRL_Shape#getMaxX()
+     */
 	@Override
 	public double getMaxX() {
 		return Math.max(mTopLeftCorner.getX(), mBottomRightCorner.getX());
@@ -129,12 +150,6 @@ public class SrlRectangle extends SrlShape {
 		if(!getTopLeftCorner().equals(otherrectangle.getTopLeftCorner())){return false;}
 		if(!getBottomRightCorner().equals(otherrectangle.getBottomRightCorner())){return false;}
 		return true;
-	}
-
-	@Override
-	protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
