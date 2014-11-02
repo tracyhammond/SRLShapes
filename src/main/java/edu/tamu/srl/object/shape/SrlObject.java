@@ -2,7 +2,6 @@ package edu.tamu.srl.object.shape;
 
 import edu.tamu.srl.settings.IdGenerator;
 
-import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
@@ -42,11 +41,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
     /**
      * The bounding box of the objects
      */
-
-    /**
-     * Stores the color of the object
-     */
-    private Color mColor = null;
     private transient SrlRectangle mBoundingBox;
 
     /**
@@ -601,15 +595,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 
 	public void setBoundingBox(SrlRectangle r) {
 		mBoundingBox = r;
-	}
-
-	/**
-	 * Sets the color of the object
-	 * 
-	 * @param color
-	 */
-	public void setColor(Color color) {
-		mColor = color;
 	}
 
 	public void setConvexHull(Polygon p) {
