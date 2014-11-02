@@ -69,10 +69,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param y the initial y point
      */
     public SrlPoint(final double x, final double y) {
-        setP(x, y);
-        setDescription("Initial Points: " + x + "," + y);
-        setType("Point");
-        setName("p");
+        setPointDataFromConstructor(x, y);
     }
 
     /**
@@ -83,8 +80,8 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param time the time the point was made
      */
     public SrlPoint(final double x, final double y, final long time) {
-        this(x, y);
-        setTime(time);
+        super(time);
+        setPointDataFromConstructor(x, y);
     }
 
     /**
@@ -95,9 +92,9 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param time time stamp.
      * @param id   point ID (.equals)
      */
-    public SrlPoint(double x, double y, long time, UUID id) {
+    public SrlPoint(final double x, final double y, final long time, final UUID id) {
         super(time, id);
-
+        setPointDataFromConstructor(x, y);
     }
 
     /**
@@ -111,27 +108,19 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param tiltY
      * @param pressure
      */
-    public SrlPoint(double x, double y, long time, UUID id, double tiltX, double tiltY, double pressure) {
+    public SrlPoint(final double x, final double y, final long time, final UUID id, final double tiltX,
+            final double tiltY, final double pressure) {
         this(x, y, time, id);
         setTilt(tiltX, tiltY);
         setPressure(pressure);
     }
 
     /**
-     * Create a new point from a mouse event
+     * Construct a new point with the same elements.
      *
-     * @param e
+     * @param p the point that is being copied.
      */
-    public SrlPoint(MouseEvent e) {
-        this(e.getX(), e.getY(), e.getWhen());
-    }
-
-    /**
-     * Construct a new point with the same elements
-     *
-     * @param p
-     */
-    public SrlPoint(SrlPoint p) {
+    public SrlPoint(final SrlPoint p) {
         super(p);
         this.mCurrentElement = p.mCurrentElement;
         this.mPressure = p.mPressure;
@@ -144,7 +133,19 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Return the distance from the point specified by (x,y) to this point
+     * Takes
+     * @param x The location in the x direction of the point.
+     * @param y The location in the y direction of the point.
+     */
+    private void setPointDataFromConstructor(final double x, final double y) {
+        setP(x, y);
+        setDescription("Initial Points: " + x + "," + y);
+        setType("Point");
+        setName("p");
+    }
+
+    /**
+     * Return the distance from the point specified by (x1, y1 ) to the specified by (x2, y2)
      *
      * @param x2 the x value of the other point
      * @param y2 the y value of the other point

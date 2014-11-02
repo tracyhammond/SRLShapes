@@ -125,14 +125,21 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
     /**
      * Accepts values that can only be set during construction.
      *
-     * @param id   The unique identifier of the shape.
      * @param time The time the shape was originally created.
+     * @param id   The unique identifier of the shape.
      */
-    public SrlObject(final UUID id, final long time) {
+    public SrlObject(final long time, final UUID id) {
         this.mId = id;
         this.mTime = time;
         mBoundingBox = null;
         mConvexHull = null;
+    }
+
+    /**
+     * @param time creates an object with the given time but a random id.
+     */
+    public SrlObject(final long time) {
+        this(time, UUID.randomUUID());
     }
 
     /**
