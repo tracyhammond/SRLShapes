@@ -1,10 +1,10 @@
 package edu.tamu.srl.object.shape;
 
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -250,11 +250,13 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * In this case the same as equalsBy Content
+     * In this case the same as equalsBy Content.
+     * @param o The object this is being compared to.
+     * @return true if the objects are equal.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public boolean equals(final SrlObject o) {
-        return equalsByContent(o);
+    public boolean equals(final Object o) {
+        return o instanceof SrlObject && equalsByContent((SrlObject) o);
     }
 
     @SuppressWarnings("checkstyle:designforextension")
@@ -286,19 +288,17 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Check if the x y t values match (probably the same initial point)
+     * Check if the x y t values match (probably the same initial point).
      *
-     * @param p
-     * @return
+     * @param p the point that the time is being compared to.
+     * @return true if the points are equal
      */
     public final boolean equalsXYTime(final SrlPoint p) {
         return (p.getX() == getX() && p.getY() == getY() && p.getTime() == getTime());
     }
 
     /**
-     * Get the x value for the first point in the history
-     *
-     * @return
+     * @return The x value for the first point in the history.
      */
     public final double getInitialX() {
         if (mXList.size() == 0) {
@@ -308,9 +308,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Get the y value for the first point in the history
-     *
-     * @return
+     * @return The y value for the first point in the history.
      */
     public final double getInitialY() {
         if (mYList.size() == 0) {
@@ -370,7 +368,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Points can have pressure depending on the input device
+     * Points can have pressure depending on the input device.
      *
      * @return the pressure of the point
      */
@@ -379,9 +377,9 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Sets the pressure of the point
+     * Sets the pressure of the point.
      *
-     * @param pressure
+     * @param pressure The pressure of the point.
      */
     public final void setPressure(final Double pressure) {
         mPressure = pressure;
@@ -424,7 +422,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Get the current x value of the point
+     * Get the current x value of the point.
      *
      * @return current x value of the point
      */
@@ -433,7 +431,8 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * We keep a history of the x values as the point is transformed
+     * We keep a history of the x values as the point is transformed.
+     * This returns a clone of that history.
      *
      * @return the history of the x values
      */
@@ -442,7 +441,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Get the current y value of the point
+     * Get the current y value of the point.
      *
      * @return current y value of the point
      */
@@ -451,7 +450,8 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * We keep a history of the y values as the point is transformed
+     * We keep a history of the y values as the point is transformed.
+     * This returns a clone of that history.
      *
      * @return the history of the y values
      */
@@ -460,7 +460,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Get the original value of the point
+     * Get the original value of the point.
      *
      * @return a point where getx and gety return the first values that were added to the history
      */
@@ -471,6 +471,7 @@ public class SrlPoint extends SrlObject implements Serializable {
         return this;
     }
 
+    @SuppressWarnings("checkstyle:designforextension")
     @Override
     public int hashCode() {
 
@@ -487,7 +488,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param x the amount to scale in the x direction
      * @param y the amount to scale in the y direction
      */
-    public void scale(double x, double y) {
+    public final void scale(final double x, final double y) {
         mXList.add(x * getX());
         mYList.add(y * getY());
         mCurrentElement = mXList.size() - 1;
@@ -495,26 +496,26 @@ public class SrlPoint extends SrlObject implements Serializable {
 
     /**
      * Delete the entire point history and
-     * use these values as the starting point
+     * use these values as the starting point.
      *
      * @param x new initial x location
      * @param y new initial y location
      */
-    public final void setOrigP(double x, double y) {
+    public final void setOrigP(final double x, final double y) {
         mXList = new ArrayList<Double>();
         mYList = new ArrayList<Double>();
         setP(x, y);
     }
 
     /**
-     * Updates the location of the point
+     * Updates the location of the point.
      * Also add this point to the history of the points
      * so this can be undone.
      *
      * @param x the new x location for the point
      * @param y the new y location for the point
      */
-    public final void setP(double x, double y) {
+    public final void setP(final double x, final double y) {
         mXList.add(x);
         mYList.add(y);
         mCurrentElement = mXList.size() - 1;
@@ -525,7 +526,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      *
      * @param pressure pressure of the point.
      */
-    public final void setPressure(double pressure) {
+    public final void setPressure(final double pressure) {
         mPressure = pressure;
     }
 
@@ -535,17 +536,17 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @param tiltX tilt in the X direction.
      * @param tiltY tilt in the Y direction.
      */
-    public final void setTilt(double tiltX, double tiltY) {
+    public final void setTilt(final double tiltX, final double tiltY) {
         setTiltX(tiltX);
         setTiltY(tiltY);
     }
 
     /**
-     * Converts the Core Sketch Point object to the equivalent AWT Point .
+     * Converts the Core Sketch Point object to the equivalent AWT Point.
      *
      * @return the Core Sketch-to-AWT converted point
      */
-    public final java.awt.Point toAWTpoint() {
+    public final java.awt.Point toAWTPoint() {
 
         final java.awt.Point awtPoint = new java.awt.Point(new Double(getX()).intValue(),
                 new Double(getY()).intValue());
@@ -554,34 +555,35 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Returns a string of [x,y,time]
+     * Returns a string of [x,y,time].
      *
      * @return a string of [x,t,time]
      */
+    @SuppressWarnings("checkstyle:designforextension")
     public String toString() {
-        return "<" + getX() + "," + getY() + "," + getTime() + ">";
+        return "[" + getX() + "," + getY() + "," + getTime() + "]";
     }
 
     /**
-     * Translate the point in the amount x,y
+     * Translate the point in the amount x,y.
      * Saves the point it was before in case we need to undo the translation
      *
      * @param x amount to move in the x direction
      * @param y amount to move in the y direction
      */
-    public void translate(double x, double y) {
+    public final void translate(final double x, final double y) {
         mXList.add(x + getX());
         mYList.add(y + getY());
         mCurrentElement = mXList.size() - 1;
     }
 
     /**
-     * Remove last point update
+     * Remove last point update.
      * If there is only one x,y value in the history,
      * then it does nothing
-     * Returns the updated shape (this)
+     * @return The updated shape (this).
      */
-    public SrlPoint undoLastChange() {
+    public final SrlPoint undoLastChange() {
         if (mXList.size() < 2) {
             return this;
         }

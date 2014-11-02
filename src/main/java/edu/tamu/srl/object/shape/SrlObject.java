@@ -644,7 +644,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
      * @param xfactor the x-factor
      * @param yfactor the y-factor
      */
-    public final void scale(final double xfactor, final double yfactor) {
+    @SuppressWarnings("checkstyle:designforextension")
+    public void scale(final double xfactor, final double yfactor) {
         applyTransform(AffineTransform.getScaleInstance(xfactor, yfactor));
     }
 
