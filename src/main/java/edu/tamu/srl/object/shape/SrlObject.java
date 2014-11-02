@@ -42,17 +42,17 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
     /**
      * The bounding box of the objects
      */
-    protected transient SrlRectangle mBoundingBox;
 
     /**
      * Stores the color of the object
      */
     private Color mColor = null;
+    private transient SrlRectangle mBoundingBox;
 
     /**
      * The convex hull of the objects
      */
-    protected transient Polygon mConvexHull;
+    private transient Polygon mConvexHull;
 
     /**
      * Description of the object
@@ -337,7 +337,8 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	/**
-	 * Get the bounding box of the stroke This returns an awt shape. Use
+	 * Get the bounding box of the object.
+     * Use
 	 * getBoundingSRLRectangle to get the SRL shape
 	 * 
 	 * @return the bounding box of the stroke
