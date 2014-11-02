@@ -56,7 +56,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
     /**
      * Each object has a unique ID associated with it.
      */
-    private UUID mId = UUID.randomUUID();
+    private final UUID mId;
 
     /**
      * An object can be created by a user (like drawing a shape, or speaking a
@@ -73,8 +73,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
     /**
      * The creation time of the object.
      */
-    private long mTime = (new Date()).getTime();
-    // System.currentTimeMillis();
+    private final long mTime;
 
     /**
      * The type of the object (such as "Line", "Stroke", etc.)
@@ -140,38 +139,54 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	public SrlObject() {
-		setId(IdGenerator.nextId());
+        mId = IdGenerator.nextId();
+        mTime = System.currentTimeMillis();
 		mBoundingBox = null;
 		mConvexHull = null;
-	}
 
-	public SrlObject(SrlObject o) {
+    }
+
+    /**
+     * A copy constructor.
+     *
+     * Copies all values from the given object.
+     * @param o
+     */
+	public SrlObject(final SrlObject o) {
+        this.mTime = o.getTime();
 		this.mAttributes = o.getAttributes();
 		this.mBoundingBox = o.getBoundingBox();
-		this.mColor = o.getColor();
 		this.mConvexHull = o.getConvexHull();
 		this.mDescription = o.getDescription();
 		this.mId = o.getId();
 		this.mIsUserCreated = o.isUserCreated();
 		this.mName = o.getName();
-		this.mTime = o.getTime();
 		this.mType = o.getType();
 	}
 
 	/**
-	 * A constructor to create srlobject
-	 * 
-	 * @param color
-	 * @param name
-	 * @param description
-	 * @param type
+	 * Creates a new object with a name, description and type.
+	 *
+	 * @param name The name of the shape (shape1, shape2)
+	 * @param description A description of what the shape is, useful when debugging.
+	 * @param type The interpretation of the shape.
 	 */
-	public SrlObject(Color color, String name, String description, String type) {
-		setColor(color);
+	public SrlObject(final String name, final String description, final String type) {
+        this();
 		setName(name);
 		setType(type);
 		setDescription(description);
-	}
+    }
+
+    /**
+     * Accepts values that can only be set during construction.
+     * @param id The unique identifier of the shape.
+     * @param time The time the shape was originally created.
+     */
+    public SrlObject(final UUID id, final long time) {
+        this.mId = id;
+        this.mTime = time;
+    }
 
 	/**
 	 * Applies a 2D affine transform.
@@ -179,7 +194,7 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 * @param xform
 	 *            the 2D affine transform
 	 */
-	public void applyTransform(AffineTransform xform) {
+	public void applyTransform(final AffineTransform xform) {
 
 		applyTransform(xform, new HashSet<SrlObject>());
 	}
@@ -201,24 +216,25 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	protected abstract void calculateBBox();
 
 	/**
-	 * Default uses time. You can also use x or y to compare
+	 * Default uses time. You can also use x or y to compare.
+     * @param o The object that this instance is being compared to.
+     * @return a value that depends on the result of the comparator used.
 	 */
-	public int compareTo(SrlObject o) {
+	public int compareTo(final SrlObject o) {
 		return getTimeComparator().compare(this, o);
 	}
 
 	/**
-	 * Copies what A is into what B is
-	 * 
+	 * Copies what A is into what B is.
+	 *
 	 * @param A
 	 * @param B
 	 */
-	protected void copyAIntoB(SrlObject A, SrlObject B) {
+	protected static void copyAIntoB(SrlObject A, SrlObject B) {
 		B.mId = A.mId;
 		B.mIsUserCreated = A.mIsUserCreated;
 		B.mName = A.mName;
 		B.mTime = A.mTime;
-		B.mColor = A.mColor;
 		B.mAttributes = A.getAttributes();
 		B.mBoundingBox = A.getBoundingBox();
 		B.mConvexHull = A.getConvexHull();
@@ -376,15 +392,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	public double getCenterY() {
 		return (getMinY() + getMaxY()) / 2.0;
-	}
-
-	/**
-	 * Gets the color of the object
-	 * 
-	 * @return
-	 */
-	public Color getColor() {
-		return mColor;
 	}
 
 	/**
@@ -611,17 +618,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	/**
-	 * In general you should not be setting a UUID unless you are loading in
-	 * pre-existing objects with pre-existing UUIDs.
-	 * 
-	 * @param id
-	 *            the unique id for the object
-	 */
-	public void setId(UUID id) {
-		mId = UUID.fromString(id.toString());
-	}
-
-	/**
 	 * An object can have a name, such as "triangle1".
 	 * 
 	 * @param name
@@ -629,17 +625,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	 */
 	public void setName(String name) {
 		mName = name;
-	}
-
-	/**
-	 * Sets the time the object was created. This probably should only be used
-	 * when loading in pre-existing objects.
-	 * 
-	 * @param time
-	 *            the time the object was created.
-	 */
-	public void setTime(long time) {
-		mTime = time;
 	}
 
 	/**
