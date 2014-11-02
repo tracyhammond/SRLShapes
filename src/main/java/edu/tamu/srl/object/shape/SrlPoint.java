@@ -2,7 +2,6 @@ package edu.tamu.srl.object.shape;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

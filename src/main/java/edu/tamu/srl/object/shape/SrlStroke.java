@@ -1,7 +1,6 @@
 package edu.tamu.srl.object.shape;
 
 import java.awt.geom.AffineTransform;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 

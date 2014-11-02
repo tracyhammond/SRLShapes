@@ -2,7 +2,6 @@ package edu.tamu.srl.object.shape;
 
 import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
