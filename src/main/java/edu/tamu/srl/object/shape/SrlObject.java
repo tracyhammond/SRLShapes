@@ -359,15 +359,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	/**
-	 * Returns the angle of the diagonal of the bounding box of the shape
-	 * 
-	 * @return angle of the diagonal of the bounding box of the shape
-	 */
-	public double getBoundingBoxDiagonalAngle() {
-		return Math.atan(getHeight() / getWidth());
-	}
-
-	/**
 	 * Gets the center point of the stroke
 	 * 
 	 * @return the center of the bounding box
@@ -768,17 +759,16 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		return getLeft() > x;
 	}
 
-	
-	/**
-	 * Get the angle of the diagonal of the bounding box, i.e. the angle between
-	 * the line along the bottom of the bounding box and the line through the
-	 * bottom left and top right corners of the box.
-	 * 
-	 * @return angle of the diagonal of the bounding box.
-	 */
-	public double getDiagonalAngle() {
-		return Math.atan2(getHeight(), getWidth());
-	}
+    /**
+     * Get the angle of the diagonal of the bounding box, i.e. the angle between
+     * the line along the bottom of the bounding box and the line through the
+     * bottom left and top right corners of the box.
+     *
+     * @return angle of the diagonal of the bounding box.
+     */
+    public final double getBoundingBoxDiagonalAngle() {
+        return Math.atan2(getHeight(), getWidth());
+    }
 
     /**
      * @return the counter that is used in the creation of a UUID for each new {@linkplain SrlObject} that is created.
