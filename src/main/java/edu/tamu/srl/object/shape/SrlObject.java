@@ -23,18 +23,6 @@ import java.util.UUID;
 public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 
 	/**
-	 * counter will be incremented by 0x10000 for each new SComponent that is
-	 * created counter is used as the most significant bits of the UUID
-	 * 
-	 * initialized to 0x4000 (the version -- 4: randomly generated UUID) along
-	 * with 3 bytes of randomness: Math.random()*0x1000 (0x0 - 0xFFF)
-	 * 
-	 * the randomness further reduces the chances of collision between multiple
-	 * sketches created on multiple computers simultaneously
-	 */
-	public static long counter = 0x4000L | (long) (Math.random() * 0x1000);
-
-	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -102,17 +90,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 		};
 	}
 
-	/**
-	 * Generates a new UUID: based on a counter + time, version 4, variant bits
-	 * set time is nanoTime()
-	 * 
-	 * @return the UUID
-	 */
-	public static UUID nextID() {
-
-		counter += 0x10000L;
-		return new UUID(counter, System.nanoTime() | 0x8000000000000000L);
-	}
 
 	/**
 	 * Map of miscellaneous attributes (to store any attributes given for points
