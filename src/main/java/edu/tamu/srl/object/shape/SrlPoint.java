@@ -149,7 +149,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     }
 
     /**
-     * Takes
+     * Takes the points and sets them (these values can be defined from multiple constructors.
      * @param x The location in the x direction of the point.
      * @param y The location in the y direction of the point.
      */
@@ -170,11 +170,12 @@ public class SrlPoint extends SrlObject implements Serializable {
      * @return the distance
      */
     public static double distance(final double x1, final double y1, final double x2, final double y2) {
-        double xdiff = x1 - x2;
-        double ydiff = y1 - y2;
+        final double xdiff = x1 - x2;
+        final double ydiff = y1 - y2;
         return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     }
 
+    @SuppressWarnings("checkstyle:designforextension")
     @Override
     protected void applyTransform(final AffineTransform xform, final Set<SrlObject> xformed) {
         if (xformed.contains(this)) {
@@ -206,6 +207,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * This cloned object is only a shallow copy.
      * This copies all values and only the original location and the current location.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
         return new SrlPoint(this, false);
     }
@@ -213,6 +215,7 @@ public class SrlPoint extends SrlObject implements Serializable {
     /**
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override public SrlObject deepClone() {
         return new SrlPoint(this, true);
     }
@@ -249,10 +252,12 @@ public class SrlPoint extends SrlObject implements Serializable {
     /**
      * In this case the same as equalsBy Content
      */
+    @SuppressWarnings("checkstyle:designforextension")
     public boolean equals(final SrlObject o) {
         return equalsByContent(o);
     }
 
+    @SuppressWarnings("checkstyle:designforextension")
     @Override
     public boolean equalsByContent(final SrlObject other) {
         if (!(other instanceof SrlPoint)) {
@@ -345,7 +350,7 @@ public class SrlPoint extends SrlObject implements Serializable {
      * Just returns the x value
      * return x value
      */
-    public double getMinX() {
+    public final double getMinX() {
         return getX();
     }
 
@@ -358,10 +363,16 @@ public class SrlPoint extends SrlObject implements Serializable {
         return getY();
     }
 
+    /**
+     * @return The first x location of the point as defined by the constructor.
+     */
     public final double getOrigX() {
         return mXList.get(0);
     }
 
+    /**
+     * @return The first y location of the point as defined by the constructor.
+     */
     public final double getOrigY() {
         return mYList.get(0);
     }
