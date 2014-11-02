@@ -16,11 +16,6 @@ import edu.tamu.srl.settings.SrlInitialSettings;
  */
 public class SrlRectangle extends SrlShape {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private SrlPoint mTopLeftCorner = new SrlPoint(0,0);
 	private SrlPoint mBottomRightCorner = new SrlPoint(0,0);
 

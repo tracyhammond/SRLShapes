@@ -16,12 +16,7 @@ import java.util.UUID;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+public abstract class SrlObject implements Comparable<SrlObject> {
 
     /**
      * Default comparator using time.

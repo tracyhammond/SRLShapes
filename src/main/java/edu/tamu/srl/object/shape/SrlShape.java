@@ -14,13 +14,6 @@ import java.util.UUID;
 public abstract class SrlShape extends SrlObject implements Iterable<SrlObject>{
 
 	/**
-	 * This is for serializable. Note that if the code is recompiled with different 
-	 * member methods, the serializable will not be able to load in previously saved 
-	 * information
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * Was this object made up from a collection of subObjects? 
 	 * If so they are in this list.
 	 * This list usually gets filled in through recognition.

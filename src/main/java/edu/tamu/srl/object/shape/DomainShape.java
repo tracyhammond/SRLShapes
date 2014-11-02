@@ -11,11 +11,6 @@ import java.util.ArrayList;
  */
 public abstract class DomainShape extends SrlInterpretedShape {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	public DomainShape(ArrayList<SrlInterpretedShape> shapes){
 		for(SrlInterpretedShape o : shapes){
 			addSubShape(o);

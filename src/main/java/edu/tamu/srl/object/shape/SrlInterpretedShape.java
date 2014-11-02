@@ -9,14 +9,6 @@ public abstract class SrlInterpretedShape extends SrlShape {
 
     private ArrayList<SrlInterpretation> mInterpretations = new ArrayList<SrlInterpretation>();
 
-	/**
-	 * Needed for serialization
-	 * Note that if member variables are added
-	 * that are not transient, then serialization
-	 * will not hold for old saved dataS
-	 */
-	private static final long serialVersionUID = 1L;
-
 
 	/**
 	 * add an interpretation for an object

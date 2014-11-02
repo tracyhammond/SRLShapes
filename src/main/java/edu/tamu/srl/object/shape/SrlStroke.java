@@ -10,15 +10,8 @@ import java.util.Set;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlStroke extends SrlInterpretedShape implements Serializable {
-	
-	/**
-	 * This is for serialization of the stroke. 
-	 * That said if you add member variables, this is no longer 
-	 * serializable
-	 */
-	private static final long serialVersionUID = 1L;
-	
+public class SrlStroke extends SrlInterpretedShape {
+
 	/** 
 	 * This variable is simply to save the multiple recomputing of things over and over
 	 * It is reset when the points change

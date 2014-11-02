@@ -12,11 +12,6 @@ import java.util.Set;
  */
 public class SrlCircle extends SrlInterpretedShape {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private SrlPoint mCenter;
 	private double mRadius;
 

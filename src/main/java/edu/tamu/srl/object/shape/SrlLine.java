@@ -11,13 +11,7 @@ import edu.tamu.srl.settings.SrlInitialSettings;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlLine extends SrlInterpretedShape{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
+public class SrlLine extends SrlInterpretedShape {
 	
 	/**
 	 * Starting value of the line

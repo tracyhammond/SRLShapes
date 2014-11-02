@@ -14,12 +14,7 @@ import java.util.UUID;
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlPoint extends SrlObject implements Serializable {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+public class SrlPoint extends SrlObject {
 
     /**
      * A counter that keeps track of where you are in the history of points.
