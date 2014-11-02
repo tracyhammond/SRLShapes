@@ -543,24 +543,6 @@ public abstract class SrlObject implements Comparable<SrlObject>, Serializable {
 	}
 
 	/**
-	 * Paints this component.
-	 * 
-	 * @param g
-	 *            the graphics component
-	 */
-	public void paint(Graphics g) {
-		paint((Graphics2D) g);
-	}
-
-	/**
-	 * Paints this component.
-	 * 
-	 * @param g
-	 *            the 2D graphics component
-	 */
-	public abstract void paint(Graphics2D g);
-
-	/**
 	 * Removes the value and key of the specified attribute
 	 * 
 	 * @param key

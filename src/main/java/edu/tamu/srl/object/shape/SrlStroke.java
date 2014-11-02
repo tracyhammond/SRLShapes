@@ -179,21 +179,4 @@ public class SrlStroke extends SrlInterpretedShape implements Serializable{
 		m_points = allPoints;
 		return allPoints;
 	}
-
-	/**
-	 * Paints the lines with the thickness based on the initial pressure
-	 */
-	@Override
-	public void paint(Graphics2D g) {
-		for(int i = 0; i < getPoints().size() - 1; i++){
-			SrlPoint p1 = getPoints().get(i);
-			SrlPoint p2 = getPoints().get(i+1);
-			g.setStroke(new BasicStroke(p1.getPressure().intValue()));
-			g.draw(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
-			if(SrlInitialSettings.InitialDrawPoints){
-				p1.paint(g);
-				p2.paint(g);
-			}
-		}
-	}
 }

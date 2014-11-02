@@ -3,9 +3,7 @@
  */
 package edu.tamu.srl.object.shape;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.Set;
 
@@ -202,19 +200,6 @@ public class SrlRectangle extends SrlShape {
 	 */
 	@Override
 	protected void calculateBBox() {
-	}
-
-	@Override
-	public void paint(Graphics2D g) {
-		if (getColor() != null)
-			g.setColor(getColor());
-		g.setStroke(new BasicStroke(SrlInitialSettings.InitialRectangleBorderThickness));
-		g.drawRect((int)getMinX(), (int)getMinY(), (int)getWidth(), (int)getHeight());
-		if(m_fill){
-			if (getColor() != null)
-				g.setColor(m_fillColor);
-			g.fillRect((int)getMinX(), (int)getMinY(), (int)getWidth(), (int)getHeight());
-		}
 	}
 
 	private Color m_fillColor = SrlInitialSettings.InitialRectangleFillColor;

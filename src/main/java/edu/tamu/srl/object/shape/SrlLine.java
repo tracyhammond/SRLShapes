@@ -1,8 +1,5 @@
 package edu.tamu.srl.object.shape;
 
-
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.util.Set;
@@ -362,18 +359,6 @@ public class SrlLine extends SrlInterpretedShape{
 		// TODO Auto-generated method stub
 		
 	}
-
-	/**
-	 * Draws a line with the pressure of the initial point
-	 */
-	@Override
-	public void paint(Graphics2D g) {
-		if (getColor() != null)
-			g.setColor(getColor());
-		g.setStroke(new BasicStroke(getP1().getPressure().intValue()));
-		g.draw(new Line2D.Double(getP1().getX(), getP1().getY(), getP2().getX(), getP2().getY()));	
-	}
-
 
 	/**
 	 * Sets the bounding box around the line

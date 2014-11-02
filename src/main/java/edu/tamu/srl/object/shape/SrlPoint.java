@@ -1,6 +1,5 @@
 package edu.tamu.srl.object.shape;
 
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -48,11 +47,6 @@ public class SrlPoint extends SrlObject implements Serializable{
 	 * A counter that keeps track of where you are in the history of points
 	 */
 	private int m_currentElement = -1;
-
-	/**
-	 * When painting the point, what size should they be painted
-	 */
-	private int m_paintRadius = SrlInitialSettings.InitialPointRadius;
 
 	/**
 	 * Points can have pressure depending on the input device
@@ -154,7 +148,6 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public SrlPoint(SrlPoint p){
 		super(p);
 		this.m_currentElement = p.m_currentElement;
-		this.m_paintRadius = p.m_paintRadius;
 		this.m_pressure = p.m_pressure;
 		this.m_tiltX = p.m_tiltX;
 		this.m_tiltY = p.m_tiltY;
@@ -320,11 +313,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 	public double getOrigY(){
 		return m_yList.get(0);
 	}
-	
-	public int getPaintRadius(){
-		return m_paintRadius;
-	}
-	
+
 	/**
 	 * Points can have pressure depending on the input device
 	 * @return the pressure of the point
@@ -398,15 +387,7 @@ public class SrlPoint extends SrlObject implements Serializable{
 
 		return (int) getX() + (int) getY() + (int) getTime();
 	}
-	
-	@Override
-	public void paint(Graphics2D g) {
-		if (getColor() != null)
-			g.setColor(getColor());
-		int diameter = m_paintRadius * 2;
-		g.fillOval((int) getY() - getPaintRadius(), (int) getY() - getPaintRadius(), diameter, diameter);
-	}
-	
+
 	/** 
 	 * Scales the point by the amount x and y. 
 	 * Having x and y specified allows one to change the 
@@ -451,10 +432,6 @@ public class SrlPoint extends SrlObject implements Serializable{
 	    m_yList.add(y);
 	    m_currentElement = m_xList.size() - 1;
 	  }
-
-	public void setPaintRadius(int radius){
-		m_paintRadius = radius;
-	}
 	
 	/**
 	 * Set the pressure of the point.

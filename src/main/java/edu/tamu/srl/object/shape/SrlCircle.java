@@ -3,7 +3,6 @@
  */
 package edu.tamu.srl.object.shape;
 
-import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.Set;
 
@@ -116,12 +115,6 @@ public class SrlCircle extends SrlInterpretedShape {
 
 	@Override
 	protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void paint(Graphics2D g) {
 		// TODO Auto-generated method stub
 		
 	}
