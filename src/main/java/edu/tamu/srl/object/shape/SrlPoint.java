@@ -1,5 +1,7 @@
 package edu.tamu.srl.object.shape;
 
+import edu.tamu.srl.settings.SrlInitialSettings;
+
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -9,19 +11,18 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
-import edu.tamu.srl.settings.SrlInitialSettings;
-
 /**
- * Point data class
+ * Point data class.
+ *
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public class SrlPoint extends SrlObject implements Serializable{
+public class SrlPoint extends SrlObject implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * A counter that keeps track of where you are in the history of points
@@ -56,480 +57,532 @@ public class SrlPoint extends SrlObject implements Serializable{
      */
     private ArrayList<Double> mYList = new ArrayList<Double>();
 
-	/**
-	 * Because it is serializable, that means we can save to a file, but if we change this class
-	 * it might break the ability to read the file back in.
-	 */
+    /**
+     * Because it is serializable, that means we can save to a file, but if we change this class
+     * it might break the ability to read the file back in.
+     */
 
-	/**
-	   * Return the distance from the point specified by (x,y) to this point
-	   * @param x2 the x value of the other point
-	   * @param y2 the y value of the other point
-	   * @return the distance
-	   */
-	public static double distance(double x1, double y1 , double x2, double y2) {
-		double xdiff = x1 -x2;
-		double ydiff = y1 - y2;
-	    return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
-	  }
+    /**
+     * Creates a point with the initial points at x,y
+     *
+     * @param x the initial x point
+     * @param y the initial y point
+     */
+    public SrlPoint(final double x, final double y) {
+        setP(x, y);
+        setDescription("Initial Points: " + x + "," + y);
+        setType("Point");
+        setName("p");
+    }
 
-	/**
-	 * Creates a point with the initial points at x,y
-	 * @param x the initial x point
-	 * @param y the initial y point
-	 */
-	public SrlPoint(double x, double y) {
-		setP(x,y);
-		setColor(SrlInitialSettings.InitialPointColor);
-		setDescription("Initial Points: " + x + "," + y);
-		setType("Point");
-		setName("p");
-	}
-	
-	/**
-	 * Creates a point with the initial points at x,y
-	 * @param x the initial x point
-	 * @param y the initial y point
-	 * @param time the time the point was made
-	 */
-	public SrlPoint(double x, double y, long time) {
-		this(x,y);
-		setTime(time);    
-	}
-	
-	/**
-	 * New constructor that takes a UUID.
-	 * 
-	 * @param x
-	 *            x value of the point.
-	 * @param y
-	 *            y value of the point.
-	 * @param time
-	 *            time stamp.
-	 * @param id
-	 *            point ID (.equals)
-	 */
-	public SrlPoint(double x, double y, long time, UUID id) {
-		this(x, y, time);
-		setId(id);
-	}
-	
-	/**
-	 * Creates a new point with the specified values
-	 * @param x
-	 * @param y
-	 * @param time
-	 * @param id
-	 * @param tiltX
-	 * @param tiltY
-	 * @param pressure
-	 */
-	public SrlPoint(double x, double y, long time, UUID id, double tiltX, double tiltY, double pressure){
-		this(x,y,time,id);
-		setTilt(tiltX, tiltY);
-		setPressure(pressure);
-	}
+    /**
+     * Creates a point with the initial points at x,y
+     *
+     * @param x    the initial x point
+     * @param y    the initial y point
+     * @param time the time the point was made
+     */
+    public SrlPoint(final double x, final double y, final long time) {
+        this(x, y);
+        setTime(time);
+    }
 
-	/**
-	 * Create a new point from a mouse event
-	 * @param e
-	 */
-	public SrlPoint(MouseEvent e) {
-		this(e.getX(), e.getY(), e.getWhen());
-	}
+    /**
+     * New constructor that takes a UUID.
+     *
+     * @param x    x value of the point.
+     * @param y    y value of the point.
+     * @param time time stamp.
+     * @param id   point ID (.equals)
+     */
+    public SrlPoint(double x, double y, long time, UUID id) {
+        super(time, id);
 
-	/**
-	 * Construct a new point with the same elements
-	 * @param p
-	 */
-	public SrlPoint(SrlPoint p){
-		super(p);
-		this.mCurrentElement = p.mCurrentElement;
-		this.mPressure = p.mPressure;
-		this.mTiltX = p.mTiltX;
-		this.mTiltY = p.mTiltY;
-	    for(int i = 0; i < p.mXList.size(); i++){
-	      mXList.add((double) p.mXList.get(i));
-	      mYList.add((double) p.mYList.get(i));
-	    }
-	}
-	
-	@Override
-	protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
-		if (xformed.contains(this))
-			return;
-		xformed.add(this);
-		Point2D point = xform.transform(new Point2D.Double(getX(), getY()),
-				new Point2D.Double());
-		setP(point.getX(), point.getY());
-	}
-	
-	/**
-	 * Calculated the bounding box of the shape
-	 */
-	protected void calculateBBox() {
-		mBoundingBox = new SrlRectangle(this, this);
-	}
+    }
 
-	/**
-	 * Compare this point to another point based on time.
-	 * 
-	 * @param p
-	 *            point to compare to.
-	 * @return time difference between points.
-	 */
-	public int compareTo(SrlPoint p) {
-		int timeDiff = (int) (this.getTime() - p.getTime());
-		if (timeDiff != 0)
-			return timeDiff;
+    /**
+     * Creates a new point with the specified values
+     *
+     * @param x
+     * @param y
+     * @param time
+     * @param id
+     * @param tiltX
+     * @param tiltY
+     * @param pressure
+     */
+    public SrlPoint(double x, double y, long time, UUID id, double tiltX, double tiltY, double pressure) {
+        this(x, y, time, id);
+        setTilt(tiltX, tiltY);
+        setPressure(pressure);
+    }
 
-		int xDiff = (int) (this.getX() - p.getX());
-		if (xDiff != 0)
-			return xDiff;
+    /**
+     * Create a new point from a mouse event
+     *
+     * @param e
+     */
+    public SrlPoint(MouseEvent e) {
+        this(e.getX(), e.getY(), e.getWhen());
+    }
 
-		int yDiff = (int) (this.getY() - p.getY());
-		if (yDiff != 0)
-			return yDiff;
+    /**
+     * Construct a new point with the same elements
+     *
+     * @param p
+     */
+    public SrlPoint(SrlPoint p) {
+        super(p);
+        this.mCurrentElement = p.mCurrentElement;
+        this.mPressure = p.mPressure;
+        this.mTiltX = p.mTiltX;
+        this.mTiltY = p.mTiltY;
+        for (int i = 0; i < p.mXList.size(); i++) {
+            mXList.add((double) p.mXList.get(i));
+            mYList.add((double) p.mYList.get(i));
+        }
+    }
 
-		int idDiff = this.getId().compareTo(p.getId());
-		// if(idDiff!=0)
-		return idDiff;
-
-	}
-	
-	/**
-	 * In this case the same as equalsBy Content
-	 */
-	public boolean equals(SrlObject o){
-		return equalsByContent(o);
-	}
-	
-	@Override
-	public boolean equalsByContent(SrlObject other) {
-		if (!(other instanceof SrlPoint)){return false;}
-		SrlPoint otherpoint = (SrlPoint)other;
-		if (getPressure() != otherpoint.getPressure()){return false;}
-		if (getTiltX() != otherpoint.getTiltX()){return false;}
-		if (getTiltY() != otherpoint.getTiltY()){return false;}
-		if (getX() != otherpoint.getX()){return false;}
-		if (getY() != otherpoint.getY()){return false;}
-		if (getTime() != otherpoint.getTime()){return false;}
-		return true;
-	}
-
-
-	/**
-	 * Check if the x y t values match (probably the same initial point)
-	 * @param p
-	 * @return
-	 */
-	public boolean equalsXYTime(SrlPoint p) {
-		return (p.getX() == getX() && p.getY() == getY() && p.getTime() == getTime());
-	}
-
-	/**
-	 * If we translate, or rotate, we need to recompute values
-	 * We don't recompute time, because that does not need to be overwritten
-	 */
-	public void flagExternalUpdate() {
-		// Note: don't overwrite time
-		setBoundingBox(null);
-		setConvexHull(null);
-	}
-	
-	/**
-	 * Return an object drawable by AWT
-	 * return awt point
-	 */
-	public Point getAWT(){
-		return new Point((int)getX(),(int)getY());
-	}
-
-	/**
-	 * Get the x value for the first point in the history
-	 * @return
-	 */
-	public double getInitialX(){
-		if(mXList.size() == 0){
-			return Double.NaN;
-		}
-		return mXList.get(0);
-	}
-	
-	/**
-	 * Get the y value for the first point in the history
-	 * @return
-	 */
-	public double getInitialY(){
-		if(mYList.size() == 0){
-			return Double.NaN;
-		}
-		return mYList.get(0);
-	}
-	  
-	@Override
-	/**
-	 * Just returns the x value 
-	 * return x value
-	 */
-	public double getMaxX() {
-		return getX();
-	}
-
-	 @Override
-	/**
-	 * Just returns the y value
-	 * return y value
-	 */
-	public double getMaxY() {
-		return getY();
-	}
-  
-	@Override
-	/**
-	 * Just returns the x value 
-	 * return x value
-	 */
-	public double getMinX() {
-		return getX();
-	}
-	
-	@Override
-	/**
-	 * Just returns the y value 
-	 * return y value
-	 */
-	public double getMinY() {
-		return getY();
-	}
-	
-	public double getOrigX(){
-		return mXList.get(0);
-	}
-	
-	public double getOrigY(){
-		return mYList.get(0);
-	}
-
-	/**
-	 * Points can have pressure depending on the input device
-	 * @return the pressure of the point
-	 */
-	public Double getPressure() {
-		return mPressure;
-	}
-
-	/**
-	 * Get the tilt in the X direction.
-	 * 
-	 * @return tilt in the X direction.
-	 */
-	public Double getTiltX() {
-		return mTiltX;
-	}
-	  
-	/**
-	 * Get the tilt in the Y direction.
-	 * 
-	 * @return tilt in the Y direction.
-	 */
-	public Double getTiltY() {
-		return mTiltY;
-	}
-	
-	/**
-	 * Get the current x value of the point
-	 * @return current x value of the point
-	 */
-	public double getX(){
-		return mXList.get(mCurrentElement);
-	}
-
-	/**
-	 * We keep a history of the x values as the point is transformed
-	 * @return the history of the x values
-	 */
-	public ArrayList<Double> getxList() {
-		return mXList;
-	}
-
-	/**
-	 * Get the current y value of the point
-	 * @return current y value of the point
-	 */
-	public double getY(){
-		return mYList.get(mCurrentElement);
-	}
-
-	/**
-	 * We keep a history of the y values as the point is transformed
-	 * @return the history of the y values
-	 */
-	public ArrayList<Double> getyList() {
-		return mYList;
-	}
-
-	/**
-	 * Get the original value of the point
-	 * @return a point where getx and gety return the first values that were added to the history
-	 */
-	public SrlPoint goBackToInitial(){
-		if(mCurrentElement >= 0){
-			mCurrentElement = 0;
-		}
-		return this;
-	}
+    /**
+     * Return the distance from the point specified by (x,y) to this point
+     *
+     * @param x2 the x value of the other point
+     * @param y2 the y value of the other point
+     * @return the distance
+     */
+    public static double distance(double x1, double y1, double x2, double y2) {
+        double xdiff = x1 - x2;
+        double ydiff = y1 - y2;
+        return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+    }
 
     @Override
-	public int hashCode() {
+    protected void applyTransform(AffineTransform xform, Set<SrlObject> xformed) {
+        if (xformed.contains(this)) {
+            return;
+        }
+        xformed.add(this);
+        Point2D point = xform.transform(new Point2D.Double(getX(), getY()),
+                new Point2D.Double());
+        setP(point.getX(), point.getY());
+    }
 
-		return (int) getX() + (int) getY() + (int) getTime();
-	}
+    /**
+     * Calculated the bounding box of the shape
+     */
+    protected void calculateBBox() {
+        mBoundingBox = new SrlRectangle(this, this);
+    }
 
-	/** 
-	 * Scales the point by the amount x and y. 
-	 * Having x and y specified allows one to change the 
-	 * relative dimensions to match another shape if wanted.
-	 * Usually, these values will be the same to keep the 
-	 * relative dimensions equal
-	 * @param x the amount to scale in the x direction
-	 * @param y the amount to scale in the y direction
-	 */
-	public void scale(double x, double y) {
-	    mXList.add(x * getX());
-	    mYList.add(y * getY());
-	    mCurrentElement = mXList.size() - 1;
-	}
+    /**
+     * Called to calculate the convex hull of the object.
+     */
+    @Override protected void calculateConvexHull() {
 
-	public void set(double x, double y, long time) {
-		setP(x,y);
-		setTime(time);
-	}
-	
-	/**
-	 * Delete the entire point history and 
-	 * use these values as the starting point
-	 * @param x new initial x location
-	 * @param y new initial y location 
-	 */
-	public void setOrigP(double x, double y) {
-	  mXList = new ArrayList<Double>();
-	  mYList = new ArrayList<Double>();
-	  setP(x, y);
-	}
+    }
 
-	/**
-	 * Updates the location of the point
-	 * Also add this point to the history of the points 
-	 * so this can be undone.
-	 * @param x the new x location for the point
-	 * @param y the new y location for the point
-	 */
-	  public void setP(double x, double y) {
-	    mXList.add(x);
-	    mYList.add(y);
-	    mCurrentElement = mXList.size() - 1;
-	  }
-	
-	/**
-	 * Set the pressure of the point.
-	 * 
-	 * @param pressure
-	 *            pressure of the point.
-	 */
-	public void setPressure(double pressure) {
-		mPressure = pressure;
-	}
-	
-	/**
-	 * Sets the pressure of the point
-	 * @param pressure
-	 */
-	public void setPressure(Double pressure) {
-		mPressure = pressure;
-	}
-	
-	/**
-	 * Set the tilt of the point.
-	 * 
-	 * @param tiltX
-	 *            tilt in the X direction.
-	 * @param tiltY
-	 *            tilt in the Y direction.
-	 */
-	public void setTilt(double tiltX, double tiltY) {
-		setTiltX(tiltX);
-		setTiltY(tiltY);
-	}
+    /**
+     * @return A cloned object that is an instance of {@link edu.tamu.srl.object.shape.SrlObject}.
+     * This cloned object is only a shallow copy.
+     */
+    @Override public Object clone() {
+        return new SrlPoint(this);
+    }
 
-	/**
-	 * Set the tilt in the X direction.
-	 * 
-	 * @param tiltX
-	 *            tilt in the X direction.
-	 */
-	public void setTiltX(double tiltX) {
-		mTiltX = tiltX;
-	}
+    /**
+     * @return performs a deep clone of the object cloning all objects contained as well.
+     */
+    @Override public SrlObject deepClone() {
+        return new SrlPoint(this);
+    }
 
-	/**
-	 * Set the tilt in the Y direction.
-	 * 
-	 * @param tiltY
-	 *            tilt in the Y direction.
-	 */
-	public void setTiltY(double tiltY) {
-		mTiltY = tiltY;
-	}
+    /**
+     * Compare this point to another point based on time.
+     *
+     * @param p point to compare to.
+     * @return time difference between points.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public int compareTo(SrlPoint p) {
+        final int timeDiff = (int) (this.getTime() - p.getTime());
+        if (timeDiff != 0) {
+            return timeDiff;
+        }
 
-	
-	/**
-	 * Converts the Core Sketch Point object to the equivalent AWT Point .
-	 * 
-	 * @return the Core Sketch-to-AWT converted point
-	 */
-	public java.awt.Point toAWTpoint() {
+        final int xDiff = (int) (this.getX() - p.getX());
+        if (xDiff != 0) {
+            return xDiff;
+        }
 
-		java.awt.Point awtPoint = new java.awt.Point(new Double(getX()).intValue(),
-				new Double(getY()).intValue());
+        final int yDiff = (int) (this.getY() - p.getY());
+        if (yDiff != 0) {
+            return yDiff;
+        }
 
-		return awtPoint;
-	}
+        final int idDiff = this.getId().compareTo(p.getId());
+        // if(idDiff!=0)
+        return idDiff;
 
-	/**
-	 * Returns a string of [x,y,time]
-	 * @return a string of [x,t,time]
-	 */
-	public String toString(){
-		return "<" + getX() + "," + getY() + "," + getTime() + ">";
-	}
-	
-	
-	/**
-	 * Translate the point in the amount x,y
-	 * Saves the point it was before in case we need to undo the translation
-	 * @param x amount to move in the x direction
-	 * @param y amount to move in the y direction
-	 */
-	public void translate(double x, double y) {
-	    mXList.add(x + getX());
-	    mYList.add(y + getY());
-	    mCurrentElement = mXList.size() - 1;
-	}
-	
-	/**
-	 * Remove last point update
-	 * If there is only one x,y value in the history,
-	 * then it does nothing
-	 * Returns the updated shape (this)
-	 */
-	public SrlPoint undoLastChange() {
-	  if (mXList.size() < 2) { return this; }
-	  if (mYList.size() < 2) { return this; }
-	  mXList.remove(mXList.size() - 1);
-	  mYList.remove(mYList.size() - 1);
-	  mCurrentElement -= 1;
-	  return this;
-	}
-	
+    }
+
+    /**
+     * In this case the same as equalsBy Content
+     */
+    public boolean equals(SrlObject o) {
+        return equalsByContent(o);
+    }
+
+    @Override
+    public boolean equalsByContent(SrlObject other) {
+        if (!(other instanceof SrlPoint)) {
+            return false;
+        }
+        SrlPoint otherpoint = (SrlPoint) other;
+        if (getPressure() != otherpoint.getPressure()) {
+            return false;
+        }
+        if (getTiltX() != otherpoint.getTiltX()) {
+            return false;
+        }
+        if (getTiltY() != otherpoint.getTiltY()) {
+            return false;
+        }
+        if (getX() != otherpoint.getX()) {
+            return false;
+        }
+        if (getY() != otherpoint.getY()) {
+            return false;
+        }
+        if (getTime() != otherpoint.getTime()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the x y t values match (probably the same initial point)
+     *
+     * @param p
+     * @return
+     */
+    public boolean equalsXYTime(SrlPoint p) {
+        return (p.getX() == getX() && p.getY() == getY() && p.getTime() == getTime());
+    }
+
+    /**
+     * If we translate, or rotate, we need to recompute values
+     * We don't recompute time, because that does not need to be overwritten
+     */
+    public void flagExternalUpdate() {
+        // Note: don't overwrite time
+        setBoundingBox(null);
+        setConvexHull(null);
+    }
+
+    /**
+     * Return an object drawable by AWT
+     * return awt point
+     */
+    public Point getAWT() {
+        return new Point((int) getX(), (int) getY());
+    }
+
+    /**
+     * Get the x value for the first point in the history
+     *
+     * @return
+     */
+    public double getInitialX() {
+        if (mXList.size() == 0) {
+            return Double.NaN;
+        }
+        return mXList.get(0);
+    }
+
+    /**
+     * Get the y value for the first point in the history
+     *
+     * @return
+     */
+    public double getInitialY() {
+        if (mYList.size() == 0) {
+            return Double.NaN;
+        }
+        return mYList.get(0);
+    }
+
+    @Override
+    /**
+     * Just returns the x value
+     * return x value
+     */
+    public double getMaxX() {
+        return getX();
+    }
+
+    @Override
+    /**
+     * Just returns the y value
+     * return y value
+     */
+    public double getMaxY() {
+        return getY();
+    }
+
+    @Override
+    /**
+     * Just returns the x value
+     * return x value
+     */
+    public double getMinX() {
+        return getX();
+    }
+
+    @Override
+    /**
+     * Just returns the y value
+     * return y value
+     */
+    public double getMinY() {
+        return getY();
+    }
+
+    public double getOrigX() {
+        return mXList.get(0);
+    }
+
+    public double getOrigY() {
+        return mYList.get(0);
+    }
+
+    /**
+     * Points can have pressure depending on the input device
+     *
+     * @return the pressure of the point
+     */
+    public Double getPressure() {
+        return mPressure;
+    }
+
+    /**
+     * Sets the pressure of the point
+     *
+     * @param pressure
+     */
+    public void setPressure(Double pressure) {
+        mPressure = pressure;
+    }
+
+    /**
+     * Get the tilt in the X direction.
+     *
+     * @return tilt in the X direction.
+     */
+    public Double getTiltX() {
+        return mTiltX;
+    }
+
+    /**
+     * Set the tilt in the X direction.
+     *
+     * @param tiltX tilt in the X direction.
+     */
+    public void setTiltX(double tiltX) {
+        mTiltX = tiltX;
+    }
+
+    /**
+     * Get the tilt in the Y direction.
+     *
+     * @return tilt in the Y direction.
+     */
+    public Double getTiltY() {
+        return mTiltY;
+    }
+
+    /**
+     * Set the tilt in the Y direction.
+     *
+     * @param tiltY tilt in the Y direction.
+     */
+    public void setTiltY(double tiltY) {
+        mTiltY = tiltY;
+    }
+
+    /**
+     * Get the current x value of the point
+     *
+     * @return current x value of the point
+     */
+    public double getX() {
+        return mXList.get(mCurrentElement);
+    }
+
+    /**
+     * We keep a history of the x values as the point is transformed
+     *
+     * @return the history of the x values
+     */
+    public ArrayList<Double> getxList() {
+        return mXList;
+    }
+
+    /**
+     * Get the current y value of the point
+     *
+     * @return current y value of the point
+     */
+    public double getY() {
+        return mYList.get(mCurrentElement);
+    }
+
+    /**
+     * We keep a history of the y values as the point is transformed
+     *
+     * @return the history of the y values
+     */
+    public ArrayList<Double> getyList() {
+        return mYList;
+    }
+
+    /**
+     * Get the original value of the point
+     *
+     * @return a point where getx and gety return the first values that were added to the history
+     */
+    public SrlPoint goBackToInitial() {
+        if (mCurrentElement >= 0) {
+            mCurrentElement = 0;
+        }
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return (int) getX() + (int) getY() + (int) getTime();
+    }
+
+    /**
+     * Scales the point by the amount x and y.
+     * Having x and y specified allows one to change the
+     * relative dimensions to match another shape if wanted.
+     * Usually, these values will be the same to keep the
+     * relative dimensions equal
+     *
+     * @param x the amount to scale in the x direction
+     * @param y the amount to scale in the y direction
+     */
+    public void scale(double x, double y) {
+        mXList.add(x * getX());
+        mYList.add(y * getY());
+        mCurrentElement = mXList.size() - 1;
+    }
+
+    public void set(double x, double y, long time) {
+        setP(x, y);
+        setTime(time);
+    }
+
+    /**
+     * Delete the entire point history and
+     * use these values as the starting point
+     *
+     * @param x new initial x location
+     * @param y new initial y location
+     */
+    public void setOrigP(double x, double y) {
+        mXList = new ArrayList<Double>();
+        mYList = new ArrayList<Double>();
+        setP(x, y);
+    }
+
+    /**
+     * Updates the location of the point
+     * Also add this point to the history of the points
+     * so this can be undone.
+     *
+     * @param x the new x location for the point
+     * @param y the new y location for the point
+     */
+    public void setP(double x, double y) {
+        mXList.add(x);
+        mYList.add(y);
+        mCurrentElement = mXList.size() - 1;
+    }
+
+    /**
+     * Set the pressure of the point.
+     *
+     * @param pressure pressure of the point.
+     */
+    public void setPressure(double pressure) {
+        mPressure = pressure;
+    }
+
+    /**
+     * Set the tilt of the point.
+     *
+     * @param tiltX tilt in the X direction.
+     * @param tiltY tilt in the Y direction.
+     */
+    public void setTilt(double tiltX, double tiltY) {
+        setTiltX(tiltX);
+        setTiltY(tiltY);
+    }
+
+    /**
+     * Converts the Core Sketch Point object to the equivalent AWT Point .
+     *
+     * @return the Core Sketch-to-AWT converted point
+     */
+    public java.awt.Point toAWTpoint() {
+
+        java.awt.Point awtPoint = new java.awt.Point(new Double(getX()).intValue(),
+                new Double(getY()).intValue());
+
+        return awtPoint;
+    }
+
+    /**
+     * Returns a string of [x,y,time]
+     *
+     * @return a string of [x,t,time]
+     */
+    public String toString() {
+        return "<" + getX() + "," + getY() + "," + getTime() + ">";
+    }
+
+    /**
+     * Translate the point in the amount x,y
+     * Saves the point it was before in case we need to undo the translation
+     *
+     * @param x amount to move in the x direction
+     * @param y amount to move in the y direction
+     */
+    public void translate(double x, double y) {
+        mXList.add(x + getX());
+        mYList.add(y + getY());
+        mCurrentElement = mXList.size() - 1;
+    }
+
+    /**
+     * Remove last point update
+     * If there is only one x,y value in the history,
+     * then it does nothing
+     * Returns the updated shape (this)
+     */
+    public SrlPoint undoLastChange() {
+        if (mXList.size() < 2) {
+            return this;
+        }
+        if (mYList.size() < 2) {
+            return this;
+        }
+        mXList.remove(mXList.size() - 1);
+        mYList.remove(mYList.size() - 1);
+        mCurrentElement -= 1;
+        return this;
+    }
+
 }
