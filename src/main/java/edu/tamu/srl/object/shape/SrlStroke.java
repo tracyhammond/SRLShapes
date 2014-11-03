@@ -47,29 +47,29 @@ public class SrlStroke extends SrlShape {
     /**
      * This is a constructor to be used in place of the clone method.
      *
-     * @param s
+     * @param s the stroke being copied.
      */
     public SrlStroke(final SrlStroke s) {
         super(s);
     }
 
     /**
-     * Adding another point to the stroke
+     * Adding another point to the stroke.
      *
-     * @param point
+     * @param point the point being added to the stroke.
      */
-    public void addPoint(final SrlPoint point) {
+    public final void addPoint(final SrlPoint point) {
         flagExternalUpdate();
         add(point);
         point.setName("p" + getPoints().size());
     }
 
     /**
-     * Adds all of the points to the stroke
+     * Adds all of the points to the stroke.
      *
      * @param points points to add to the stroke
      */
-    public void addPoints(final ArrayList<SrlPoint> points) {
+    public final void addPoints(final ArrayList<SrlPoint> points) {
         flagExternalUpdate();
         getPoints().addAll(points);
 
@@ -85,20 +85,23 @@ public class SrlStroke extends SrlShape {
     /**
      * @return A cloned object that is an instance of {@link edu.tamu.srl.object.shape.SrlObject}.  This cloned object is only a shallow copy.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
-        return null;
+        return new SrlStroke(this);
     }
 
     /**
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override public SrlObject deepClone() {
-        return null;
+        return new SrlStroke(this);
     }
 
     @Override
-    public boolean equalsByContent(SrlObject other) {
-        SrlStroke otherstroke = (SrlStroke) other;
+    @SuppressWarnings("checkstyle:designforextension")
+    public boolean equalsByContent(final SrlObject other) {
+        final SrlStroke otherstroke = (SrlStroke) other;
         int i = 0;
         for (SrlPoint p : getPoints()) {
             if (!p.equalsByContent(otherstroke.getPoint(i))) {
@@ -112,6 +115,7 @@ public class SrlStroke extends SrlShape {
     /**
      * Flags an external update.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     public void flagExternalUpdate() {
         super.flagExternalUpdate();
         mPoints = null;
@@ -124,7 +128,8 @@ public class SrlStroke extends SrlShape {
      * @param xCenter the x-coordinate to rotate from
      * @param yCenter the y-coordinate to rotate from
      */
-    @Override public void rotate(double radians, double xCenter, double yCenter) {
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public void rotate(final double radians, final double xCenter, final double yCenter) {
         // TODO implement
         throw new UnsupportedOperationException("rotate is not supported");
     }
@@ -135,17 +140,16 @@ public class SrlStroke extends SrlShape {
      * @param xfactor the x-factor
      * @param yfactor the y-factor
      */
-    @Override public void scale(double xfactor, double yfactor) {
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public void scale(final double xfactor, final double yfactor) {
         // TODO implement
         throw new UnsupportedOperationException("scale is not supported");
     }
 
     /**
-     * Gets all the points in the substrokes as well as this stroke
-     *
-     * @return
+     * @return all the points in the substrokes as well as this stroke.
      */
-    public ArrayList<SrlPoint> getAllPoints() {
+    public final ArrayList<SrlPoint> getAllPoints() {
         return super.getPoints();
     }
 
@@ -155,7 +159,8 @@ public class SrlStroke extends SrlShape {
      *
      * @return first point in the stroke
      */
-    public SrlPoint getFirstPoint() {
+    @SuppressWarnings("checkstyle:designforextension")
+    public final SrlPoint getFirstPoint() {
         if (getPoints().size() == 0) {
             return null;
         }
@@ -168,7 +173,8 @@ public class SrlStroke extends SrlShape {
      *
      * @return last point in the stroke.
      */
-    public SrlPoint getLastPoint() {
+    @SuppressWarnings("checkstyle:designforextension")
+    public final SrlPoint getLastPoint() {
         if (getPoints().size() == 0) {
             return null;
         }
@@ -176,22 +182,23 @@ public class SrlStroke extends SrlShape {
     }
 
     /**
-     * Gets the number of points in the stroke
+     * Gets the number of points in the stroke.
      *
      * @return number of points in the stroke
      */
-    public int getNumPoints() {
+    public final int getNumPoints() {
         return getPoints().size();
     }
 
     /**
-     * Get the i'th point in the stroke
+     * Get the i'th point in the stroke.
      * The first point has index i = 0
      *
      * @param i the index of the stroke
-     * @return the point at index i
+     * @return The point at index i.
      */
-    public SrlPoint getPoint(final int i) {
+    @SuppressWarnings("checkstyle:designforextension")
+    public final SrlPoint getPoint(final int i) {
         if (i >= getPoints().size()) {
             return null;
         }
@@ -201,8 +208,10 @@ public class SrlStroke extends SrlShape {
     /**
      * Gets the immediate points in the stroke since this may also
      * contain substrokes, we don't want those points to be included in
-     * this. (getAllPoints() also gets the sub points in any substrokes)
+     * this. (getAllPoints() also gets the sub points in any substrokes).
+     * @return a list of all of the points in the immediate stroke.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override
     public ArrayList<SrlPoint> getPoints() {
         if (mPoints != null) {
