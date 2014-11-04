@@ -2,6 +2,7 @@ package edu.tamu.srl.sketch.core.object;
 
 import edu.tamu.srl.sketch.core.abstracted.SrlObject;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlAuthor;
+import edu.tamu.srl.sketch.core.tobenamedlater.SrlDevice;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlPen;
 import edu.tamu.srl.sketch.core.virtual.SrlPoint;
 
@@ -34,7 +35,13 @@ public class SrlStroke extends SrlObject {
      * Pen used to draw the stroke.
      *
      * The pen is a term used to define anything that made the stroke.
-     * The pen could be a computer mouse, it could be a digital pen or it could be an actual finger.
+     * Because a single device can support multiple types of input he pen could be a computer mouse,
+     * it could be a digital pen or it could be an actual finger.
      */
     private final SrlPen mPen;
+
+    /**
+     * Device the stroke was drawn on.
+     */
+    private final SrlDevice mDevice;
 }
