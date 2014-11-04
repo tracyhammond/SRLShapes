@@ -3,29 +3,33 @@
  */
 package edu.tamu.srl.object.shape;
 
-import edu.tamu.srl.settings.SrlInitialSettings;
-
-import java.awt.Color;
-
 /**
  * @author hammond
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlRectangle extends SrlShape {
 
-    private SrlPoint mTopLeftCorner = new SrlPoint(0, 0);
-    private SrlPoint mBottomRightCorner = new SrlPoint(0, 0);
-    private Color m_fillColor = SrlInitialSettings.InitialRectangleFillColor;
-    private boolean m_fill = SrlInitialSettings.InitialRectangleFill;
+    /**
+     * Top Left corner of the rectangle.
+     * Top Left is defined as a user facing the screen.
+     * Top Left should be less than the Bottom Right.
+     */
+    private SrlPoint mTopLeftCorner;
+
+    /**
+     * Bottom Right corner of the rectangle.
+     * Bottom Right is defined as a using facing the screen.
+     * Top Left should be less than the Bottom Right.
+     */
+    private SrlPoint mBottomRightCorner;
 
     /**
      * Constructor takes two points, and constructs a horizontal rectangle from this.
      *
-     * @param topLeftCorner
+     * @param topLeftCorner The point that is assigned as the top left corner. should be lower in
      * @param bottomRightCorner
      */
-    public SrlRectangle(SrlPoint topLeftCorner, SrlPoint bottomRightCorner) {
-        setColor(SrlInitialSettings.IntialRectangleColor);
+    public SrlRectangle(final SrlPoint topLeftCorner, final SrlPoint bottomRightCorner) {
         setTopLeftCorner(topLeftCorner);
         setBottomRightCorner(bottomRightCorner);
     }
@@ -38,8 +42,16 @@ public class SrlRectangle extends SrlShape {
      * @param maxX
      * @param maxY
      */
-    public SrlRectangle(double minX, double minY, double maxX, double maxY) {
+    public SrlRectangle(final double minX, final double minY, final double maxX, final double maxY) {
         this(new SrlPoint(minX, minY), new SrlPoint(maxX, maxY));
+    }
+
+    /**
+     * Copy constructor.
+     * @param srlObjects
+     */
+    public SrlRectangle(final SrlRectangle srlObjects) {
+        super(srlObjects);
     }
 
     /**
@@ -47,7 +59,7 @@ public class SrlRectangle extends SrlShape {
      *
      * @return
      */
-    public SrlPoint getBottomRightCorner() {
+    public final SrlPoint getBottomRightCorner() {
         return mBottomRightCorner;
     }
 
@@ -56,7 +68,7 @@ public class SrlRectangle extends SrlShape {
      *
      * @param bottomRightCorner
      */
-    public void setBottomRightCorner(SrlPoint bottomRightCorner) {
+    public final void setBottomRightCorner(SrlPoint bottomRightCorner) {
         mBottomRightCorner = bottomRightCorner;
     }
 
@@ -65,7 +77,7 @@ public class SrlRectangle extends SrlShape {
      * @see edu.tamu.srl.object.shape.SRL_Shape#getMinX()
      */
     @Override
-    public double getMinX() {
+    public final double getMinX() {
         return Math.min(mTopLeftCorner.getX(), mBottomRightCorner.getX());
     }
 
@@ -74,7 +86,7 @@ public class SrlRectangle extends SrlShape {
      * @see edu.tamu.srl.object.shape.SRL_Shape#getMinY()
      */
     @Override
-    public double getMinY() {
+    public final double getMinY() {
         return Math.min(mTopLeftCorner.getY(), mBottomRightCorner.getY());
     }
 
@@ -85,9 +97,9 @@ public class SrlRectangle extends SrlShape {
      * @param xCenter the x-coordinate to rotate from
      * @param yCenter the y-coordinate to rotate from
      */
-    @Override public void rotate(double radians, double xCenter, double yCenter) {
-        // TODO implement
-        throw new UnsupportedOperationException("rotate is not supported");
+    @Override public final void rotate(final double radians, final double xCenter, final double yCenter) {
+        mTopLeftCorner.rotate(radians, xCenter, yCenter);
+        mBottomRightCorner.rotate(radians, xCenter, yCenter);
     }
 
     /**
@@ -96,9 +108,9 @@ public class SrlRectangle extends SrlShape {
      * @param xfactor the x-factor
      * @param yfactor the y-factor
      */
-    @Override public void scale(double xfactor, double yfactor) {
-        // TODO implement
-        throw new UnsupportedOperationException("scale is not supported");
+    @Override public final void scale(final double xfactor, final double yfactor) {
+        mTopLeftCorner.scale(xfactor, yfactor);
+        mBottomRightCorner.scale(xfactor, yfactor);
     }
 
     /*
@@ -107,7 +119,7 @@ public class SrlRectangle extends SrlShape {
      * @see edu.tamu.srl.object.shape.SRL_Shape#getMaxX()
      */
     @Override
-    public double getMaxX() {
+    public final double getMaxX() {
         return Math.max(mTopLeftCorner.getX(), mBottomRightCorner.getX());
     }
 
@@ -116,46 +128,47 @@ public class SrlRectangle extends SrlShape {
      * @see edu.tamu.srl.object.shape.SRL_Shape#getMaxY()
      */
     @Override
-    public double getMaxY() {
+    public final double getMaxY() {
         return Math.max(mTopLeftCorner.getY(), mBottomRightCorner.getY());
     }
 
     /**
-     * Gets the top left corner point
+     * Gets the top left corner point.
      *
      * @return
      */
-    public SrlPoint getTopLeftCorner() {
+    public final SrlPoint getTopLeftCorner() {
         return mTopLeftCorner;
     }
 
     /**
-     * Sets the top left corner
+     * Sets the top left corner.
      *
      * @param topLeftCorner
      */
-    public void setTopLeftCorner(SrlPoint topLeftCorner) {
+    public final void setTopLeftCorner(final SrlPoint topLeftCorner) {
         mTopLeftCorner = topLeftCorner;
     }
 
     /**
-     * Translates the saved corner points and the subshapes
+     * Translates the saved corner points and the subshapes.
      *
      * @param x x amount to translate
      * @param y y amount to translate
      */
-    public void translate(double x, double y) {
+    public final void translate(final double x, final double y) {
         mTopLeftCorner.translate(x, y);
         mBottomRightCorner.translate(x, y);
         translateSubShapes(x, y);
     }
 
+    @SuppressWarnings("checkstyle:designforextension")
     @Override
-    public boolean equalsByContent(SrlObject other) {
+    public boolean equalsByContent(final SrlObject other) {
         if (!(other instanceof SrlRectangle)) {
             return false;
         }
-        SrlRectangle otherrectangle = (SrlRectangle) other;
+        final SrlRectangle otherrectangle = (SrlRectangle) other;
         if (!getTopLeftCorner().equals(otherrectangle.getTopLeftCorner())) {
             return false;
         }
@@ -166,19 +179,11 @@ public class SrlRectangle extends SrlShape {
     }
 
     /**
-     * This method just returns itself
-     * Overwrites this method to prevent an infinite loop
-     */
-    public SrlRectangle getBoundingBox() {
-        return this;
-    }
-
-    /**
      * Get the line segment along the top edge of this box.
      *
      * @return the segment along the top edge of this box.
      */
-    public SrlLine getTopSegment() {
+    public final SrlLine getTopSegment() {
         return new SrlLine(getMinX(), getMinY(), getMaxX(), getMinY());
     }
 
@@ -187,7 +192,7 @@ public class SrlRectangle extends SrlShape {
      *
      * @return The segment along the bottom edge of this box.
      */
-    public SrlLine getBottomSegment() {
+    public final SrlLine getBottomSegment() {
         return new SrlLine(getMinX(), getMaxY(), getMaxX(), getMaxY());
     }
 
@@ -196,7 +201,7 @@ public class SrlRectangle extends SrlShape {
      *
      * @return The segment along the left edge of this box.
      */
-    public SrlLine getLeftSegment() {
+    public final SrlLine getLeftSegment() {
         return new SrlLine(getMinX(), getMinY(), getMinX(), getMaxY());
     }
 
@@ -205,17 +210,40 @@ public class SrlRectangle extends SrlShape {
      *
      * @return The segment along the right edge of this box.
      */
-    public SrlLine getRightSegment() {
+    public final SrlLine getRightSegment() {
         return new SrlLine(getMaxX(), getMinY(), getMaxX(), getMaxY());
     }
 
     /*
-     * This method doesn't do anything because it would cause an infinite loop
-     * (non-Javadoc)
+     * Just sets the bounding box as itself
      * @see edu.tamu.srl.object.shape.SrlShape#calculateBBox()
      */
     @Override
-    protected void calculateBBox() {
+    protected final void calculateBBox() {
+        this.setBoundingBox(this);
+    }
+
+    /**
+     * Called to calculate the convex hull of the object.
+     */
+    @Override protected void calculateConvexHull() {
+
+    }
+
+    /**
+     * @return A cloned object that is an instance of {@link edu.tamu.srl.object.shape.SrlObject}.  This cloned object is only a shallow copy.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public Object clone() {
+        return new SrlRectangle(this);
+    }
+
+    /**
+     * @return performs a deep clone of the object cloning all objects contained as well.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public SrlObject deepClone() {
+        return  new SrlRectangle(this);
     }
 
 }
