@@ -86,7 +86,7 @@ public abstract class SrlObject extends SrlComponent {
      *
      * @param time The time the shape was originally created.
      * @param id   The unique identifier of the shape.
-     * @param isUserCreated true if the user created the stroke instead of the computer.
+     * @param isUserCreated True if the user created the stroke instead of the computer.
      */
     public SrlObject(final long time, final UUID id, final boolean isUserCreated) {
         this(time, id);
