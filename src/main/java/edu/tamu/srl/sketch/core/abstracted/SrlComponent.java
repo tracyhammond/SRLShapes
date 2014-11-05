@@ -79,6 +79,13 @@ public abstract class SrlComponent {
     }
 
     /**
+     * @param name sets the components name this can be useful for debugging. Example "triangle1".
+     */
+    public void setName(final String name) {
+        this.mName = mName;
+    }
+
+    /**
      * An object can have a name, such as "triangle1".
      *
      * @return the string name of the object.
