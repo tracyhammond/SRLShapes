@@ -1,5 +1,6 @@
 package edu.tamu.srl.sketch.core.virtual;
 
+import edu.tamu.srl.sketch.core.abstracted.SrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlVirtualObject;
 
 import java.util.ArrayList;
@@ -306,18 +307,133 @@ public class SrlPoint extends SrlVirtualObject {
     }
 
     /**
+     * @return A cloned object that is an instance of {@link edu.tamu.srl.sketch.core.abstracted.SrlComponent}.
+     * This cloned object is only a shallow copy.
+     * This copies all values and only the original location and the current location out of the history
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public Object clone() {
+        return new SrlPoint(this, false);
+    }
+
+    /**
+     * @return performs a deep clone of the object cloning all objects contained as well.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public SrlComponent deepClone() {
+        return new SrlPoint(this, true);
+    }
+
+    /**
+     * Performs a shallow equals.
+     *
+     * This checks the x, y, tilt, pressure and time.
+     * This does not check id.
+     * @param other the other SrlObject.
+     * @return true if content is equal, false otherwise
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override
+    public boolean shallowEquals(final SrlComponent other) {
+        if (!(other instanceof SrlPoint)) {
+            return false;
+        }
+        final SrlPoint otherpoint = (SrlPoint) other;
+        if (getPressure() != otherpoint.getPressure()) {
+            return false;
+        }
+        if (getTiltX() != otherpoint.getTiltX()) {
+            return false;
+        }
+        if (getTiltY() != otherpoint.getTiltY()) {
+            return false;
+        }
+        if (getX() != otherpoint.getX()) {
+            return false;
+        }
+        if (getY() != otherpoint.getY()) {
+            return false;
+        }
+        if (getTime() != otherpoint.getTime()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * In addition to calling {@link #shallowEquals(edu.tamu.srl.sketch.core.abstracted.SrlComponent)}
+     * this also compares the history and returns true if those are equal too.
+     *
+     * @param other the other SrlObject.
+     * @return true if content is equal, false otherwise
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public boolean deepEquals(final SrlComponent other) {
+        if (shallowEquals(other)) {
+            return true;
+        }
+        return this.getXList().equals(((SrlPoint) other).getXList())
+                && this.getYList().equals(((SrlPoint) other).getYList());
+    }
+
+    /**
+     * Compare this point to another point based on time.
+     * unless they have the same time then it is compared based on location (starting with X).
+     *
+     * @param p point to compare to.
+     * @return time difference between points.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override
+    public int compareTo(final SrlComponent p) {
+        if (!(p instanceof SrlPoint)) {
+            return super.compareTo(p);
+        }
+        final int timeDiff = (int) (this.getTime() - p.getTime());
+        if (timeDiff != 0) {
+            return timeDiff;
+        }
+
+        final int xDiff = (int) (this.getX() - ((SrlPoint) p).getX());
+        if (xDiff != 0) {
+            return xDiff;
+        }
+
+        final int yDiff = (int) (this.getY() - ((SrlPoint) p).getY());
+        if (yDiff != 0) {
+            return yDiff;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get a Point that corresponds to the center of this component. The
+     * only thing that will be stored in this Point are X and Y values. Thus,
+     * you should /only/ use the interface's getX() and getY() methods, and
+     * should not cast the point to a concrete implementation. Time of the point
+     * is set to 0.
+     *
+     * @return the Point with X and Y coordinates set to the center of this
+     * bounding box.
+     */
+    @Override public final SrlPoint getCenterPoint() {
+        return this;
+    }
+
+    /**
      * Scales the point by the amount x and y.
      * Having x and y specified allows one to change the
      * relative dimensions to match another shape if wanted.
      * Usually, these values will be the same to keep the
      * relative dimensions equal
      *
-     * @param x the amount to scale in the x direction
-     * @param y the amount to scale in the y direction
+     * @param xFactor the amount to scale in the x direction
+     * @param yFactor the amount to scale in the y direction
      */
-    public final void scale(final double x, final double y) {
-        mXList.add(x * getX());
-        mYList.add(y * getY());
+    public final void scale(final double xFactor, final double yFactor) {
+        mXList.add(xFactor * getX());
+        mYList.add(yFactor * getY());
         mCurrentElement = mXList.size() - 1;
     }
 
