@@ -54,7 +54,7 @@ public class SrlSubStroke extends SrlStroke {
      * @param startIndex sets the starting index of this stroke in the total number of points in the parent stroke.
      */
     public final void setStartIndex(final int startIndex) {
-        this.mStartIndex = mStartIndex;
+        this.mStartIndex = startIndex;
     }
 
     /**
@@ -68,6 +68,6 @@ public class SrlSubStroke extends SrlStroke {
      * @param endIndex sets the ending index of this stroke in the total number of points in the parent stroke.
      */
     public final void setEndIndex(final int endIndex) {
-        this.mEndIndex = mEndIndex;
+        this.mEndIndex = endIndex;
     }
 }
