@@ -10,9 +10,10 @@ import java.util.UUID;
 
 /**
  * Created by gigemjt on 11/3/14.
+ *
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
- *
+ * <p/>
  * An abstract class for representing all objects that take up space.
  * Contains methods used by all objects that take up space.
  * All {@link SrlObject}s are able to be recognized.
@@ -84,8 +85,8 @@ public abstract class SrlObject extends SrlComponent {
     /**
      * Accepts values that can only be set during construction.
      *
-     * @param time The time the shape was originally created.
-     * @param id   The unique identifier of the shape.
+     * @param time          The time the shape was originally created.
+     * @param id            The unique identifier of the shape.
      * @param isUserCreated True if the user created the stroke instead of the computer.
      */
     public SrlObject(final long time, final UUID id, final boolean isUserCreated) {
@@ -128,6 +129,28 @@ public abstract class SrlObject extends SrlComponent {
     }
 
     /**
+     * @param r a {@link edu.tamu.srl.sketch.core.virtual.SrlBoundingBox}.  This method will accept a null value.
+     */
+    public final void setBoundingBox(final SrlBoundingBox r) {
+        mBoundingBox = r;
+    }
+
+    /**
+     * Returns the bounding box of the object as a clone to the actual instance.
+     * If the bounding box has not been calculated or one does not exist this may return null.
+     * <p/>
+     * If a method that never returns null is needed call {@link #getBoundingBox()}.
+     *
+     * @return A clone of the internal bounding box.  null if the internal bounding box is null.
+     */
+    protected final SrlBoundingBox getRawBoundingBox() {
+        if (this.mBoundingBox == null) {
+            return null;
+        }
+        return (SrlBoundingBox) this.mBoundingBox.clone();
+    }
+
+    /**
      * Gets the convex hull.
      *
      * @return the convex hull
@@ -140,6 +163,45 @@ public abstract class SrlObject extends SrlComponent {
     }
 
     /**
+     * @param p a {@link SrlConvexHull}.  This method will accept a null value.
+     */
+    public final void setConvexHull(final SrlConvexHull p) {
+        mConvexHull = p;
+    }
+
+    /**
+     * Get a Point that corresponds to the center of this component. The
+     * only thing that will be stored in this Point are X and Y values. Thus,
+     * you should /only/ use the interface's getX() and getY() methods, and
+     * should not cast the point to a concrete implementation. Time of the point
+     * is set to 0.
+     *
+     * @return the Point with X and Y coordinates set to the center of this
+     * bounding box.
+     */
+    public final SrlPoint getCenterPoint() {
+        return new SrlPoint(getCenterX(), getCenterY());
+    }
+
+    /**
+     * Returns the center x of a shape.
+     *
+     * @return center x of a shape
+     */
+    public final double getCenterX() {
+        return (getMinX() + getMaxX()) / 2.0;
+    }
+
+    /**
+     * Returns the center y of a shape.
+     *
+     * @return center y of a shape
+     */
+    public final double getCenterY() {
+        return (getMinY() + getMaxY()) / 2.0;
+    }
+
+    /**
      * An object can be created by a user (like drawing a shape, or speaking a
      * phrase) or it can be created by a system (like a recognition of a higher
      * level shape) default is false if not explicitly set.
@@ -148,6 +210,18 @@ public abstract class SrlObject extends SrlComponent {
      */
     public final boolean isUserCreated() {
         return mIsUserCreated;
+    }
+
+    /**
+     * An object can be created by a user (like drawing a shape, or speaking a
+     * phrase) or it can be created by a system (like a recognition of a higher
+     * level shape).
+     *
+     * @param isUserCreated true if the user created the shape, else false.
+     */
+
+    public final void setUserCreated(final boolean isUserCreated) {
+        mIsUserCreated = isUserCreated;
     }
 
     /**
@@ -226,18 +300,6 @@ public abstract class SrlObject extends SrlComponent {
      */
     public final boolean hasAttribute(final String key) {
         return mAttributes.containsKey(key);
-    }
-
-    /**
-     * An object can be created by a user (like drawing a shape, or speaking a
-     * phrase) or it can be created by a system (like a recognition of a higher
-     * level shape).
-     *
-     * @param isUserCreated true if the user created the shape, else false.
-     */
-
-    public final void setUserCreated(final boolean isUserCreated) {
-        mIsUserCreated = isUserCreated;
     }
 
     /**
