@@ -11,9 +11,11 @@ import java.util.UUID;
  * Can be used as a parameter to a {@link edu.tamu.srl.sketch.core.object.SrlShape} constructor instead of a long list.
  * This is not actually stored inside the shape but instead its values are stored inside the shape.
  * This is because the shape itself is an interpretation and does not actually contain an interpretation.
+ * This can be used with a builder pattern and then sent to the shape.
+ * This should ony be used by recognizers or when loading data.
  */
 @SuppressWarnings({ "checkstyle:visibilitymodifier" })
-public class SrlInterpretationConfig {
+public class SrlShapeConfig {
 
     /**
      * This is the id of the interpretation and should be unique across all interpretations.
@@ -80,7 +82,7 @@ public class SrlInterpretationConfig {
      * @param isEndState {@link #isEndState}
      */
     @SuppressWarnings({ "checkstyle:hiddenfield" })
-    public SrlInterpretationConfig(final UUID interpretationId, final UUID recognizerId, final String interpretation, final double confidence,
+    public SrlShapeConfig(final UUID interpretationId, final UUID recognizerId, final String interpretation, final double confidence,
             final double complexity,
             final boolean isForced, final boolean isEndState) {
         this.interpretationId = interpretationId;
