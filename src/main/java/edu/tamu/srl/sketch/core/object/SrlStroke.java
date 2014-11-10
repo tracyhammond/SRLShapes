@@ -21,6 +21,11 @@ import java.util.UUID;
  * A stroke is defined by pen/mouse/finger/etc down to pen/mouse/finger/etc up.
  * A stroke contains a list of {@link SrlPoint}.
  * The stroke also will contain data on the author of the stroke and the pen that made the stroke.
+ *
+ * <h4>Implementation Comments</h4>
+ * All methods when interacting with the list (unless inserting into the list or removing from the list)
+ * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
+ * needing to overwrite every method or get passed a modifiable version of the list.
  */
 public class SrlStroke extends SrlObject {
 
@@ -167,7 +172,10 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void translate(final double x, final double y) {
-        throw new UnsupportedOperationException("need to implement this");
+        final List<SrlPoint> cache = getPoints();
+        for (int i = 0; i < cache.size(); i++) {
+            cache.get(i).translate(x, y);
+        }
     }
 
     /**
@@ -178,7 +186,10 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void scale(final double xFactor, final double yFactor) {
-        throw new UnsupportedOperationException("need to implement this");
+        final List<SrlPoint> cache = getPoints();
+        for (int i = 0; i < cache.size(); i++) {
+            cache.get(i).scale(xFactor, yFactor);
+        }
     }
 
     /**
@@ -190,7 +201,10 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void rotate(final double radians, final double xCenter, final double yCenter) {
-        throw new UnsupportedOperationException("need to implement this");
+        final List<SrlPoint> cache = getPoints();
+        for (int i = 0; i < cache.size(); i++) {
+            cache.get(i).rotate(radians, xCenter, yCenter);
+        }
     }
 
     /**
@@ -296,8 +310,31 @@ public class SrlStroke extends SrlObject {
      *
      * @param points points to add to the stroke
      */
-    public final void addPoints(final ArrayList<SrlPoint> points) {
+    public final void addPoints(final List<SrlPoint> points) {
         mPoints.addAll(points);
+    }
+
+    /**
+     * Clears the stroke of all points.
+     */
+    public final void clear() {
+        mPoints.clear();
+    }
+
+    /**
+     * @param point the point that is being removed.
+     * @see List#remove(Object)
+     */
+    public final void remove(final SrlPoint point) {
+        mPoints.remove(point);
+    }
+
+    /**
+     * @param index the index of that point that is being removed.
+     * @see List#remove(int)
+     */
+    public final void remove(final int index) {
+        mPoints.remove(index);
     }
 
     /**
@@ -307,7 +344,8 @@ public class SrlStroke extends SrlObject {
      * @return a list of points used by the stroke.
      * @see Collections#unmodifiableList
      */
-    public final List getPoints() {
+    @SuppressWarnings("checkstyle:designforextension")
+    public List<SrlPoint> getPoints() {
         return Collections.unmodifiableList(mPoints);
     }
 
@@ -318,10 +356,10 @@ public class SrlStroke extends SrlObject {
      * @return first point in the stroke
      */
     public final SrlPoint getFirstPoint() {
-        if (getPoints().size() == 0) {
+        if (getNumPoints() == 0) {
             throw new IllegalStateException("The list of points is empty.");
         }
-        return mPoints.get(0);
+        return getPoints().get(0);
     }
 
     /**
@@ -331,10 +369,10 @@ public class SrlStroke extends SrlObject {
      * @return last point in the stroke.
      */
     public final SrlPoint getLastPoint() {
-        if (getPoints().size() == 0) {
+        if (getNumPoints() == 0) {
             throw new IllegalStateException("The list of points is empty.");
         }
-        return mPoints.get(getNumPoints() - 1);
+        return getPoints().get(getNumPoints() - 1);
     }
 
     /**
@@ -343,13 +381,14 @@ public class SrlStroke extends SrlObject {
      * @return number of points in the stroke
      */
     public final int getNumPoints() {
-        return mPoints.size();
+        return getPoints().size();
     }
 
     /**
      * Get the i'th point in the stroke.
      * The first point has index i = 0
      *
+     * For performance purposes in loops it is better to get the entire list and act on that instead of call this method.
      * @param i the index of the stroke
      * @return The point at index i.
      */
@@ -357,7 +396,7 @@ public class SrlStroke extends SrlObject {
         if (i >= getNumPoints()) {
             throw new IndexOutOfBoundsException("index: " + i + "is greater than size " + getNumPoints());
         }
-        return mPoints.get(i);
+        return getPoints().get(i);
     }
 
     /**
