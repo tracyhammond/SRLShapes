@@ -67,7 +67,7 @@ public class SrlShape extends SrlObject {
      * This list can be examined hierarchically.
      * e.g., an arrow might have three lines inside, and each line might have a stroke.
      */
-    private List<SrlObject> mSubShapes;
+    private final List<SrlObject> mSubShapes;
     /**
      * The confidence of the interpretation (a value between 0 and 1).
      * With 1 being 100% confident
@@ -129,9 +129,11 @@ public class SrlShape extends SrlObject {
         mIsForced = o.isForced();
         mIsEndState = o.isEndState();
         mInterpretation = o.getInterpretation();
+        mSubShapes = new ArrayList<>();
         if (deep) {
-            for (SrlObject sub : o.getSubShapes()) {
-                this.add((SrlObject) o.deepClone());
+            final List<SrlObject> cache = o.getSubShapes();
+            for (int i = 0; i < cache.size(); i++) {
+                this.add((SrlObject) cache.get(i).deepClone());
             }
         } else {
             // shallow copy
@@ -166,6 +168,7 @@ public class SrlShape extends SrlObject {
             mIsEndState = false;
             mInterpretation = null;
         }
+        mSubShapes = new ArrayList<>();
         this.mDescription = description;
     }
 
@@ -197,6 +200,7 @@ public class SrlShape extends SrlObject {
             mIsEndState = false;
             mInterpretation = null;
         }
+        mSubShapes = new ArrayList<>();
         this.mDescription = description;
     }
 
@@ -208,7 +212,10 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void translate(final double x, final double y) {
-        throw new UnsupportedOperationException("implement this");
+        final List<SrlObject> cache = getSubShapes();
+        for (int i = 0; i < cache.size(); i++) {
+            cache.get(i).translate(x, y);
+        }
     }
 
     /**
@@ -219,7 +226,10 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void scale(final double xFactor, final double yFactor) {
-        throw new UnsupportedOperationException("implement this");
+        final List<SrlObject> cache = getSubShapes();
+        for (int i = 0; i < cache.size(); i++) {
+            cache.get(i).scale(xFactor, yFactor);
+        }
     }
 
     /**
@@ -231,7 +241,10 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void rotate(final double radians, final double xCenter, final double yCenter) {
-        throw new UnsupportedOperationException("implement this");
+        final List<SrlObject> cache = getSubShapes();
+        for (int i = 0; i < cache.size(); i++) {
+            cache.get(i).rotate(radians, xCenter, yCenter);
+        }
     }
 
     /**
@@ -277,15 +290,17 @@ public class SrlShape extends SrlObject {
     /**
      * Calculates the bounding box.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override protected void calculateBBox() {
-
+        throw new UnsupportedOperationException("implement this");
     }
 
     /**
      * Called to calculate the convex hull of the object.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     @Override protected void calculateConvexHull() {
-
+        throw new UnsupportedOperationException("implement this");
     }
 
     /**
@@ -409,7 +424,7 @@ public class SrlShape extends SrlObject {
      * @return the ith component
      */
     public final SrlObject get(final int i) {
-        return mSubShapes.get(i);
+        return getSubShapes().get(i);
     }
 
     /**
@@ -420,7 +435,7 @@ public class SrlShape extends SrlObject {
      * @return The number of objects.
      */
     public final int getNumChildren() {
-        return mSubShapes.size();
+        return getSubShapes().size();
     }
 
     /**
@@ -431,7 +446,9 @@ public class SrlShape extends SrlObject {
     public final List<SrlObject> getRecursiveSubShapeList() {
         final List<SrlObject> completeList = new ArrayList<SrlObject>();
         completeList.add(this);
-        for (SrlObject o : mSubShapes) {
+        final List<SrlObject> cache = getSubShapes();
+        for (int i = 0; i < cache.size(); i++) {
+            final SrlObject o = cache.get(i);
             if (o instanceof SrlShape) {
                 completeList.addAll(((SrlShape) o).getRecursiveSubShapeList());
             }
