@@ -230,6 +230,21 @@ public class SrlStroke extends SrlObject {
         }
     }
 
+    /**
+     * Gets the length of the path, that is, the sum of the Euclidean distances
+     * between all pairs of consecutive points.
+     *
+     * @return the length of the stroke&#39;s path.
+     */
+    public final double getPathLength() {
+        double res = 0.0;
+        final List<SrlPoint> points = getPoints();
+        for (int i = 1; i < points.size(); ++i) {
+            res += points.get(i - 1).distanceToCenter(points.get(i));
+        }
+        return res;
+    }
+
     @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
         return new SrlStroke(this, false);
