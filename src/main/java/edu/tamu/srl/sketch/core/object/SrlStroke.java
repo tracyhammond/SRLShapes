@@ -91,11 +91,33 @@ public class SrlStroke extends SrlObject {
      * @param o the object that is being copied.
      */
     public SrlStroke(final SrlStroke o) {
+        this(o, false);
+    }
+
+    /**
+     * A copy constructor.
+     * <p/>
+     * Copies all values from the given object.
+     * Performs a shallow copy.
+     *
+     * @param o the object that is being copied.
+     * @param deep true if a deep copy is being performed.  Otherwise a shallow copy is performed.
+     */
+    public SrlStroke(final SrlStroke o, final boolean deep) {
         super(o);
         this.mAuthor = o.getAuthor();
         this.mPen = o.getPen();
         this.mDevice = o.getDevice();
-        this.mPoints = o.getPoints();
+        this.mPoints = new ArrayList<>();
+        if (deep) {
+            final List<SrlPoint> cache = o.getPoints();
+            for (int i = 0; i < cache.size(); i++) {
+                this.addPoint((SrlPoint) cache.get(i).deepClone());
+            }
+        } else {
+            // shallow copy
+            this.addPoints(o.getPoints());
+        }
     }
 
     /**
@@ -208,20 +230,14 @@ public class SrlStroke extends SrlObject {
         }
     }
 
-    /**
-     * @return A cloned object that is an instance of {@link SrlComponent}.  This cloned object is only a shallow copy.
-     */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
-        return new SrlStroke(this);
+        return new SrlStroke(this, false);
     }
 
-    /**
-     * @return performs a deep clone of the object cloning all objects contained as well.
-     */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public SrlComponent deepClone() {
-        return new SrlStroke(this);
+        return new SrlStroke(this, true);
     }
 
     /**
