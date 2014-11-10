@@ -14,12 +14,19 @@ import java.util.UUID;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
- * <p/>
+ * <p>
  * A shape is anything that can be composed one or more subOjects. ({@link edu.tamu.srl.sketch.core.abstracted.SrlObject}).
  * A shape is assumed to have been recognized and may contain information pertaining to recognition.
  * A shape itself is an interpretation and as such it does not contain any interpretation.
+ * </p>
+ *
+ * <h4>Implementation Comments</h4>
+ * All methods when interacting with the list (unless inserting into the list or removing from the list)
+ * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
+ * needing to overwrite every method or get passed a modifiable version of the list.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlShape extends SrlObject {
 

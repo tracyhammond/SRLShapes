@@ -8,10 +8,11 @@ import java.util.UUID;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  * <p/>
  * Oversees all javaobjects and virtual objects and centralizes all code used by everything.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public abstract class SrlComponent implements Comparable<SrlComponent> {
 

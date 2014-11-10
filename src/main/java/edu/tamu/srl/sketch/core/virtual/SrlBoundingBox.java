@@ -5,11 +5,12 @@ import edu.tamu.srl.sketch.core.abstracted.SrlVirtualObject;
 
 /**
  * Created by gigemjt on 11/3/14.
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  *
  * A bounding box is typically used to find the smallest horizontal/vertical rectangle that can fit around an
  * {@link edu.tamu.srl.sketch.core.abstracted.SrlObject}.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlBoundingBox extends SrlVirtualObject {
 

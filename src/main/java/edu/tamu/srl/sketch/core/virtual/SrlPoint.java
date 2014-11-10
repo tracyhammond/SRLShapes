@@ -9,13 +9,14 @@ import java.util.UUID;
 
 /**
  * Created by gigemjt on 11/3/14.
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  *
  * In addition to its x and y a point will also contains information about pressure and its x and y direction.
  * It also will contain a history of all of its transformations. That way you can always get the original point.
  *
  * In addition to being part of a {@link edu.tamu.srl.sketch.core.object.SrlStroke} this also can be used for general x,y referencing.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlPoint extends SrlVirtualObject {
 

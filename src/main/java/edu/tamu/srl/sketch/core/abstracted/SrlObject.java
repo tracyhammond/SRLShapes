@@ -11,12 +11,13 @@ import java.util.UUID;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  * <p/>
  * An abstract class for representing all objects that take up space.
  * Contains methods used by all objects that take up space.
  * All {@link SrlObject}s are able to be recognized.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public abstract class SrlObject extends SrlComponent {
 

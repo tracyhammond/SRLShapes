@@ -14,18 +14,19 @@ import java.util.UUID;
 
 /**
  * Created by gigemjt on 11/3/14.
- *
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
- * <p/>
+ * <p>
  * A stroke is defined by pen/mouse/finger/etc down to pen/mouse/finger/etc up.
  * A stroke contains a list of {@link SrlPoint}.
  * The stroke also will contain data on the author of the stroke and the pen that made the stroke.
+ * </p>
  *
  * <h4>Implementation Comments</h4>
  * All methods when interacting with the list (unless inserting into the list or removing from the list)
  * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
  * needing to overwrite every method or get passed a modifiable version of the list.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlStroke extends SrlObject {
 

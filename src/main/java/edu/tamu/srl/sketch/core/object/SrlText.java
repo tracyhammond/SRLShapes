@@ -7,8 +7,6 @@ import java.util.UUID;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  * <p/>
  * Text can be either handwritten or defined from a keyboard.
  * If text is handwritten it will contain the shapes that make up the text.
@@ -16,6 +14,9 @@ import java.util.UUID;
  * <p/>
  * The text may contain unicode characters of any language.
  * And must be treated as containing unicode characters.
+ *
+ * @author gigemjt
+ * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlText extends SrlShape {
 
