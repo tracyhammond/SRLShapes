@@ -113,6 +113,7 @@ public class SrlShape extends SrlObject {
      * A copy constructor.
      * <p/>
      * Copies all values from the given object.
+     * Performs a shallow copy
      *
      * @param o the object that is being copied.
      */
