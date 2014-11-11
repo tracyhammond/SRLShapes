@@ -298,33 +298,53 @@ public class SrlStroke extends SrlObject {
     /**
      * @return the largest X value. (larger x values are denoted as being on the right hand side of the screen.
      */
-    @SuppressWarnings("checkstyle:designforextension")
-    @Override public double getMaxX() {
-        throw new UnsupportedOperationException("need to implement this");
+    @Override public final double getMaxX() {
+        double max = Double.NEGATIVE_INFINITY;
+        final List<SrlPoint> shapeList = getPoints();
+        for (int index = 0; index < shapeList.size(); index++) {
+            final SrlPoint shape = shapeList.get(index);
+            max = Math.max(max, shape.getX());
+        }
+        return max;
     }
 
     /**
      * @return the largest Y value. (larger Y values are denoted as being at the bottom the screen.
      */
-    @SuppressWarnings("checkstyle:designforextension")
-    @Override public double getMaxY() {
-        throw new UnsupportedOperationException("need to implement this");
+    @Override public final double getMaxY() {
+        double max = Double.NEGATIVE_INFINITY;
+        final List<SrlPoint> shapeList = getPoints();
+        for (int index = 0; index < shapeList.size(); index++) {
+            final SrlPoint shape = shapeList.get(index);
+            max = Math.max(max, shape.getY());
+        }
+        return max;
     }
 
     /**
      * @return the smallest X value. (smaller x values are denoted as being on the left hand side of the screen.
      */
-    @SuppressWarnings("checkstyle:designforextension")
-    @Override public double getMinX() {
-        throw new UnsupportedOperationException("need to implement this");
+    @Override public final double getMinX() {
+        double min = Double.POSITIVE_INFINITY;
+        final List<SrlPoint> shapeList = getPoints();
+        for (int index = 0; index < shapeList.size(); index++) {
+            final SrlPoint shape = shapeList.get(index);
+            min = Math.min(min, shape.getX());
+        }
+        return min;
     }
 
     /**
      * @return the smallest Y value. (smaller Y values are denoted as being at the top of the screen.
      */
-    @SuppressWarnings("checkstyle:designforextension")
-    @Override public double getMinY() {
-        throw new UnsupportedOperationException("need to implement this");
+    @Override public final double getMinY() {
+        double min = Double.POSITIVE_INFINITY;
+        final List<SrlPoint> shapeList = getPoints();
+        for (int index = 0; index < shapeList.size(); index++) {
+            final SrlPoint shape = shapeList.get(index);
+            min = Math.min(min, shape.getY());
+        }
+        return min;
     }
 
     /**
