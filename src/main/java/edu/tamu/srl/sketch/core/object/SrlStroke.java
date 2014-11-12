@@ -264,7 +264,10 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean shallowEquals(final SrlComponent other) {
-        throw new UnsupportedOperationException("need to implement this");
+        if (!(other instanceof SrlStroke)) {
+            return false;
+        }
+        return super.shallowEquals(other) && getNumPoints() == ((SrlStroke) other).getNumPoints();
     }
 
     /**
@@ -276,7 +279,16 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean deepEquals(final SrlComponent other) {
-        throw new UnsupportedOperationException("need to implement this");
+        if (!shallowEquals(other)) {
+            return false;
+        }
+        // If the above is true then they are the same instance.
+        final List<SrlPoint> cache = getPoints();
+        boolean result = true;
+        for (int i = 0; i < cache.size(); i++) {
+            result &= cache.get(i).deepEquals(other);
+        }
+        return result;
     }
 
     /**
