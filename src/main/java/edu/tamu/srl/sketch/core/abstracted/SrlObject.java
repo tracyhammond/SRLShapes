@@ -171,6 +171,21 @@ public abstract class SrlObject extends SrlComponent {
     }
 
     /**
+     * Performs a shallow equals.
+     * By default this is called by the {@link #equals(Object)} method.
+     *
+     * @param other the other SrlObject.
+     * @return true if content is equal, false otherwise
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public boolean shallowEquals(final SrlComponent other) {
+        if (!(other instanceof SrlObject)) {
+            return false;
+        }
+        return mAttributes.equals(((SrlObject) other).mAttributes) && mIsUserCreated == ((SrlObject) other).mIsUserCreated;
+    }
+
+    /**
      * Get a Point that corresponds to the center of this component. The
      * only thing that will be stored in this Point are X and Y values. Thus,
      * you should /only/ use the interface's getX() and getY() methods, and
