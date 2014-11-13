@@ -12,7 +12,8 @@ import java.util.UUID;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public abstract class SrlVirtualObject extends SrlComponent {
+@SuppressWarnings("PMD.AbstractNaming")
+public abstract class SrlVirtualObject extends AbstractSrlComponent {
 
     /**
      * Default constructor.
@@ -28,19 +29,19 @@ public abstract class SrlVirtualObject extends SrlComponent {
      * <p/>
      * Copies all values from the given object.
      *
-     * @param o the object that is being copied.
+     * @param original the object that is being copied.
      */
-    public SrlVirtualObject(final SrlVirtualObject o) {
-        super(o);
+    public SrlVirtualObject(final SrlVirtualObject original) {
+        super(original);
     }
 
     /**
      * Accepts values that can only be set during construction.
      *
      * @param time The time the shape was originally created.
-     * @param id   The unique identifier of the shape.
+     * @param uuid   The unique identifier of the shape.
      */
-    public SrlVirtualObject(final long time, final UUID id) {
-        super(time, id);
+    public SrlVirtualObject(final long time, final UUID uuid) {
+        super(time, uuid);
     }
 }

@@ -66,6 +66,9 @@ public class SrlSubStroke extends SrlStroke {
         this.mStartIndex = startIndex;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final List<SrlPoint> getPoints() {
         return mParentStroke.getPoints().subList(mStartIndex, mEndIndex);

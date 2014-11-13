@@ -1,6 +1,6 @@
 package edu.tamu.srl.sketch.core.object;
 
-import edu.tamu.srl.sketch.core.abstracted.SrlComponent;
+import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlObject;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlAuthor;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlDevice;
@@ -19,7 +19,7 @@ import java.util.UUID;
  * A stroke contains a list of {@link SrlPoint}.
  * The stroke also will contain data on the author of the stroke and the pen that made the stroke.
  * </p>
- *
+ * <p/>
  * <h4>Implementation Comments</h4>
  * All methods when interacting with the list (unless inserting into the list or removing from the list)
  * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
@@ -28,6 +28,7 @@ import java.util.UUID;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlStroke extends SrlObject {
 
     /**
@@ -71,11 +72,11 @@ public class SrlStroke extends SrlObject {
      * Accepts values that can only be set during construction.
      *
      * @param time          The time the shape was originally created.
-     * @param id            The unique identifier of the shape.
+     * @param uuid          The unique identifier of the shape.
      * @param isUserCreated True if the user created the stroke instead of the computer.
      */
-    public SrlStroke(final long time, final UUID id, final boolean isUserCreated) {
-        super(time, id, isUserCreated);
+    public SrlStroke(final long time, final UUID uuid, final boolean isUserCreated) {
+        super(time, uuid, isUserCreated);
         this.mAuthor = null;
         this.mPen = null;
         this.mDevice = null;
@@ -88,10 +89,10 @@ public class SrlStroke extends SrlObject {
      * Copies all values from the given object.
      * Performs a shallow copy.
      *
-     * @param o the object that is being copied.
+     * @param original the object that is being copied.
      */
-    public SrlStroke(final SrlStroke o) {
-        this(o, false);
+    public SrlStroke(final SrlStroke original) {
+        this(original, false);
     }
 
     /**
@@ -100,23 +101,23 @@ public class SrlStroke extends SrlObject {
      * Copies all values from the given object.
      * Performs a shallow copy.
      *
-     * @param o the object that is being copied.
-     * @param deep true if a deep copy is being performed.  Otherwise a shallow copy is performed.
+     * @param original the object that is being copied.
+     * @param deep     true if a deep copy is being performed.  Otherwise a shallow copy is performed.
      */
-    public SrlStroke(final SrlStroke o, final boolean deep) {
-        super(o);
-        this.mAuthor = o.getAuthor();
-        this.mPen = o.getPen();
-        this.mDevice = o.getDevice();
+    public SrlStroke(final SrlStroke original, final boolean deep) {
+        super(original);
+        this.mAuthor = original.getAuthor();
+        this.mPen = original.getPen();
+        this.mDevice = original.getDevice();
         this.mPoints = new ArrayList<>();
         if (deep) {
-            final List<SrlPoint> cache = o.getPoints();
+            final List<SrlPoint> cache = original.getPoints();
             for (int i = 0; i < cache.size(); i++) {
                 this.addPoint((SrlPoint) cache.get(i).deepClone());
             }
         } else {
             // shallow copy
-            this.addPoints(o.getPoints());
+            this.addPoints(original.getPoints());
         }
     }
 
@@ -129,25 +130,7 @@ public class SrlStroke extends SrlObject {
      * @param device        where was the stroke made.
      */
     public SrlStroke(final boolean isUserCreated, final SrlAuthor author, final SrlPen pen, final SrlDevice device) {
-        super();
-        this.mAuthor = author;
-        this.mPen = pen;
-        this.mDevice = device;
-        mPoints = new ArrayList<>();
-    }
-
-    /**
-     * Accepts values that can only be set during construction.
-     *
-     * @param time   The time the shape was originally created.
-     * @param id     The unique identifier of the shape.
-     * @param author Who made the stroke.
-     * @param pen    What made the stroke.
-     * @param device where was the stroke made.
-     */
-    public SrlStroke(final long time, final UUID id, final SrlAuthor author, final SrlPen pen,
-            final SrlDevice device) {
-        super(time, id);
+        super(isUserCreated);
         this.mAuthor = author;
         this.mPen = pen;
         this.mDevice = device;
@@ -158,15 +141,15 @@ public class SrlStroke extends SrlObject {
      * Accepts values that can only be set during construction.
      *
      * @param time          The time the shape was originally created.
-     * @param id            The unique identifier of the shape.
+     * @param uuid          The unique identifier of the shape.
      * @param isUserCreated True if the user created the stroke instead of the computer.
      * @param author        Who made the stroke.
      * @param pen           What made the stroke.
      * @param device        where was the stroke made.
      */
-    public SrlStroke(final long time, final UUID id, final boolean isUserCreated,
+    public SrlStroke(final long time, final UUID uuid, final boolean isUserCreated,
             final SrlAuthor author, final SrlPen pen, final SrlDevice device) {
-        super(time, id, isUserCreated);
+        super(time, uuid, isUserCreated);
         this.mAuthor = author;
         this.mPen = pen;
         this.mDevice = device;
@@ -190,14 +173,14 @@ public class SrlStroke extends SrlObject {
     /**
      * Translate the object by the amount x,y.
      *
-     * @param x the amount in the x direction to move the object by.
-     * @param y the amount in the y direction to move the object by.
+     * @param xOffset the amount in the x direction to move the object by.
+     * @param yOffset the amount in the y direction to move the object by.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public void translate(final double x, final double y) {
+    @Override public void translate(final double xOffset, final double yOffset) {
         final List<SrlPoint> cache = getPoints();
         for (int i = 0; i < cache.size(); i++) {
-            cache.get(i).translate(x, y);
+            cache.get(i).translate(xOffset, yOffset);
         }
     }
 
@@ -245,13 +228,19 @@ public class SrlStroke extends SrlObject {
         return res;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
         return new SrlStroke(this, false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public SrlComponent deepClone() {
+    @Override public AbstractSrlComponent deepClone() {
         return new SrlStroke(this, true);
     }
 
@@ -263,11 +252,9 @@ public class SrlStroke extends SrlObject {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean shallowEquals(final SrlComponent other) {
-        if (!(other instanceof SrlStroke)) {
-            return false;
-        }
-        return super.shallowEquals(other) && getNumPoints() == ((SrlStroke) other).getNumPoints();
+    @Override public boolean shallowEquals(final AbstractSrlComponent other) {
+        return super.shallowEquals(other) && other instanceof SrlStroke &&
+                getNumPoints() == ((SrlStroke) other).getNumPoints();
     }
 
     /**
@@ -278,15 +265,15 @@ public class SrlStroke extends SrlObject {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean deepEquals(final SrlComponent other) {
+    @Override public boolean deepEquals(final AbstractSrlComponent other) {
         if (!shallowEquals(other)) {
             return false;
         }
         // If the above is true then they are the same instance.
         final List<SrlPoint> cache = getPoints();
         boolean result = true;
-        for (int i = 0; i < cache.size(); i++) {
-            result &= cache.get(i).deepEquals(other);
+        for (int index = 0; index < cache.size() && result; index++) {
+            result &= cache.get(index).deepEquals(other);
         }
         return result;
     }
@@ -449,18 +436,19 @@ public class SrlStroke extends SrlObject {
     }
 
     /**
-     * Get the i'th point in the stroke.
-     * The first point has index i = 0
-     *
+     * Get the index'th point in the stroke.
+     * The first point has index index = 0
+     * <p/>
      * For performance purposes in loops it is better to get the entire list and act on that instead of call this method.
-     * @param i the index of the stroke
-     * @return The point at index i.
+     *
+     * @param index the index of the stroke
+     * @return The point at index index.
      */
-    public final SrlPoint getPoint(final int i) {
-        if (i >= getNumPoints()) {
-            throw new IndexOutOfBoundsException("index: " + i + "is greater than size " + getNumPoints());
+    public final SrlPoint getPoint(final int index) {
+        if (index >= getNumPoints()) {
+            throw new IndexOutOfBoundsException("index: " + index + "is greater than size " + getNumPoints());
         }
-        return getPoints().get(i);
+        return getPoints().get(index);
     }
 
     /**

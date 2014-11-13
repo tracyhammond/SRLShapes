@@ -1,6 +1,6 @@
 package edu.tamu.srl.sketch.core.virtual;
 
-import edu.tamu.srl.sketch.core.abstracted.SrlComponent;
+import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlVirtualObject;
 
 /**
@@ -12,6 +12,7 @@ import edu.tamu.srl.sketch.core.abstracted.SrlVirtualObject;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
+@SuppressWarnings({ "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlBoundingBox extends SrlVirtualObject {
 
     /**
@@ -98,13 +99,13 @@ public class SrlBoundingBox extends SrlVirtualObject {
     /**
      * Translate the object by the amount x,y.
      *
-     * @param x the amount in the x direction to move the object by.
-     * @param y the amount in the y direction to move the object by.
+     * @param xOffset the amount in the x direction to move the object by.
+     * @param yOffset the amount in the y direction to move the object by.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public void translate(final double x, final double y) {
-        getTopLeftCorner().translate(x, y);
-        getBottomRightCorner().translate(x, y);
+    @Override public void translate(final double xOffset, final double yOffset) {
+        getTopLeftCorner().translate(xOffset, yOffset);
+        getBottomRightCorner().translate(xOffset, yOffset);
     }
 
     /**
@@ -133,7 +134,8 @@ public class SrlBoundingBox extends SrlVirtualObject {
     }
 
     /**
-     * @return A cloned object that is an instance of {@link SrlComponent}.  This cloned object is only a shallow copy.
+     * @return A cloned object that is an instance of {@link edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent}.
+     * This cloned object is only a shallow copy.
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
@@ -144,7 +146,7 @@ public class SrlBoundingBox extends SrlVirtualObject {
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public SrlComponent deepClone() {
+    @Override public AbstractSrlComponent deepClone() {
         return new SrlBoundingBox(this);
     }
 
@@ -156,7 +158,7 @@ public class SrlBoundingBox extends SrlVirtualObject {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean shallowEquals(final SrlComponent other) {
+    @Override public boolean shallowEquals(final AbstractSrlComponent other) {
         throw new UnsupportedOperationException("need to implement this");
     }
 
@@ -168,7 +170,7 @@ public class SrlBoundingBox extends SrlVirtualObject {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean deepEquals(final SrlComponent other) {
+    @Override public boolean deepEquals(final AbstractSrlComponent other) {
         throw new UnsupportedOperationException("need to implement this");
     }
 

@@ -1,6 +1,6 @@
 package edu.tamu.srl.sketch.core.virtual;
 
-import edu.tamu.srl.sketch.core.abstracted.SrlComponent;
+import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlVirtualObject;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import java.util.UUID;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlPoint extends SrlVirtualObject {
 
     /**
@@ -61,6 +62,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x the initial x point
      * @param y the initial y point
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public SrlPoint(final double x, final double y) {
         setPointDataFromConstructor(x, y);
     }
@@ -72,6 +74,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @param y    the initial y point
      * @param time the time the point was made
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public SrlPoint(final double x, final double y, final long time) {
         super(time, UUID.randomUUID());
         setPointDataFromConstructor(x, y);
@@ -83,10 +86,11 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x    x value of the point.
      * @param y    y value of the point.
      * @param time time stamp.
-     * @param id   point ID
+     * @param uuid   point ID
      */
-    public SrlPoint(final double x, final double y, final long time, final UUID id) {
-        super(time, id);
+    @SuppressWarnings("PMD.ShortVariable")
+    public SrlPoint(final double x, final double y, final long time, final UUID uuid) {
+        super(time, uuid);
         setPointDataFromConstructor(x, y);
     }
 
@@ -96,26 +100,27 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x        x value of the point.
      * @param y        y value of the point.
      * @param time     time stamp.
-     * @param id       point ID
+     * @param uuid       point ID
      * @param tiltX    the pen tiltX of the point.
      * @param tiltY    the pen tiltY of the point.
      * @param pressure the pressure at which the point was created.
      */
-    public SrlPoint(final double x, final double y, final long time, final UUID id, final double tiltX,
+    @SuppressWarnings("PMD.ShortVariable")
+    public SrlPoint(final double x, final double y, final long time, final UUID uuid, final double tiltX,
             final double tiltY, final double pressure) {
-        this(x, y, time, id);
+        this(x, y, time, uuid);
         setTilt(tiltX, tiltY);
         setPressure(pressure);
     }
 
     /**
-     * Construct a new point with the same elements.
+     * Construct a new original with the same elements.
      * This performs a deep copy.
      *
-     * @param p the point that is being copied.
+     * @param original the original that is being copied.
      */
-    public SrlPoint(final SrlPoint p) {
-        this(p, true);
+    public SrlPoint(final SrlPoint original) {
+        this(original, true);
     }
 
     /**
@@ -124,28 +129,28 @@ public class SrlPoint extends SrlVirtualObject {
      * The shallow copy only copies the first point and the current point in the history of points.
      *
      * @param deep True if a deep copy is wanted otherwise a shallow copy is performed.
-     * @param p    The point that is being copied.
+     * @param original    The point that is being copied.
      */
-    public SrlPoint(final SrlPoint p, final boolean deep) {
-        super(p);
-        this.mCurrentElement = p.mCurrentElement;
-        this.mPressure = p.mPressure;
-        this.mTiltX = p.mTiltX;
-        this.mTiltY = p.mTiltY;
+    public SrlPoint(final SrlPoint original, final boolean deep) {
+        super(original);
+        this.mCurrentElement = original.mCurrentElement;
+        this.mPressure = original.mPressure;
+        this.mTiltX = original.mTiltX;
+        this.mTiltY = original.mTiltY;
         if (deep) {
-            for (int i = 0; i < p.mXList.size(); i++) {
-                mXList.add((double) p.mXList.get(i));
-                mYList.add((double) p.mYList.get(i));
+            for (int i = 0; i < original.mXList.size(); i++) {
+                mXList.add((double) original.mXList.get(i));
+                mYList.add((double) original.mYList.get(i));
             }
         } else {
             // original point.
-            mXList.add((double) p.mXList.get(0));
-            mYList.add((double) p.mYList.get(0));
+            mXList.add((double) original.mXList.get(0));
+            mYList.add((double) original.mYList.get(0));
 
             // current point (if it exist)
             if (mXList.size() > 1 && mYList.size() > 1) {
-                mXList.add((double) p.mXList.get(p.mXList.size() - 1));
-                mYList.add((double) p.mYList.get(p.mYList.size() - 1));
+                mXList.add((double) original.mXList.get(original.mXList.size() - 1));
+                mYList.add((double) original.mYList.get(original.mYList.size() - 1));
             }
         }
     }
@@ -156,8 +161,9 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x The location in the x direction of the point.
      * @param y The location in the y direction of the point.
      */
+    @SuppressWarnings("PMD.ShortVariable")
     private void setPointDataFromConstructor(final double x, final double y) {
-        setP(x, y);
+        setPoint(x, y);
     }
 
     /**
@@ -291,7 +297,7 @@ public class SrlPoint extends SrlVirtualObject {
     @Override
     public int hashCode() {
 
-        return (int) getX() + (int) getY() + (int) getTime();
+        return (int) (getX() + getY()) + (int) getTime();
     }
 
 
@@ -308,7 +314,7 @@ public class SrlPoint extends SrlVirtualObject {
     }
 
     /**
-     * @return A cloned object that is an instance of {@link edu.tamu.srl.sketch.core.abstracted.SrlComponent}.
+     * @return A cloned object that is an instance of {@link edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent}.
      * This cloned object is only a shallow copy.
      * This copies all values and only the original location and the current location out of the history
      */
@@ -321,7 +327,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public SrlComponent deepClone() {
+    @Override public AbstractSrlComponent deepClone() {
         return new SrlPoint(this, true);
     }
 
@@ -335,7 +341,7 @@ public class SrlPoint extends SrlVirtualObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override
-    public boolean shallowEquals(final SrlComponent other) {
+    public boolean shallowEquals(final AbstractSrlComponent other) {
         if (!(other instanceof SrlPoint)) {
             return false;
         }
@@ -362,14 +368,14 @@ public class SrlPoint extends SrlVirtualObject {
     }
 
     /**
-     * In addition to calling {@link #shallowEquals(edu.tamu.srl.sketch.core.abstracted.SrlComponent)}
+     * In addition to calling {@link #shallowEquals(edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent)}
      * this also compares the history and returns true if those are equal too.
      *
      * @param other the other SrlObject.
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean deepEquals(final SrlComponent other) {
+    @Override public boolean deepEquals(final AbstractSrlComponent other) {
         if (shallowEquals(other)) {
             return true;
         }
@@ -381,26 +387,26 @@ public class SrlPoint extends SrlVirtualObject {
      * Compare this point to another point based on time.
      * unless they have the same time then it is compared based on location (starting with X).
      *
-     * @param p point to compare to.
+     * @param srlComponent point to compare to.
      * @return time difference between points.
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override
-    public int compareTo(final SrlComponent p) {
-        if (!(p instanceof SrlPoint)) {
-            return super.compareTo(p);
+    public int compareTo(final AbstractSrlComponent srlComponent) {
+        if (!(srlComponent instanceof SrlPoint)) {
+            return super.compareTo(srlComponent);
         }
-        final int timeDiff = (int) (this.getTime() - p.getTime());
+        final int timeDiff = (int) (this.getTime() - srlComponent.getTime());
         if (timeDiff != 0) {
             return timeDiff;
         }
 
-        final int xDiff = (int) (this.getX() - ((SrlPoint) p).getX());
+        final int xDiff = (int) (this.getX() - ((SrlPoint) srlComponent).getX());
         if (xDiff != 0) {
             return xDiff;
         }
 
-        final int yDiff = (int) (this.getY() - ((SrlPoint) p).getY());
+        final int yDiff = (int) (this.getY() - ((SrlPoint) srlComponent).getY());
         if (yDiff != 0) {
             return yDiff;
         }
@@ -448,7 +454,7 @@ public class SrlPoint extends SrlVirtualObject {
     public final void setOrigP(final double x, final double y) {
         mXList = new ArrayList<Double>();
         mYList = new ArrayList<Double>();
-        setP(x, y);
+        setPoint(x, y);
     }
 
     /**
@@ -459,7 +465,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x the new x location for the point
      * @param y the new y location for the point
      */
-    public final void setP(final double x, final double y) {
+    public final void setPoint(final double x, final double y) {
         mXList.add(x);
         mYList.add(y);
         mCurrentElement = mXList.size() - 1;
@@ -481,12 +487,12 @@ public class SrlPoint extends SrlVirtualObject {
      * Translate the point in the amount x,y.
      * Saves the point it was before in case we need to undo the translation
      *
-     * @param x amount to move in the x direction
-     * @param y amount to move in the y direction
+     * @param xOffset amount to move in the x direction
+     * @param yOffset amount to move in the y direction
      */
-    public final void translate(final double x, final double y) {
-        mXList.add(x + getX());
-        mYList.add(y + getY());
+    public final void translate(final double xOffset, final double yOffset) {
+        mXList.add(xOffset + getX());
+        mYList.add(yOffset + getY());
         mCurrentElement = mXList.size() - 1;
     }
 

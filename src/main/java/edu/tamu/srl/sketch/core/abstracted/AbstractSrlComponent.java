@@ -14,12 +14,13 @@ import java.util.UUID;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public abstract class SrlComponent implements Comparable<SrlComponent> {
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComponent>, Cloneable {
 
     /**
      * Default comparator using time.
      */
-    private static Comparator<SrlComponent> timeComparator;
+    private volatile static Comparator<AbstractSrlComponent> timeComparator;
 
     /**
      * Each object has a unique ID associated with it.
@@ -40,10 +41,10 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
      * Accepts values that can only be set during construction.
      *
      * @param time The time the shape was originally created.
-     * @param id   The unique identifier of the shape.
+     * @param uId   The unique identifier of the shape.
      */
-    public SrlComponent(final long time, final UUID id) {
-        this.mId = id;
+    public AbstractSrlComponent(final long time, final UUID uId) {
+        this.mId = uId;
         this.mTime = time;
     }
 
@@ -52,7 +53,7 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
      * <p/>
      * Creates an object with an id and a time.
      */
-    public SrlComponent() {
+    public AbstractSrlComponent() {
         mId = UUID.randomUUID();
         mTime = System.currentTimeMillis();
     }
@@ -62,12 +63,12 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
      * <p/>
      * Copies all values from the given object.
      *
-     * @param o the object that is being copied.
+     * @param original the object that is being copied.
      */
-    public SrlComponent(final SrlComponent o) {
-        this.mTime = o.getTime();
-        this.mId = o.getId();
-        this.mName = o.getName();
+    public AbstractSrlComponent(final AbstractSrlComponent original) {
+        this.mTime = original.getTime();
+        this.mId = original.getId();
+        this.mName = original.getName();
     }
 
     /**
@@ -79,18 +80,25 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
      *
      * @return the comparator for the time values
      */
-    public static Comparator<SrlComponent> getTimeComparator() {
-
-        if (timeComparator == null) {
-            timeComparator = new Comparator<SrlComponent>() {
-                @Override
-                public int compare(final SrlComponent arg0, final SrlComponent arg1) {
-                    return (arg0.getTime() < arg1.getTime()) ? -1 : (arg0
-                            .getTime() > arg1.getTime()) ? 1 : 0;
+    public static Comparator<AbstractSrlComponent> getTimeComparator() {
+        Comparator<AbstractSrlComponent> result = timeComparator;
+        // Double checked locking.
+        if (result == null) {
+            synchronized(AbstractSrlComponent.class) {
+                result = timeComparator;
+                if (result == null) {
+                    timeComparator = result = timeComparator = new Comparator<AbstractSrlComponent>() {
+                        @SuppressWarnings({ "PMD.CommentRequired", "PMD.UselessParentheses" })
+                        @Override
+                        public int compare(final AbstractSrlComponent arg0, final AbstractSrlComponent arg1) {
+                            return (arg0.getTime() < arg1.getTime()) ? -1 : (arg0
+                                    .getTime() > arg1.getTime()) ? 1 : 0;
+                        }
+                    };
                 }
-            };
+            }
         }
-        return timeComparator;
+        return result;
     }
 
     /**
@@ -127,12 +135,12 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
     }
 
     /**
-     * Translate the object by the amount x,y.
+     * Translate the object by the amount xOffset,yOffset.
      *
-     * @param x the amount in the x direction to move the object by.
-     * @param y the amount in the y direction to move the object by.
+     * @param xOffset the amount in the xOffset direction to move the object by.
+     * @param yOffset the amount in the yOffset direction to move the object by.
      */
-    public abstract void translate(final double x, final double y);
+    public abstract void translate(final double xOffset, final double yOffset);
 
     /**
      * Scales the SComponent by the given x- and y-factor.
@@ -161,7 +169,7 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
     }
 
     /**
-     * @return A cloned object that is an instance of {@link SrlComponent}.  This cloned object is only a shallow copy.
+     * @return A cloned object that is an instance of {@link AbstractSrlComponent}.  This cloned object is only a shallow copy.
      */
     @Override
     public abstract Object clone();
@@ -169,23 +177,23 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
     /**
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
-    public abstract SrlComponent deepClone();
+    public abstract AbstractSrlComponent deepClone();
 
     /**
      * Default uses time. You can also use x or y to compare.
      *
-     * @param o The object that this instance is being compared to.
+     * @param srlComponent The object that this instance is being compared to.
      * @return a value that depends on the result of the comparator used.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public int compareTo(final SrlComponent o) {
-        return getTimeComparator().compare(this, o);
+    public int compareTo(final AbstractSrlComponent srlComponent) {
+        return getTimeComparator().compare(this, srlComponent);
     }
 
     /**
-     * Checks if two {@link SrlComponent} are equal.
+     * Checks if two {@link AbstractSrlComponent} are equal.
      * This default implementation only checks that the two ids equal after checking if
-     * {@link #shallowEquals(SrlComponent)} returns true.
+     * {@link #shallowEquals(AbstractSrlComponent)} returns true.
      *
      * @param other the other object.
      * @return by default. true if the two ids are equal.
@@ -193,10 +201,10 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
     @Override
     @SuppressWarnings("checkstyle:designforextension")
     public boolean equals(final Object other) {
-        if (!(other instanceof SrlComponent)) {
+        if (!(other instanceof AbstractSrlComponent)) {
             return false;
         }
-        return shallowEquals((SrlComponent) other) && getId().equals(((SrlComponent) other).getId());
+        return shallowEquals((AbstractSrlComponent) other) && getId().equals(((AbstractSrlComponent) other).getId());
     }
 
     /**
@@ -206,7 +214,7 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
      * @param other the other SrlObject.
      * @return true if content is equal, false otherwise
      */
-    public abstract boolean shallowEquals(SrlComponent other);
+    public abstract boolean shallowEquals(AbstractSrlComponent other);
 
     /**
      * Looks deep into two components to check equality.
@@ -215,7 +223,7 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
      * @param other the other SrlObject.
      * @return true if content is equal, false otherwise
      */
-    public abstract boolean deepEquals(SrlComponent other);
+    public abstract boolean deepEquals(AbstractSrlComponent other);
 
     /**
      * @return default hash code just creates a hash code of its UUID.
@@ -240,29 +248,28 @@ public abstract class SrlComponent implements Comparable<SrlComponent> {
     public abstract SrlPoint getCenterPoint();
 
     /**
-     * Return the distance from the point specified by (x,y) to the center of this object.
+     * Return the distance from the point specified by (otherX,otherY) to the center of this object.
      *
-     * @param x the x value of the other point
-     * @param y the y value of the other point
+     * @param otherX the otherX value of the other point
+     * @param otherY the otherY value of the other point
      * @return the distance
      */
-    @SuppressWarnings("checkstyle:designforextension")
-    public double distanceToCenter(final double x, final double y) {
+    public final double distanceToCenter(final double otherX, final double otherY) {
         final SrlPoint center = getCenterPoint();
-        final double xdiff = x - center.getX();
-        final double ydiff = y - center.getY();
-        return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+        final double xDiff = otherX - center.getX();
+        final double yDiff = otherY - center.getY();
+        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     }
 
     /**
      * Return the distance from point rp to this point.
      *
-     * @param o the other point
+     * @param srlComponent the other point
      * @return the distance
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public double distanceToCenter(final SrlComponent o) {
-        final SrlPoint other = o.getCenterPoint();
+    public double distanceToCenter(final AbstractSrlComponent srlComponent) {
+        final SrlPoint other = srlComponent.getCenterPoint();
         return distanceToCenter(other.getX(), other.getY());
     }
 

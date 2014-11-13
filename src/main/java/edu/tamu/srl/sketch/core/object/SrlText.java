@@ -62,49 +62,49 @@ public class SrlText extends SrlShape {
      * <p/>
      * Copies all values from the given object.
      *
-     * @param o the object that is being copied.
+     * @param original the object that is being copied.
      */
-    public SrlText(final SrlText o) {
-        this(o, true);
+    public SrlText(final SrlText original) {
+        this(original, true);
     }
 
     /**
      * Copy Constructor.
      *
-     * @param o    the shape being copied.
+     * @param original    the shape being copied.
      * @param deep true if a deep copy is being performed.  Otherwise a shallow copy is performed.
      */
-    public SrlText(final SrlText o, final boolean deep) {
-        super(o, deep);
-        mIsHandWritten = o.isHandWritten();
-        mTextValue = o.getTextValue();
+    public SrlText(final SrlText original, final boolean deep) {
+        super(original, deep);
+        mIsHandWritten = original.isHandWritten();
+        mTextValue = original.getTextValue();
     }
 
     /**
      * Accepts values that can only be set during construction.
      *
      * @param time        The time the shape was originally created.
-     * @param id          The unique identifier of the shape.
+     * @param uuid          The unique identifier of the shape.
      * @param config      The set of data used to configure interpretation.
      * @param description the description of the shape.
      */
-    public SrlText(final long time, final UUID id, final SrlShapeConfig config,
+    public SrlText(final long time, final UUID uuid, final SrlShapeConfig config,
             final String description) {
-        super(time, id, config, description);
+        super(time, uuid, config, description);
     }
 
     /**
      * Accepts values that can only be set during construction.
      *
      * @param time          The time the shape was originally created.
-     * @param id            The unique identifier of the shape.
+     * @param uuid            The unique identifier of the shape.
      * @param isUserCreated True if the user created the stroke instead of the computer.
      * @param config        The set of data used to configure interpretation.
      * @param description   the description of the shape.
      */
-    public SrlText(final long time, final UUID id, final boolean isUserCreated,
+    public SrlText(final long time, final UUID uuid, final boolean isUserCreated,
             final SrlShapeConfig config, final String description) {
-        super(time, id, isUserCreated, config, description);
+        super(time, uuid, isUserCreated, config, description);
     }
 
     /**

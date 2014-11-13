@@ -19,7 +19,8 @@ import java.util.UUID;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
-public abstract class SrlObject extends SrlComponent {
+@SuppressWarnings({ "PMD.AbstractNaming", "PMD.AvoidDuplicateLiterals" })
+public abstract class SrlObject extends AbstractSrlComponent {
 
     /**
      * Map of miscellaneous attributes (to store any attributes given for points
@@ -62,24 +63,24 @@ public abstract class SrlObject extends SrlComponent {
      * <p/>
      * Copies all values from the given object.
      *
-     * @param o the object that is being copied.
+     * @param original The object that is being copied.
      */
-    public SrlObject(final SrlObject o) {
-        super(o);
-        this.mAttributes = o.getAttributes();
-        this.mBoundingBox = o.getBoundingBox();
-        this.mConvexHull = o.getConvexHull();
-        this.mIsUserCreated = o.isUserCreated();
+    public SrlObject(final SrlObject original) {
+        super(original);
+        this.mAttributes = original.getAttributes();
+        this.mBoundingBox = original.getBoundingBox();
+        this.mConvexHull = original.getConvexHull();
+        this.mIsUserCreated = original.isUserCreated();
     }
 
     /**
      * Accepts values that can only be set during construction.
      *
      * @param time The time the shape was originally created.
-     * @param id   The unique identifier of the shape.
+     * @param uuid   The unique identifier of the shape.
      */
-    public SrlObject(final long time, final UUID id) {
-        super(time, id);
+    public SrlObject(final long time, final UUID uuid) {
+        super(time, uuid);
         mAttributes = new HashMap<>();
     }
 
@@ -87,11 +88,20 @@ public abstract class SrlObject extends SrlComponent {
      * Accepts values that can only be set during construction.
      *
      * @param time          The time the shape was originally created.
-     * @param id            The unique identifier of the shape.
+     * @param uuid            The unique identifier of the shape.
      * @param isUserCreated True if the user created the stroke instead of the computer.
      */
-    public SrlObject(final long time, final UUID id, final boolean isUserCreated) {
-        this(time, id);
+    public SrlObject(final long time, final UUID uuid, final boolean isUserCreated) {
+        this(time, uuid);
+        this.mIsUserCreated = isUserCreated;
+    }
+
+    /**
+     * Accepts a value saying if a user created the object.
+     *
+     * @param isUserCreated True if the user created the stroke instead of the computer.
+     */
+    public SrlObject(final boolean isUserCreated) {
         this.mIsUserCreated = isUserCreated;
     }
 
@@ -130,10 +140,10 @@ public abstract class SrlObject extends SrlComponent {
     }
 
     /**
-     * @param r a {@link edu.tamu.srl.sketch.core.virtual.SrlBoundingBox}.  This method will accept a null value.
+     * @param boundingBox a {@link edu.tamu.srl.sketch.core.virtual.SrlBoundingBox}.  This method will accept a null value.
      */
-    public final void setBoundingBox(final SrlBoundingBox r) {
-        mBoundingBox = r;
+    public final void setBoundingBox(final SrlBoundingBox boundingBox) {
+        mBoundingBox = boundingBox;
     }
 
     /**
@@ -164,10 +174,10 @@ public abstract class SrlObject extends SrlComponent {
     }
 
     /**
-     * @param p a {@link SrlConvexHull}.  This method will accept a null value.
+     * @param convexHull a {@link SrlConvexHull}.  This method will accept a null value.
      */
-    public final void setConvexHull(final SrlConvexHull p) {
-        mConvexHull = p;
+    public final void setConvexHull(final SrlConvexHull convexHull) {
+        mConvexHull = convexHull;
     }
 
     /**
@@ -178,7 +188,7 @@ public abstract class SrlObject extends SrlComponent {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public boolean shallowEquals(final SrlComponent other) {
+    public boolean shallowEquals(final AbstractSrlComponent other) {
         if (!(other instanceof SrlObject)) {
             return false;
         }
@@ -392,6 +402,7 @@ public abstract class SrlObject extends SrlComponent {
      * @return if the bottom edge of the bounding box is above the
      * given value; otherwise.
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public final boolean isAbove(final double y) {
         return getBottom() < y;
     }
@@ -403,6 +414,7 @@ public abstract class SrlObject extends SrlComponent {
      * @return if the top edge of the bounding box is below the
      * given value; otherwise.
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public final boolean isBelow(final double y) {
         return getTop() > y;
     }
@@ -414,6 +426,7 @@ public abstract class SrlObject extends SrlComponent {
      * @return if the right edge of the bounding box is to the left
      * of the given value;  otherwise.
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public final boolean isLeftOf(final double x) {
         return getRight() < x;
     }
@@ -425,6 +438,7 @@ public abstract class SrlObject extends SrlComponent {
      * @return if the left edge of the bounding box is to the right
      * of the given value; otherwise.
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public final boolean isRightOf(final double x) {
         return getLeft() > x;
     }

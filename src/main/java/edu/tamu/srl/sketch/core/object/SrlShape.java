@@ -1,6 +1,6 @@
 package edu.tamu.srl.sketch.core.object;
 
-import edu.tamu.srl.sketch.core.abstracted.SrlComponent;
+import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlObject;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlShapeConfig;
 
@@ -13,13 +13,13 @@ import java.util.UUID;
 
 /**
  * Created by gigemjt on 11/3/14.
- *
+ * <p/>
  * <p>
  * A shape is anything that can be composed one or more subOjects. ({@link edu.tamu.srl.sketch.core.abstracted.SrlObject}).
  * A shape is assumed to have been recognized and may contain information pertaining to recognition.
  * A shape itself is an interpretation and as such it does not contain any interpretation.
  * </p>
- *
+ * <p/>
  * <h4>Implementation Comments</h4>
  * All methods when interacting with the list (unless inserting into the list or removing from the list)
  * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
@@ -28,6 +28,7 @@ import java.util.UUID;
  * @author gigemjt
  * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlShape extends SrlObject {
 
     /**
@@ -115,37 +116,37 @@ public class SrlShape extends SrlObject {
      * Copies all values from the given object.
      * Performs a shallow copy
      *
-     * @param o the object that is being copied.
+     * @param original the object that is being copied.
      */
-    public SrlShape(final SrlShape o) {
-        this(o, false);
+    public SrlShape(final SrlShape original) {
+        this(original, false);
     }
 
     /**
      * Copy Constructor.
      *
-     * @param o    the shape being copied.
-     * @param deep true if a deep copy is being performed.  Otherwise a shallow copy is performed.
+     * @param original the shape being copied.
+     * @param deep     true if a deep copy is being performed.  Otherwise a shallow copy is performed.
      */
-    public SrlShape(final SrlShape o, final boolean deep) {
-        super(o);
-        this.mDescription = o.getDescription();
-        mInterpretationId = o.getInterpretationId();
-        mRecognizerId = o.getRecognizerId();
-        mConfidence = o.getConfidence();
-        mComplexity = o.getComplexity();
-        mIsForced = o.isForced();
-        mIsEndState = o.isEndState();
-        mInterpretation = o.getInterpretation();
+    public SrlShape(final SrlShape original, final boolean deep) {
+        super(original);
+        this.mDescription = original.getDescription();
+        mInterpretationId = original.getInterpretationId();
+        mRecognizerId = original.getRecognizerId();
+        mConfidence = original.getConfidence();
+        mComplexity = original.getComplexity();
+        mIsForced = original.isForced();
+        mIsEndState = original.isEndState();
+        mInterpretation = original.getInterpretation();
         mSubShapes = new ArrayList<>();
         if (deep) {
-            final List<SrlObject> cache = o.getSubShapes();
+            final List<SrlObject> cache = original.getSubShapes();
             for (int i = 0; i < cache.size(); i++) {
                 this.add((SrlObject) cache.get(i).deepClone());
             }
         } else {
             // shallow copy
-            this.addAll(o.getSubShapes());
+            this.addAll(original.getSubShapes());
         }
     }
 
@@ -153,12 +154,12 @@ public class SrlShape extends SrlObject {
      * Accepts values that can only be set during construction.
      *
      * @param time        The time the shape was originally created.
-     * @param id          The unique identifier of the shape.
+     * @param uuid        The unique identifier of the shape.
      * @param config      The set of data used to configure interpretation.
      * @param description the description of the shape.
      */
-    public SrlShape(final long time, final UUID id, final SrlShapeConfig config, final String description) {
-        super(time, id);
+    public SrlShape(final long time, final UUID uuid, final SrlShapeConfig config, final String description) {
+        super(time, uuid);
         if (config != null) {
             mInterpretationId = config.interpretationId;
             mRecognizerId = config.recognizerId;
@@ -184,13 +185,13 @@ public class SrlShape extends SrlObject {
      * Accepts values that can only be set during construction.
      *
      * @param time          The time the shape was originally created.
-     * @param id            The unique identifier of the shape.
+     * @param uuid          The unique identifier of the shape.
      * @param isUserCreated True if the user created the stroke instead of the computer.
      * @param config        The set of data used to configure interpretation.
      * @param description   the description of the shape.
      */
-    public SrlShape(final long time, final UUID id, final boolean isUserCreated, final SrlShapeConfig config, final String description) {
-        super(time, id, isUserCreated);
+    public SrlShape(final long time, final UUID uuid, final boolean isUserCreated, final SrlShapeConfig config, final String description) {
+        super(time, uuid, isUserCreated);
         if (config != null) {
             mInterpretationId = config.interpretationId;
             mRecognizerId = config.recognizerId;
@@ -215,14 +216,14 @@ public class SrlShape extends SrlObject {
     /**
      * Translate the object by the amount x,y.
      *
-     * @param x the amount in the x direction to move the object by.
-     * @param y the amount in the y direction to move the object by.
+     * @param xOffset the amount in the x direction to move the object by.
+     * @param yOffset the amount in the y direction to move the object by.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public void translate(final double x, final double y) {
+    @Override public void translate(final double xOffset, final double yOffset) {
         final List<SrlObject> cache = getSubShapes();
         for (int i = 0; i < cache.size(); i++) {
-            cache.get(i).translate(x, y);
+            cache.get(i).translate(xOffset, yOffset);
         }
     }
 
@@ -256,7 +257,8 @@ public class SrlShape extends SrlObject {
     }
 
     /**
-     * @return A cloned object that is an instance of {@link SrlComponent}.  This cloned object is only a shallow copy.
+     * @return A cloned object that is an instance of {@link edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent}.
+     * This cloned object is only a shallow copy.
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public Object clone() {
@@ -267,7 +269,7 @@ public class SrlShape extends SrlObject {
      * @return performs a deep clone of the object cloning all objects contained as well.
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public SrlComponent deepClone() {
+    @Override public AbstractSrlComponent deepClone() {
         return new SrlShape(this, true);
     }
 
@@ -279,8 +281,22 @@ public class SrlShape extends SrlObject {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean shallowEquals(final SrlComponent other) {
-        throw new UnsupportedOperationException("implement this");
+    @Override public boolean shallowEquals(final AbstractSrlComponent other) {
+        if (!super.shallowEquals(other)) {
+            return false;
+        }
+
+        // We at least know it is an SrlObject now.
+        if (!(other instanceof SrlShape)) {
+            return false;
+        }
+
+        return this.mInterpretationId.equals(other.getId()) &&
+                this.mInterpretation.equals(((SrlShape) other).getInterpretation()) &&
+                this.mComplexity == ((SrlShape) other).getComplexity() &&
+                this.mIsEndState == ((SrlShape) other).isEndState() &&
+                this.isForced() == ((SrlShape) other).isForced() &&
+                this.getNumChildren() == ((SrlShape) other).getNumChildren();
     }
 
     /**
@@ -291,8 +307,18 @@ public class SrlShape extends SrlObject {
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Override public boolean deepEquals(final SrlComponent other) {
-        throw new UnsupportedOperationException("implement this");
+    @Override public boolean deepEquals(final AbstractSrlComponent other) {
+        if (!this.shallowEquals(other)) {
+            return false;
+        }
+        // We know it is an SrlShape and they have the same number of children.
+        final List<SrlObject> otherCache = ((SrlShape) other).getSubShapes();
+        final List<SrlObject> localCache = this.getSubShapes();
+        boolean equal = true;
+        for (int index = 0; index < otherCache.size() && equal; index++) {
+            equal &= otherCache.get(index).deepEquals(localCache.get(index));
+        }
+        return equal;
     }
 
     /**
@@ -422,10 +448,8 @@ public class SrlShape extends SrlObject {
         for (SrlObject sub : mSubShapes) {
             if (sub.equals(component)) {
                 return true;
-            } else if (sub instanceof SrlShape) {
-                if (((SrlShape) sub).contains(component)) {
-                    return true;
-                }
+            } else if (sub instanceof SrlShape && ((SrlShape) sub).contains(component)) {
+                return true;
             }
         }
         return false;
@@ -452,11 +476,11 @@ public class SrlShape extends SrlObject {
     /**
      * Gets the ith component.
      *
-     * @param i the index
+     * @param index the index
      * @return the ith component
      */
-    public final SrlObject get(final int i) {
-        return getSubShapes().get(i);
+    public final SrlObject get(final int index) {
+        return getSubShapes().get(index);
     }
 
     /**
@@ -479,10 +503,10 @@ public class SrlShape extends SrlObject {
         final List<SrlObject> completeList = new ArrayList<SrlObject>();
         completeList.add(this);
         final List<SrlObject> cache = getSubShapes();
-        for (int i = 0; i < cache.size(); i++) {
-            final SrlObject o = cache.get(i);
-            if (o instanceof SrlShape) {
-                completeList.addAll(((SrlShape) o).getRecursiveSubShapeList());
+        for (int index = 0; index < cache.size(); index++) {
+            final SrlObject srlObject = cache.get(index);
+            if (srlObject instanceof SrlShape) {
+                completeList.addAll(((SrlShape) srlObject).getRecursiveSubShapeList());
             }
         }
         return completeList;
@@ -501,11 +525,11 @@ public class SrlShape extends SrlObject {
     /**
      * Removes the ith {@link SrlObject} from this {@link SrlShape}.
      *
-     * @param i the ith {@link SrlObject} of the container.
+     * @param index the ith {@link SrlObject} of the container.
      * @return the value removed.
      */
-    public final SrlObject remove(final int i) {
-        return mSubShapes.remove(i);
+    public final SrlObject remove(final int index) {
+        return mSubShapes.remove(index);
     }
 
     /**
