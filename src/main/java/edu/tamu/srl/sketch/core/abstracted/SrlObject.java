@@ -32,7 +32,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * The bounding box of the object.
      * This is the smaller vertical/horizontal rectangle that can encompass all of the points inside the shape.
      */
-    private SrlBoundingBox mBoundingBox;
+    private SrlBoundingBox mBoundingBox = null;
 
     /**
      * An object can be created by a user (like drawing a shape, or speaking a
@@ -46,7 +46,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * The convex hull is defined as being the smallest convex polygon that can encompass the entire
      * {@link edu.tamu.srl.sketch.core.abstracted.SrlObject}.
      */
-    private transient SrlConvexHull mConvexHull;
+    private transient SrlConvexHull mConvexHull = null;
 
     /**
      * Default constructor.
@@ -131,6 +131,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
         if (this.mBoundingBox == null) {
             this.calculateBBox();
         }
+
         // if calculating the bounding box did not set the bounding box.
         if (this.mBoundingBox == null) {
             this.mBoundingBox = new SrlBoundingBox(new SrlPoint(getMinX(), getMinY()),

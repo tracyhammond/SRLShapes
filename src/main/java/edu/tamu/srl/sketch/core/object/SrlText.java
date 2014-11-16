@@ -118,7 +118,7 @@ public class SrlText extends SrlShape {
      * @param textValue the text value.
      */
     public final void setTextValue(final String textValue) {
-        this.mTextValue = mTextValue;
+        this.mTextValue = textValue;
     }
 
     /**
@@ -132,6 +132,6 @@ public class SrlText extends SrlShape {
      * @param isHandWritten set the shape to be handwritten or not.  true if it is handwritten.
      */
     public final void setIsHandWritten(final boolean isHandWritten) {
-        this.mIsHandWritten = mIsHandWritten;
+        this.mIsHandWritten = isHandWritten;
     }
 }

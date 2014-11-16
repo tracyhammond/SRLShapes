@@ -131,7 +131,7 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
      * @param name sets the components name this can be useful for debugging. Example "triangle1".
      */
     public final void setName(final String name) {
-        this.mName = mName;
+        this.mName = name;
     }
 
     /**

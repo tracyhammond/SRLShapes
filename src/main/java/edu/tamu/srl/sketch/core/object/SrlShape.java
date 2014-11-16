@@ -397,7 +397,7 @@ public class SrlShape extends SrlObject {
      * @param isForced if the user decides one of the interpretations is forced.
      */
     public final void setIsForced(final boolean isForced) {
-        this.mIsForced = mIsForced;
+        this.mIsForced = isForced;
     }
 
     /**
@@ -614,7 +614,7 @@ public class SrlShape extends SrlObject {
      * @param confidence the new confidence.
      */
     public final void setConfidence(final double confidence) {
-        this.mConfidence = mConfidence;
+        this.mConfidence = confidence;
     }
 
     /**

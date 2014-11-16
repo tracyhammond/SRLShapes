@@ -139,18 +139,18 @@ public class SrlPoint extends SrlVirtualObject {
         this.mTiltY = original.mTiltY;
         if (deep) {
             for (int i = 0; i < original.mXList.size(); i++) {
-                mXList.add((double) original.mXList.get(i));
-                mYList.add((double) original.mYList.get(i));
+                mXList.add(original.mXList.get(i));
+                mYList.add(original.mYList.get(i));
             }
         } else {
             // original point.
-            mXList.add((double) original.mXList.get(0));
-            mYList.add((double) original.mYList.get(0));
+            mXList.add(original.mXList.get(0));
+            mYList.add(original.mYList.get(0));
 
-            // current point (if it exist)
-            if (mXList.size() > 1 && mYList.size() > 1) {
-                mXList.add((double) original.mXList.get(original.mXList.size() - 1));
-                mYList.add((double) original.mYList.get(original.mYList.size() - 1));
+            // current point (if it exist) (but is not the first point)
+            if (mXList.size() >= 2 && mYList.size() >= 2) {
+                mXList.add(original.mXList.get(original.mXList.size() - 1));
+                mYList.add(original.mYList.get(original.mYList.size() - 1));
             }
         }
     }
@@ -185,17 +185,8 @@ public class SrlPoint extends SrlVirtualObject {
      *
      * @return the pressure of the point
      */
-    public final Double getPressure() {
+    public final double getPressure() {
         return mPressure;
-    }
-
-    /**
-     * Set the pressure of the point.
-     *
-     * @param pressure pressure of the point.
-     */
-    public final void setPressure(final double pressure) {
-        mPressure = pressure;
     }
 
     /**
@@ -203,7 +194,7 @@ public class SrlPoint extends SrlVirtualObject {
      *
      * @param pressure The pressure of the point.
      */
-    public final void setPressure(final Double pressure) {
+    public final void setPressure(final double pressure) {
         mPressure = pressure;
     }
 
@@ -212,7 +203,7 @@ public class SrlPoint extends SrlVirtualObject {
      *
      * @return tilt in the X direction.
      */
-    public final Double getTiltX() {
+    public final double getTiltX() {
         return mTiltX;
     }
 
@@ -230,7 +221,7 @@ public class SrlPoint extends SrlVirtualObject {
      *
      * @return tilt in the Y direction.
      */
-    public final Double getTiltY() {
+    public final double getTiltY() {
         return mTiltY;
     }
 
@@ -293,13 +284,23 @@ public class SrlPoint extends SrlVirtualObject {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("checkstyle:designforextension")
     @Override
     public int hashCode() {
-
         return (int) (getX() + getY()) + (int) getTime();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
     /**
      * Rotates the SComponent from the given x- and y-coordinate.
@@ -451,6 +452,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x new initial x location
      * @param y new initial y location
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public final void setOrigP(final double x, final double y) {
         mXList = new ArrayList<Double>();
         mYList = new ArrayList<Double>();
@@ -465,6 +467,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @param x the new x location for the point
      * @param y the new y location for the point
      */
+    @SuppressWarnings("PMD.ShortVariable")
     public final void setPoint(final double x, final double y) {
         mXList.add(x);
         mYList.add(y);
