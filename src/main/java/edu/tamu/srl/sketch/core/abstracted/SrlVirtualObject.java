@@ -9,15 +9,15 @@ import java.util.UUID;
  * Virtual objects are useful but should not appear naturally on a sketch surface.
  * Virtual objects are not able to be recognized and should not be sent to a recognition system.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 @SuppressWarnings("PMD.AbstractNaming")
 public abstract class SrlVirtualObject extends AbstractSrlComponent {
 
     /**
      * Default constructor.
-     * <p/>
+     *
      * Creates an object with an id and a time.
      */
     public SrlVirtualObject() {
@@ -26,7 +26,7 @@ public abstract class SrlVirtualObject extends AbstractSrlComponent {
 
     /**
      * A copy constructor.
-     * <p/>
+     *
      * Copies all values from the given object.
      *
      * @param original the object that is being copied.

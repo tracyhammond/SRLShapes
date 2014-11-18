@@ -1,0 +1,60 @@
+<FindBugsFilter>
+	<Match>
+		<Bug pattern="SE_NO_SERIALVERSIONID" />
+	</Match>
+
+	<!-- General bug excludes -->
+	<Match>
+		<Bug pattern="SE_BAD_FIELD" />
+	</Match>
+
+	<Match>
+		<Bug pattern="SE_NO_SERIALVERSIONID" />
+	</Match>
+
+	<Match>
+		<Class name="~.*cobertura.*" />
+	</Match>
+
+	<Match>
+		<Package name="~.*cobertura.*" />
+	</Match>
+
+	<Match>
+		<Method name="~.*cobertura.*" />
+	</Match>
+
+	<Match>
+		<Local name="~.*cobertura.*" />
+	</Match>
+
+	<Match>
+		<Field name="~.*cobertura.*" />
+	</Match>
+
+    <Match>
+        <Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
+    </Match>
+	<Match>
+		<Or>
+			<Field name="e" />
+			<Local name="e" />
+		</Or>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+	</Match>
+
+	<!-- All bugs in test classes, except for JUnit-specific bugs -->
+	<Match>
+		<Class name="~.*\.*Test" />
+		<Not>
+			<Bug code="IJU" />
+		</Not>
+	</Match>
+
+    <!--PROJECT SPECIFIC BUGS -->
+
+    <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+        <Class name="~.*SrlObject.*" />
+    </Match>
+</FindBugsFilter>

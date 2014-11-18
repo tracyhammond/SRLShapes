@@ -4,15 +4,15 @@ import java.util.UUID;
 
 /**
  * Created by gigemjt on 11/3/14.
- *
+ * <br>
  * Can be used as a parameter to a {@link edu.tamu.srl.sketch.core.object.SrlShape} constructor instead of a long list.
  * This is not actually stored inside the shape but instead its values are stored inside the shape.
  * This is because the shape itself is an interpretation and does not actually contain an interpretation.
  * This can be used with a builder pattern and then sent to the shape.
  * This should ony be used by recognizers or when loading data.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 @SuppressWarnings({ "checkstyle:visibilitymodifier" })
 public class SrlShapeConfig {

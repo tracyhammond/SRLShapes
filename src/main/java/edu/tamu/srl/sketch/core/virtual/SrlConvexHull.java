@@ -9,12 +9,12 @@ import java.util.List;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * <p/>
+ * <br>
  * A bounding box is typically used to find the convex polygon that can encompass all of the points of an
  * {@link edu.tamu.srl.sketch.core.abstracted.SrlObject}.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 @SuppressWarnings({ "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlConvexHull extends SrlVirtualObject {
@@ -25,7 +25,7 @@ public class SrlConvexHull extends SrlVirtualObject {
 
     /**
      * Default constructor.
-     * <p/>
+     *
      * Creates an object with an id and a time.
      */
     public SrlConvexHull() {
@@ -34,7 +34,7 @@ public class SrlConvexHull extends SrlVirtualObject {
 
     /**
      * A copy constructor.
-     * <p/>
+     *
      * Copies all values from the given object.
      *
      * @param original the object that is being copied.

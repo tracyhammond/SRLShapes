@@ -2,11 +2,11 @@ package edu.tamu.srl.sketch.core.tobenamedlater;
 
 /**
  * Created by gigemjt on 11/3/14.
- * <p/>
+ * <br>
  * Class containing information about the device that produced a stroke.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlDevice {
 

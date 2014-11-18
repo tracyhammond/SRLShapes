@@ -13,20 +13,18 @@ import java.util.UUID;
 
 /**
  * Created by gigemjt on 11/3/14.
- * <p/>
  * <p>
  * A shape is anything that can be composed one or more subOjects. ({@link edu.tamu.srl.sketch.core.abstracted.SrlObject}).
  * A shape is assumed to have been recognized and may contain information pertaining to recognition.
  * A shape itself is an interpretation and as such it does not contain any interpretation.
  * </p>
- * <p/>
- * <h4>Implementation Comments</h4>
+ * <h1>Implementation Comments</h1>
  * All methods when interacting with the list (unless inserting into the list or removing from the list)
  * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
  * needing to overwrite every method or get passed a modifiable version of the list.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlShape extends SrlObject {
@@ -36,7 +34,7 @@ public class SrlShape extends SrlObject {
      * This value should not be generated at runtime but instead should be linked to a specific interpretation of a certain recognizer
      * This can be used in the case of interpretations having the same {@link #mInterpretation} (think Arrow) but are created in different ways.
      * (single stroke arrow, multi stroke arrow).
-     * <p/>
+     * <br>
      * This id may not be unique across multiple recognizers.
      * This id in combination with the {@link #mRecognizerId} is guaranteed to be unique.
      */
@@ -46,7 +44,7 @@ public class SrlShape extends SrlObject {
      * This value should not be generated at runtime but instead should be linked to a specific recognizer.
      * This can be used in the case of interpretations having the same {@link #mInterpretation} (think Arrow) but are created in different ways.
      * (single stroke arrow, multi stroke arrow).
-     * <p/>
+     * <br>
      * Each recognizer may have multiple interpretations so this id may not be unique across multiple interpretations.
      * This id in combination with the {@link #mInterpretationId} is guaranteed to be unique.
      */
@@ -64,7 +62,7 @@ public class SrlShape extends SrlObject {
      * True if this interpretation is the final form of this shape.
      * This signifies to the recognizer that a shape with this interpretation
      * should not be used as a possible subshape of an even larger more complex shape.
-     * <p/>
+     * <br>
      * This value should not be used for determining the order of interpretations.
      */
     private final boolean mIsEndState;
@@ -94,7 +92,7 @@ public class SrlShape extends SrlObject {
 
     /**
      * Default constructor.
-     * <p/>
+     * <br>
      * Creates an object with an id and a time.
      */
     public SrlShape() {
@@ -112,7 +110,7 @@ public class SrlShape extends SrlObject {
 
     /**
      * A copy constructor.
-     * <p/>
+     *
      * Copies all values from the given object.
      * Performs a shallow copy
      *
@@ -485,7 +483,7 @@ public class SrlShape extends SrlObject {
 
     /**
      * Gets the number of direct children of this shape.
-     * <p/>
+     *
      * This does not look go any deeper than the children of this shape.
      *
      * @return The number of objects.
@@ -565,7 +563,7 @@ public class SrlShape extends SrlObject {
      * This value should not be generated at runtime but instead should be linked to a specific interpretation of a certain recognizer
      * This can be used in the case of interpretations having the same {@link #mInterpretation} (think Arrow) but are created in different ways.
      * (single stroke arrow, multi stroke arrow).
-     * <p/>
+     * <br>
      * This id may not be unique across multiple recognizers.
      * This id in combination with the {@link #mRecognizerId} is guaranteed to be unique.
      *
@@ -580,7 +578,7 @@ public class SrlShape extends SrlObject {
      * This value should not be generated at runtime but instead should be linked to a specific recognizer.
      * This can be used in the case of interpretations having the same {@link #mInterpretation} (think Arrow) but are created in different ways.
      * (single stroke arrow, multi stroke arrow).
-     * <p/>
+     * <br>
      * Each recognizer may have multiple interpretations so this id may not be unique across multiple interpretations.
      * This id in combination with the {@link #mInterpretationId} is guaranteed to be unique.
      *
@@ -641,7 +639,7 @@ public class SrlShape extends SrlObject {
      * True if this interpretation is the final form of this shape.
      * This signifies to the recognizer that a shape with this interpretation
      * should not be used as a possible subshape of an even larger more complex shape.
-     * <p/>
+     * <br>
      * This value should not be used for determining the order of interpretations.
      *
      * @return true if the shape is in its end state.

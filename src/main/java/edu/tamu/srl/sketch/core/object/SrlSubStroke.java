@@ -7,11 +7,11 @@ import java.util.List;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * <p/>
+ * <br>
  * A substroke is defined as a portion of a complete stroke.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 public class SrlSubStroke extends SrlStroke {
 

@@ -19,14 +19,13 @@ import java.util.UUID;
  * A stroke contains a list of {@link SrlPoint}.
  * The stroke also will contain data on the author of the stroke and the pen that made the stroke.
  * </p>
- * <p/>
- * <h4>Implementation Comments</h4>
+ * <h1>Implementation Comments</h1>
  * All methods when interacting with the list (unless inserting into the list or removing from the list)
  * use the getPoints() method.  This is so that subclasses can have augmented versions of the list without
  * needing to overwrite every method or get passed a modifiable version of the list.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.CloneMethodMustImplementCloneable", "PMD.AvoidDuplicateLiterals" })
 public class SrlStroke extends SrlObject {
@@ -38,14 +37,14 @@ public class SrlStroke extends SrlObject {
 
     /**
      * Author who drew the stroke.
-     * <p/>
+     * <br>
      * This value will never change even if it is made in combination of strokes made by other people.
      */
     private final SrlAuthor mAuthor;
 
     /**
      * Pen used to draw the stroke.
-     * <p/>
+     * <br>
      * The pen is a term used to define anything that made the stroke.
      * Because a single device can support multiple types of input he pen could be a computer mouse,
      * it could be a digital pen or it could be an actual finger.
@@ -85,7 +84,7 @@ public class SrlStroke extends SrlObject {
 
     /**
      * A copy constructor.
-     * <p/>
+     * <br>
      * Copies all values from the given object.
      * Performs a shallow copy.
      *
@@ -97,7 +96,7 @@ public class SrlStroke extends SrlObject {
 
     /**
      * A copy constructor.
-     * <p/>
+     * <br>
      * Copies all values from the given object.
      * Performs a shallow copy.
      *
@@ -438,7 +437,7 @@ public class SrlStroke extends SrlObject {
     /**
      * Get the index'th point in the stroke.
      * The first point has index index = 0
-     * <p/>
+     * <br>
      * For performance purposes in loops it is better to get the entire list and act on that instead of call this method.
      *
      * @param index the index of the stroke

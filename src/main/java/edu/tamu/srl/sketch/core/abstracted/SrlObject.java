@@ -11,13 +11,13 @@ import java.util.UUID;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * <p/>
+ * <br>
  * An abstract class for representing all objects that take up space.
  * Contains methods used by all objects that take up space.
  * All {@link SrlObject}s are able to be recognized.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
  */
 @SuppressWarnings({ "PMD.AbstractNaming", "PMD.AvoidDuplicateLiterals" })
 public abstract class SrlObject extends AbstractSrlComponent {
@@ -50,7 +50,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
 
     /**
      * Default constructor.
-     * <p/>
+     *
      * Creates an object with an id and a time.
      */
     public SrlObject() {
@@ -60,7 +60,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
 
     /**
      * A copy constructor.
-     * <p/>
+     *
      * Copies all values from the given object.
      *
      * @param original The object that is being copied.
@@ -122,7 +122,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
 
     /**
      * Get the bounding box of the object.
-     * <p/>
+     *
      * Calculates the bounding box if the rectangle is null and does not exist using {@link #calculateBBox()}.
      *
      * @return the bounding box of the object.  This method will never return null.
@@ -150,7 +150,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * Returns the bounding box of the object as a clone to the actual instance.
      * If the bounding box has not been calculated or one does not exist this may return null.
-     * <p/>
+     *
      * If a method that never returns null is needed call {@link #getBoundingBox()}.
      *
      * @return A clone of the internal bounding box.  null if the internal bounding box is null.

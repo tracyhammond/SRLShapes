@@ -8,11 +8,12 @@ import java.util.UUID;
 /**
  * Created by gigemjt on 11/3/14.
  *
- * <p/>
+ * <br>
  * Oversees all javaobjects and virtual objects and centralizes all code used by everything.
  *
+ * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
  * @author gigemjt
- * @copyright Tracy Hammond, Sketch Recognition Lab, Texas A&M University
+ *
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComponent>, Cloneable {
@@ -50,7 +51,7 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
 
     /**
      * Default constructor.
-     * <p/>
+     *
      * Creates an object with an id and a time.
      */
     public AbstractSrlComponent() {
@@ -60,7 +61,7 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
 
     /**
      * A copy constructor.
-     * <p/>
+     *
      * Copies all values from the given object.
      *
      * @param original the object that is being copied.
@@ -75,7 +76,7 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
      * Gets the comparator for the time values. Compares two objects based on
      * their time stamps. Might be better to compare based on another method,
      * but haven't decided yet what that is.
-     * <p/>
+     *
      * The Comparator will return 0 if the times are equal.
      *
      * @return the comparator for the time values
