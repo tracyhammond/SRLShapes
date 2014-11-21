@@ -155,11 +155,15 @@ public class SrlBoundingBox extends SrlVirtualObject {
      * By default this is called by the {@link #equals(Object)} method.
      *
      * @param other the other SrlObject.
-     * @return true if content is equal, false otherwise
+     * @return true if the boundaries of the box are the same (getMinX == other.getMinX), etc
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean shallowEquals(final AbstractSrlComponent other) {
-        throw new UnsupportedOperationException("need to implement this");
+        if (!(other instanceof SrlBoundingBox)) {
+            return false;
+        }
+        return getMaxX() == ((SrlBoundingBox) other).getMaxX() && getMaxY() == ((SrlBoundingBox) other).getMaxY()
+                && getMinX() == ((SrlBoundingBox) other).getMinX() && getMinY() == ((SrlBoundingBox) other).getMinY();
     }
 
     /**
@@ -167,11 +171,13 @@ public class SrlBoundingBox extends SrlVirtualObject {
      * It would probably be smart to also have this call shallowEquals.
      *
      * @param other the other SrlObject.
-     * @return true if content is equal, false otherwise
+     * @return true if shallowEquals returns true and a deep inspection shows they are equal.
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean deepEquals(final AbstractSrlComponent other) {
-        throw new UnsupportedOperationException("need to implement this");
+        return shallowEquals(other)
+                && mTopLeftCorner.shallowEquals(((SrlBoundingBox) other).mTopLeftCorner)
+                && mBottomRightCorner.shallowEquals(((SrlBoundingBox) other).mBottomRightCorner);
     }
 
     /**
@@ -186,5 +192,88 @@ public class SrlBoundingBox extends SrlVirtualObject {
      */
     @Override public final SrlPoint getCenterPoint() {
         throw new UnsupportedOperationException("need to implement this");
+    }
+
+    /**
+     * Get the y value for the top of the box.
+     *
+     * @return the y value for the top of the box.
+     */
+    public final double getTop() {
+        return getMinY();
+    }
+
+    /**
+     * Get the y value for the bottom of the box.
+     *
+     * @return the y value for the bottom of the box.
+     */
+    public final double getBottom() {
+        return getMaxY();
+    }
+
+    /**
+     * Get the x value for the left of the box.
+     *
+     * @return the x value for the left of the box.
+     */
+    public final double getLeft() {
+        return getMinX();
+    }
+
+    /**
+     * Get the x value for the right of the box.
+     *
+     * @return the x value for the right of the box.
+     */
+    public final double getRight() {
+        return getMaxX();
+    }
+
+    /**
+     * @return the largest X value. (larger x values are denoted as being on the right hand side of the screen.
+     */
+    public double getMaxX() {
+        return Math.max(mTopLeftCorner.getX(), mBottomRightCorner.getX());
+    }
+
+    /**
+     * @return the largest Y value. (larger Y values are denoted as being at the bottom the screen.
+     */
+    public double getMaxY() {
+        return Math.max(mTopLeftCorner.getY(), mBottomRightCorner.getY());
+    }
+
+    /**
+     * @return the smallest X value. (smaller x values are denoted as being on the left hand side of the screen.
+     */
+    public double getMinX() {
+        return Math.min(mTopLeftCorner.getX(), mBottomRightCorner.getX());
+    }
+
+    /**
+     * @return the smallest Y value. (smaller Y values are denoted as being at the top of the screen.
+     */
+    public double getMinY() {
+        return Math.min(mTopLeftCorner.getY(), mBottomRightCorner.getY());
+    }
+
+    /**
+     * @param boxes The objects we are taking the union of.
+     * @return A {@link edu.tamu.srl.sketch.core.virtual.SrlBoundingBox} that represents the union.
+     */
+    public static SrlBoundingBox union(SrlBoundingBox... boxes) {
+        double maxX = Double.MIN_VALUE;
+        double minX = Double.MAX_VALUE;
+        double maxY = Double.MIN_VALUE;
+        double minY = Double.MAX_VALUE;
+        for (int i = 0; i < boxes.length; i++) {
+            maxX = Math.max(boxes[i].getMaxX(), maxX);
+            maxY = Math.max(boxes[i].getMaxY(), maxY);
+
+            minX = Math.max(boxes[i].getMinX(), minX);
+            minY = Math.max(boxes[i].getMinY(), minY);
+        }
+        return new SrlBoundingBox(minX, minY, maxX, maxY);
     }
 }

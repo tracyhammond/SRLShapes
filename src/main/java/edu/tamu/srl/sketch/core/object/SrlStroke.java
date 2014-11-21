@@ -181,6 +181,7 @@ public class SrlStroke extends SrlObject {
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).translate(xOffset, yOffset);
         }
+        resetBounders();
     }
 
     /**
@@ -195,6 +196,7 @@ public class SrlStroke extends SrlObject {
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).scale(xFactor, yFactor);
         }
+        resetBounders();
     }
 
     /**
@@ -210,6 +212,7 @@ public class SrlStroke extends SrlObject {
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).rotate(radians, xCenter, yCenter);
         }
+        resetBounders();
     }
 
     /**
@@ -346,6 +349,17 @@ public class SrlStroke extends SrlObject {
     }
 
     /**
+     * Adds a subObject to this object at the specified index.
+     *
+     * @param index        point to add the content
+     * @param point the sub object.
+     */
+    public final void addPoint(final int index, final SrlPoint point) {
+        mPoints.add(index, point);
+        resetBounders();
+    }
+
+    /**
      * Adding another point to the stroke.
      *
      * @param point the point being added to the stroke.
@@ -353,6 +367,7 @@ public class SrlStroke extends SrlObject {
     public final void addPoint(final SrlPoint point) {
         mPoints.add(point);
         point.setName("p" + mPoints.size());
+        resetBounders();
     }
 
     /**
@@ -362,6 +377,7 @@ public class SrlStroke extends SrlObject {
      */
     public final void addPoints(final List<SrlPoint> points) {
         mPoints.addAll(points);
+        resetBounders();
     }
 
     /**
@@ -369,29 +385,39 @@ public class SrlStroke extends SrlObject {
      */
     public final void clear() {
         mPoints.clear();
+        resetBounders();
     }
 
     /**
-     * @param point the point that is being removed.
-     * @see List#remove(Object)
+     * Removes a subObject from this container.
+     *
+     * @param subObject subObject to remove
+     * @return true if something was removed
      */
-    public final void remove(final SrlPoint point) {
-        mPoints.remove(point);
+    public final boolean remove(final SrlPoint subObject) {
+        final boolean result = mPoints.remove(subObject);
+        if (result) {
+            resetBounders();
+        }
+        return result;
     }
 
     /**
      * @param index the index of that point that is being removed.
+     * @return the value removed.
      * @see List#remove(int)
      */
-    public final void remove(final int index) {
-        mPoints.remove(index);
+    public final SrlPoint remove(final int index) {
+        final SrlPoint obj = mPoints.remove(index);
+        resetBounders();
+        return obj;
     }
 
     /**
      * This creates an unmodifiableList of the points.
      * The list of points can only be modified by going through methods in the stroke itself.
      *
-     * @return a list of points used by the stroke.
+     * @return a list of points used by the stroke.  <b>This should never return null.</b>
      * @see Collections#unmodifiableList
      */
     @SuppressWarnings("checkstyle:designforextension")

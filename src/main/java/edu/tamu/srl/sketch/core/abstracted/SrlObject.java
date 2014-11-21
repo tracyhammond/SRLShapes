@@ -182,6 +182,16 @@ public abstract class SrlObject extends AbstractSrlComponent {
     }
 
     /**
+     * Resets the bounding box and the convex hull.
+     *
+     * Setting them both to null.
+     */
+    protected final void resetBounders() {
+        setBoundingBox(null);
+        setConvexHull(null);
+    }
+
+    /**
      * Performs a shallow equals.
      * By default this is called by the {@link #equals(Object)} method.
      *

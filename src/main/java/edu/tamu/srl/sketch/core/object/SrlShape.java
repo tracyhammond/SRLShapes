@@ -3,6 +3,7 @@ package edu.tamu.srl.sketch.core.object;
 import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlObject;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlShapeConfig;
+import edu.tamu.srl.sketch.core.virtual.SrlBoundingBox;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -223,6 +224,7 @@ public class SrlShape extends SrlObject {
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).translate(xOffset, yOffset);
         }
+        resetBounders();
     }
 
     /**
@@ -237,6 +239,7 @@ public class SrlShape extends SrlObject {
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).scale(xFactor, yFactor);
         }
+        resetBounders();
     }
 
     /**
@@ -252,6 +255,7 @@ public class SrlShape extends SrlObject {
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).rotate(radians, xCenter, yCenter);
         }
+        resetBounders();
     }
 
     /**
@@ -324,7 +328,12 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override protected void calculateBBox() {
-        throw new UnsupportedOperationException("implement this");
+        final List<SrlObject> cache = getSubShapes();
+        final SrlBoundingBox[] subBoxes = new SrlBoundingBox[cache.size()];
+        for (int i = 0; i < cache.size(); i++) {
+            subBoxes[i] = cache.get(i).getBoundingBox();
+        }
+        this.setBoundingBox(SrlBoundingBox.union(subBoxes));
     }
 
     /**
@@ -399,13 +408,14 @@ public class SrlShape extends SrlObject {
     }
 
     /**
-     * Adds a subshape to this object at the specified index.
+     * Adds a subObject to this object at the specified index.
      *
      * @param index        point to add the content
-     * @param subcomponent the sub object
+     * @param subObject the sub object.
      */
-    public final void addSubObjects(final int index, final SrlObject subcomponent) {
-        mSubShapes.add(index, subcomponent);
+    public final void add(final int index, final SrlObject subObject) {
+        mSubShapes.add(index, subObject);
+        resetBounders();
     }
 
     /**
@@ -413,10 +423,11 @@ public class SrlShape extends SrlObject {
      * This usually happens during recognition, when a new object
      * is made up from one or more objects
      *
-     * @param subShape an object that can be added to a shape.
+     * @param subObject an object that can be added to a shape.
      */
-    public final void add(final SrlObject subShape) {
-        mSubShapes.add(subShape);
+    public final void add(final SrlObject subObject) {
+        mSubShapes.add(subObject);
+        resetBounders();
     }
 
     /**
@@ -426,6 +437,7 @@ public class SrlShape extends SrlObject {
      */
     public final void addAll(final List<SrlObject> subShapes) {
         mSubShapes.addAll(subShapes);
+        resetBounders();
     }
 
     /**
@@ -433,6 +445,7 @@ public class SrlShape extends SrlObject {
      */
     public final void clear() {
         mSubShapes.clear();
+        resetBounders();
     }
 
     /**
@@ -461,13 +474,11 @@ public class SrlShape extends SrlObject {
      * false otherwise.
      */
     public final boolean containsAny(final Collection<? extends SrlObject> components) {
-
         for (SrlObject component : components) {
             if (contains(component)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -514,10 +525,47 @@ public class SrlShape extends SrlObject {
      * Gets the list of subshapes.
      * This list is not modifiable to modify the list you must go through the methods presented by this class.
      *
-     * @return list of objects that make up this object
+     * @return list of objects that make up this object.  <b>This should never return null.</b>
      */
-    public final List<SrlObject> getSubShapes() {
+    @SuppressWarnings("checkstyle:designforextension")
+    public List<SrlObject> getSubShapes() {
         return Collections.unmodifiableList(mSubShapes);
+    }
+
+    /**
+     * Recursively searches to get the first stroke.  Uses only order of insertion.
+     * @return The first stroke in this shape. Null if the shape is empty.
+     */
+    public final SrlStroke getFirstStroke() {
+        if (this.getSubShapes().isEmpty()) {
+            return null;
+        }
+        final SrlObject obj = this.get(0);
+        if (obj instanceof SrlShape) {
+            return ((SrlShape) obj).getFirstStroke();
+        } else if(obj instanceof SrlStroke) {
+            return (SrlStroke) obj;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Recursively searches to get the last stroke.  Uses only order of insertion.
+     * @return The last stroke in this shape. Null if the shape is empty.
+     */
+    public final SrlStroke getLastStroke() {
+        if (this.getSubShapes().isEmpty()) {
+            return null;
+        }
+        final SrlObject obj = this.get(this.getNumChildren() - 1);
+        if (obj instanceof SrlShape) {
+            return ((SrlShape) obj).getLastStroke();
+        } else if (obj instanceof SrlStroke) {
+            return (SrlStroke) obj;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -527,7 +575,9 @@ public class SrlShape extends SrlObject {
      * @return the value removed.
      */
     public final SrlObject remove(final int index) {
-        return mSubShapes.remove(index);
+        final SrlObject obj = mSubShapes.remove(index);
+        resetBounders();
+        return obj;
     }
 
     /**
@@ -537,7 +587,11 @@ public class SrlShape extends SrlObject {
      * @return true if something was removed
      */
     public final boolean remove(final SrlObject subObject) {
-        return mSubShapes.remove(subObject);
+        final boolean result = mSubShapes.remove(subObject);
+        if (result) {
+            resetBounders();
+        }
+        return result;
     }
 
     /**
@@ -548,7 +602,11 @@ public class SrlShape extends SrlObject {
      * false otherwise
      */
     public final boolean removeAll(final Collection<? extends SrlObject> subObjects) {
-        return mSubShapes.removeAll(subObjects);
+        final boolean result = mSubShapes.removeAll(subObjects);
+        if (result) {
+            resetBounders();
+        }
+        return result;
     }
 
     /**

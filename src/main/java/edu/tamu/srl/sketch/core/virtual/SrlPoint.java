@@ -416,6 +416,17 @@ public class SrlPoint extends SrlVirtualObject {
     }
 
     /**
+     * Returns the distance between two points.
+     *
+     * @param other The point that the distance is being computed to.
+     * @return The distance between two points.
+     * @see edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent#distanceToCenter(edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent)
+     */
+    public final double distance(SrlPoint other) {
+        return distanceToCenter(other);
+    }
+
+    /**
      * Get a Point that corresponds to the center of this component. The
      * only thing that will be stored in this Point are X and Y values. Thus,
      * you should /only/ use the interface's getX() and getY() methods, and

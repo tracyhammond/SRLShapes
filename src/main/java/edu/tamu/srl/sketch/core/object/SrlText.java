@@ -1,5 +1,6 @@
 package edu.tamu.srl.sketch.core.object;
 
+import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlShapeConfig;
 
 import java.util.UUID;
@@ -133,5 +134,41 @@ public class SrlText extends SrlShape {
      */
     public final void setIsHandWritten(final boolean isHandWritten) {
         this.mIsHandWritten = isHandWritten;
+    }
+
+    /**
+     * Performs a shallow equals.
+     * By default this is called by the {@link #equals(Object)} method.
+     *
+     * @param other the other SrlObject.
+     * @return true if the text is equal and
+     * {@link edu.tamu.srl.sketch.core.object.SrlShape#shallowEquals(edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent)}
+     * returns equal.
+     * Does not check if they are both handwritten.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public boolean shallowEquals(final AbstractSrlComponent other) {
+        if (!super.shallowEquals(other)) {
+            return false;
+        }
+
+        return this.getTextValue().equals(((SrlText) other).getTextValue());
+    }
+
+    /**
+     * Looks deep into two components to check equality.
+     * It would probably be smart to also have this call shallowEquals.
+     *
+     * @param other the other SrlObject.
+     * @return true if the {@link #shallowEquals(edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent)} is true and
+     * {@link edu.tamu.srl.sketch.core.object.SrlShape#deepEquals(edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent)}
+     * and if {@link #isHandWritten()} is the same.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public boolean deepEquals(final AbstractSrlComponent other) {
+        if (!this.shallowEquals(other) || !super.deepEquals(other)) {
+            return false;
+        }
+        return this.isHandWritten() == ((SrlText) other).isHandWritten();
     }
 }

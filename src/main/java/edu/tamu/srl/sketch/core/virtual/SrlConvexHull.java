@@ -124,7 +124,10 @@ public class SrlConvexHull extends SrlVirtualObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean shallowEquals(final AbstractSrlComponent other) {
-        throw new UnsupportedOperationException("need to implement this");
+        if (!(other instanceof SrlConvexHull)) {
+            return false;
+        }
+        return mPoints.size() == ((SrlConvexHull) other).getPoints().size() && mPoints.equals(((SrlConvexHull) other).getPoints());
     }
 
     /**
@@ -136,7 +139,15 @@ public class SrlConvexHull extends SrlVirtualObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean deepEquals(final AbstractSrlComponent other) {
-        throw new UnsupportedOperationException("need to implement this");
+        if (!shallowEquals(other)) {
+            return false;
+        }
+        final List<SrlPoint> cache = ((SrlConvexHull) other).getPoints();
+        boolean result = true;
+        for (int i = 0; i < cache.size(); i++) {
+            result &= cache.get(i).shallowEquals(mPoints.get(i));
+        }
+        return result;
     }
 
     /**
