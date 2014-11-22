@@ -239,9 +239,16 @@ public abstract class SrlObject extends AbstractSrlComponent {
     }
 
     /**
-     * An object can be created by a user (like drawing a shape, or speaking a
-     * phrase) or it can be created by a system (like a recognition of a higher
-     * level shape) default is false if not explicitly set.
+     * @return The average of all of the points in the shape.
+     *
+     * The time of this point actually contains the total number of points in this sub object. This value can be grabbed with {@link
+     * SrlPoint#getTime()}. Obviously this has a worst case of O(n) where n is the number of points in the shape.
+     */
+    public abstract SrlPoint getAveragedPoint();
+
+    /**
+     * An object can be created by a user (like drawing a shape, or speaking a phrase) or it can be created by a system (like a recognition of a
+     * higher level shape) default is false if not explicitly set.
      *
      * @return true if a user created the shape.
      */
