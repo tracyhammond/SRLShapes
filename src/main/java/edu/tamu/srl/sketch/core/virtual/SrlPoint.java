@@ -298,7 +298,7 @@ public class SrlPoint extends SrlVirtualObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return super.equals(obj);
     }
 
@@ -422,7 +422,7 @@ public class SrlPoint extends SrlVirtualObject {
      * @return The distance between two points.
      * @see edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent#distanceToCenter(edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent)
      */
-    public final double distance(SrlPoint other) {
+    public final double distance(final SrlPoint other) {
         return distanceToCenter(other);
     }
 

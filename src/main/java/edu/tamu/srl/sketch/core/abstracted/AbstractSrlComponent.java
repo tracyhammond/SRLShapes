@@ -21,7 +21,7 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
     /**
      * Default comparator using time.
      */
-    private volatile static Comparator<AbstractSrlComponent> timeComparator;
+    private static volatile Comparator<AbstractSrlComponent> timeComparator;
 
     /**
      * Each object has a unique ID associated with it.
@@ -81,11 +81,12 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
      *
      * @return the comparator for the time values
      */
+    @SuppressWarnings("checkstyle:innerassignment")
     public static Comparator<AbstractSrlComponent> getTimeComparator() {
         Comparator<AbstractSrlComponent> result = timeComparator;
         // Double checked locking.
         if (result == null) {
-            synchronized(AbstractSrlComponent.class) {
+            synchronized (AbstractSrlComponent.class) {
                 result = timeComparator;
                 if (result == null) {
                     timeComparator = result = timeComparator = new Comparator<AbstractSrlComponent>() {
@@ -274,4 +275,28 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
         return distanceToCenter(other.getX(), other.getY());
     }
 
+    /**
+     * Attempts to find the closest distance to this other component.
+     * @param srlComponent the component we are trying to find this distance to.
+     * @return the distance between the components.
+     * <b>NOTE: due to possible heuristics used this method is not commutative.  Meaning that:
+     *
+     * <code>shape1.distance(shape2) == shape2.distance(shape1);</code>
+     * May be false
+     *</b>
+     */
+    public abstract double distance(final AbstractSrlComponent srlComponent);
+
+    /**
+     * Attempts to return the closest distance between two shapes.
+     * This is an approximation and may not be the absolute closest distance.
+     * @param srlComponent1
+     * @param srlComponent2
+     * @return
+     */
+    public static final double findShortestDistance(final AbstractSrlComponent srlComponent1, final AbstractSrlComponent srlComponent2) {
+        final double distance1 = srlComponent1.distance(srlComponent2);
+        final double distance2 = srlComponent2.distance(srlComponent1);
+        return (distance1 + distance2) / 2.0;
+    }
 }

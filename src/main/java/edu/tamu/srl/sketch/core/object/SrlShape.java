@@ -4,6 +4,7 @@ import edu.tamu.srl.sketch.core.abstracted.AbstractSrlComponent;
 import edu.tamu.srl.sketch.core.abstracted.SrlObject;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlShapeConfig;
 import edu.tamu.srl.sketch.core.virtual.SrlBoundingBox;
+import edu.tamu.srl.sketch.core.virtual.SrlPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -293,12 +294,45 @@ public class SrlShape extends SrlObject {
             return false;
         }
 
-        return this.mInterpretationId.equals(other.getId()) &&
-                this.mInterpretation.equals(((SrlShape) other).getInterpretation()) &&
-                this.mComplexity == ((SrlShape) other).getComplexity() &&
-                this.mIsEndState == ((SrlShape) other).isEndState() &&
-                this.isForced() == ((SrlShape) other).isForced() &&
-                this.getNumChildren() == ((SrlShape) other).getNumChildren();
+        return this.mInterpretationId.equals(other.getId())
+                && this.mInterpretation.equals(((SrlShape) other).getInterpretation())
+                && this.mComplexity == ((SrlShape) other).getComplexity()
+                && this.mIsEndState == ((SrlShape) other).isEndState()
+                && this.isForced() == ((SrlShape) other).isForced()
+                && this.getNumChildren() == ((SrlShape) other).getNumChildren();
+    }
+
+    /**
+     * @return The average of all of the points in the shape.
+     *
+     * The time of this point actually contains the total number of points in this sub object.
+     * This value can be grabbed with {@link SrlPoint#getTime()}.
+     * Obviously this has a worst case of O(n) where n is the number of points in the shape.
+     */
+    @Override public final SrlPoint getAveragedPoint() {
+        final int numChilds = this.getNumChildren();
+        final double[] xArray = new double[numChilds];
+        final double[] yArray = new double[numChilds];
+        long totalPoints = 0;
+        final List<SrlObject> cache = getSubShapes();
+
+        // recursively gather averages.
+        for (int index = 0; index < numChilds; index++) {
+            final SrlObject subObject = cache.get(index);
+            final SrlPoint averagedCenter = subObject.getAveragedPoint();
+            xArray[index] = averagedCenter.getX() * ((double) averagedCenter.getTime());
+            yArray[index] = averagedCenter.getY() * ((double) averagedCenter.getTime());
+            totalPoints += averagedCenter.getTime();
+        }
+
+        // use the averages together.
+        double xAvg = 0;
+        double yAvg = 0;
+        for (int index = 0; index < numChilds; index++) {
+            xAvg += xArray[index] / ((double) totalPoints);
+            yAvg += yArray[index] / ((double) totalPoints);
+        }
+        return new SrlPoint(xAvg, yAvg, totalPoints);
     }
 
     /**
@@ -435,7 +469,7 @@ public class SrlShape extends SrlObject {
      *
      * @param subShapes list of subShapes to add
      */
-    public final void addAll(final List<SrlObject> subShapes) {
+    public final void addAll(final List<? extends SrlObject> subShapes) {
         mSubShapes.addAll(subShapes);
         resetBounders();
     }
@@ -543,7 +577,7 @@ public class SrlShape extends SrlObject {
         final SrlObject obj = this.get(0);
         if (obj instanceof SrlShape) {
             return ((SrlShape) obj).getFirstStroke();
-        } else if(obj instanceof SrlStroke) {
+        } else if (obj instanceof SrlStroke) {
             return (SrlStroke) obj;
         } else {
             return null;

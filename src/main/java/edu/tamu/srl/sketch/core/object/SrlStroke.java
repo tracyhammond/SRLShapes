@@ -5,6 +5,7 @@ import edu.tamu.srl.sketch.core.abstracted.SrlObject;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlAuthor;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlDevice;
 import edu.tamu.srl.sketch.core.tobenamedlater.SrlPen;
+import edu.tamu.srl.sketch.core.virtual.SrlBoundingBox;
 import edu.tamu.srl.sketch.core.virtual.SrlPoint;
 
 import java.util.ArrayList;
@@ -231,6 +232,27 @@ public class SrlStroke extends SrlObject {
     }
 
     /**
+     * @return The average of all of the points in the shape.
+     *
+     * The time of this point actually contains the total number of points in this sub object.
+     * This value can be grabbed with {@link SrlPoint#getTime()}.
+     * Obviously this has a worst case of O(n) where n is the number of points in the shape.
+     */
+    @Override public final SrlPoint getAveragedPoint() {
+        final int numPoints = this.getNumPoints();
+        final List<SrlPoint> cache = getPoints();
+
+        // use the averages together.
+        double xAvg = 0;
+        double yAvg = 0;
+        for (int index = 0; index < numPoints; index++) {
+            xAvg += cache.get(index).getX() / ((double) numPoints);
+            yAvg += cache.get(index).getY() / ((double) numPoints);
+        }
+        return new SrlPoint(xAvg, yAvg, numPoints);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @SuppressWarnings("checkstyle:designforextension")
@@ -255,8 +277,8 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public boolean shallowEquals(final AbstractSrlComponent other) {
-        return super.shallowEquals(other) && other instanceof SrlStroke &&
-                getNumPoints() == ((SrlStroke) other).getNumPoints();
+        return super.shallowEquals(other) && other instanceof SrlStroke
+                && getNumPoints() == ((SrlStroke) other).getNumPoints();
     }
 
     /**
@@ -285,7 +307,22 @@ public class SrlStroke extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override protected void calculateBBox() {
-        throw new UnsupportedOperationException("need to implement this");
+        double maxX = Double.MIN_VALUE;
+        double minX = Double.MAX_VALUE;
+        double maxY = Double.MIN_VALUE;
+        double minY = Double.MAX_VALUE;
+        final List<SrlPoint> cache = getPoints();
+        // loops are faster on android with length predefined.
+        final int length = cache.size();
+        for (int i = 0; i < length; i++) {
+            final SrlPoint point = cache.get(i);
+            maxX = Math.max(point.getX(), maxX);
+            maxY = Math.max(point.getY(), maxY);
+
+            minX = Math.min(point.getX(), minX);
+            minY = Math.min(point.getY(), minY);
+        }
+        this.setBoundingBox(new SrlBoundingBox(minX, minY, maxX, maxY));
     }
 
     /**
@@ -375,9 +412,38 @@ public class SrlStroke extends SrlObject {
      *
      * @param points points to add to the stroke
      */
-    public final void addPoints(final List<SrlPoint> points) {
+    public final void addPoints(final List<? extends SrlPoint> points) {
         mPoints.addAll(points);
         resetBounders();
+    }
+
+    /**
+     * Checks if this container contains the target point.
+     *
+     * @param point the target point
+     * @return true if this container contains the target point, false
+     * otherwise
+     */
+    public final boolean contains(final SrlPoint point) {
+        return getPoints().contains(point);
+    }
+
+    /**
+     * Checks if this container contains any of the given points.
+     *
+     * @param points the target points
+     * @return true if this container contains any of the target points,
+     * false otherwise.
+     */
+    public final boolean containsAny(final List<? extends SrlPoint> points) {
+        final int size = points.size();
+        for (int i = 0; i < size; i++) {
+            final SrlPoint point = points.get(i);
+            if (contains(point)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -11,11 +11,11 @@ package edu.tamu.srl.sketch.core.tobenamedlater;
 public class SrlDevice {
 
     /**
-     * Dots per inch (DPI) in the X axis
+     * Dots per inch (DPI) in the X axis.
      */
     private final double mDpiX;
     /**
-     * Dots per inch (DPI) in the Y axis
+     * Dots per inch (DPI) in the Y axis.
      */
     private final double mDpiY;
 
@@ -31,14 +31,14 @@ public class SrlDevice {
     /**
      * @return The number of pixels per inch in the Y direction.
      */
-    public double getDpiY() {
+    public final double getDpiY() {
         return mDpiY;
     }
 
     /**
      * @return The number of pixels per inch in the X direction.
      */
-    public double getDpiX() {
+    public final double getDpiX() {
         return mDpiX;
     }
 }

@@ -241,8 +241,9 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * @return The average of all of the points in the shape.
      *
-     * The time of this point actually contains the total number of points in this sub object. This value can be grabbed with {@link
-     * SrlPoint#getTime()}. Obviously this has a worst case of O(n) where n is the number of points in the shape.
+     * The time of this point actually contains the total number of points in this sub object.
+     * This value can be grabbed with {@link SrlPoint#getTime()}.
+     * Obviously this has a worst case of O(n) where n is the number of points in the shape.
      */
     public abstract SrlPoint getAveragedPoint();
 
