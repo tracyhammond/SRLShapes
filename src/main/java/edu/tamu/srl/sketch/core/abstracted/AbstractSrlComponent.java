@@ -279,20 +279,21 @@ public abstract class AbstractSrlComponent implements Comparable<AbstractSrlComp
      * Attempts to find the closest distance to this other component.
      * @param srlComponent the component we are trying to find this distance to.
      * @return the distance between the components.
-     * <b>NOTE: due to possible heuristics used this method is not commutative.  Meaning that:
+     * <b>NOTE: due to possible heuristics used this method is not commutative.</b>  <pre>Meaning that:
      *
      * <code>shape1.distance(shape2) == shape2.distance(shape1);</code>
-     * May be false
-     *</b>
+     * May be false.
+     * </pre>
+     *
      */
     public abstract double distance(final AbstractSrlComponent srlComponent);
 
     /**
      * Attempts to return the closest distance between two shapes.
      * This is an approximation and may not be the absolute closest distance.
-     * @param srlComponent1
-     * @param srlComponent2
-     * @return
+     * @param srlComponent1 the first component we are trying to find the distance between.
+     * @param srlComponent2 the second component we are trying to find the distance between.
+     * @return a number representing the shortest distance between two shapes.
      */
     public static final double findShortestDistance(final AbstractSrlComponent srlComponent1, final AbstractSrlComponent srlComponent2) {
         final double distance1 = srlComponent1.distance(srlComponent2);
