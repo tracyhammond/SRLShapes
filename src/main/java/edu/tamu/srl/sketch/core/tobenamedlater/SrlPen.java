@@ -43,22 +43,22 @@ public class SrlPen {
      * For instance if a device supports multiple pens this will differentiate them even if the author is the same.
      * A more common example is if the user is using touch input and this will decide which finger it is.
      * <pre>
-                __ __              __ __
-               /  V  \ _ _    _ _ /  V  \
-              |   |  |/ V \  / V \|  |   |
-              |   |  |  |  ||  |  |  |   |
-              |   |  |  |  ||  |  |  |   |
-              |   |  |  |  ||  |  |  |   |
-              |   |  |  |  ||  |  |  |   |
-              |   |  |  |  ||  |  |  |   |
-     _____   |          |  ||  |          |   _____
-    |     ''-/             ||             \-''     |
-     \_                    ||                    _/
-       ''-_     \          ||          /     _-''
-           \     )         /\         (     /
-            \             /  \             /
-            |            |    |            |
+     *            __ __              __ __
+     *           /  V  \ _ _    _ _ /  V  \
+     *          |   |  |/ V \  / V \|  |   |
+     *          |   |  |  |  ||  |  |  |   |
+     *          |   |  |  |  ||  |  |  |   |
+     *          |   |  |  |  ||  |  |  |   |
+     *          |   |  |  |  ||  |  |  |   |
+     *          |   |  |  |  ||  |  |  |   |
+     * _____   |          |  ||  |          |   _____
+     *|     ''-/             ||             \-''     |
+     * \_                    ||                    _/
+     *   ''-_     \          ||          /     _-''
+     *       \     )         /\         (     /
+     *        \             /  \             /
+     *        |            |    |            |
      * </pre>
      */
-    private boolean mPenDigit = -1;
+    private int mPenDigit = -1;
 }
