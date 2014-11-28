@@ -25,7 +25,7 @@ public class SrlDevice {
      * Unique ID number for this device.
      * The same Id for a sketch should persist for the entire sketch.
      */
-    private UUID mId = UUID.randomUUID();
+    private final UUID mId;
     /**
      * true if the device supports pen.
      */

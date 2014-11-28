@@ -427,6 +427,26 @@ public class SrlPoint extends SrlVirtualObject {
     }
 
     /**
+     * Attempts to find the closest distance to this other component.
+     *
+     * @param srlComponent
+     *         the component we are trying to find this distance to.
+     * @return the distance between the components.
+     * <b>NOTE: due to possible heuristics used this method is not commutative.</b>  <pre>Meaning that:
+     *
+     * <code>shape1.distance(shape2) == shape2.distance(shape1);</code>
+     * May be false.
+     * </pre>
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public double distance(final AbstractSrlComponent srlComponent) {
+        if (srlComponent instanceof SrlPoint) {
+            return distance((SrlPoint) srlComponent);
+        }
+        throw new UnsupportedOperationException("need to implement this");
+    }
+
+    /**
      * Get a Point that corresponds to the center of this component. The
      * only thing that will be stored in this Point are X and Y values. Thus,
      * you should /only/ use the interface's getX() and getY() methods, and

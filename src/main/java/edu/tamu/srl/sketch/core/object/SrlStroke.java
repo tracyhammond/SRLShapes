@@ -303,6 +303,23 @@ public class SrlStroke extends SrlObject {
     }
 
     /**
+     * Attempts to find the closest distance to this other component.
+     *
+     * @param srlComponent
+     *         the component we are trying to find this distance to.
+     * @return the distance between the components.
+     * <b>NOTE: due to possible heuristics used this method is not commutative.</b>  <pre>Meaning that:
+     *
+     * <code>shape1.distance(shape2) == shape2.distance(shape1);</code>
+     * May be false.
+     * </pre>
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public double distance(final AbstractSrlComponent srlComponent) {
+        throw new UnsupportedOperationException("need to implement this");
+    }
+
+    /**
      * Calculates the bounding box.
      */
     @SuppressWarnings("checkstyle:designforextension")

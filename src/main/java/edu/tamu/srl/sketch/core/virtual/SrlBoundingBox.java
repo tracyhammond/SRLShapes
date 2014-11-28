@@ -257,6 +257,24 @@ public class SrlBoundingBox extends SrlVirtualObject {
      * bounding box.
      */
     @Override public final SrlPoint getCenterPoint() {
+       return new SrlPoint((mTopLeftCorner.getX() + mBottomRightCorner.getX()) / 2.0,
+               (mTopLeftCorner.getY() + mBottomRightCorner.getY()) / 2.0);
+    }
+
+    /**
+     * Attempts to find the closest distance to this other component.
+     *
+     * @param srlComponent
+     *         the component we are trying to find this distance to.
+     * @return the distance between the components.
+     * <b>NOTE: due to possible heuristics used this method is not commutative.</b>  <pre>Meaning that:
+     *
+     * <code>shape1.distance(shape2) == shape2.distance(shape1);</code>
+     * May be false.
+     * </pre>
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Override public double distance(final AbstractSrlComponent srlComponent) {
         throw new UnsupportedOperationException("need to implement this");
     }
 

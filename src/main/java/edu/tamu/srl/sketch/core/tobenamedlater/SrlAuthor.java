@@ -20,22 +20,23 @@ public class SrlAuthor {
     /**
      * Unique ID of the author.
      */
-    private UUID mId = UUID.randomUUID();
+    private final UUID mId;
+
     /**
      * Name if applicable.
      */
-    private String mName;
+    private final String mName;
 
     /**
-     * Creates an author with a name and an id.
+     * Creates an author with a name and an uuid.
      *
-     * @param id
-     *         the id of the author.
+     * @param uuid
+     *         the uuid of the author.
      * @param name
      *         The name of the author.
      */
-    public SrlAuthor(final UUID id, final String name) {
-        this.mId = id;
+    public SrlAuthor(final UUID uuid, final String name) {
+        this.mId = uuid;
         this.mName = name;
     }
 
