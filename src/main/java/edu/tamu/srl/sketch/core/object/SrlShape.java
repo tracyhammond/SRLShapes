@@ -140,13 +140,13 @@ public class SrlShape extends SrlObject {
         mInterpretation = original.getInterpretation();
         mSubShapes = new ArrayList<>();
         if (deep) {
-            final List<SrlObject> cache = original.getSubShapes();
+            final List<SrlObject> cache = original.getSubObjects();
             for (int i = 0; i < cache.size(); i++) {
                 this.add((SrlObject) cache.get(i).deepClone());
             }
         } else {
             // shallow copy
-            this.addAll(original.getSubShapes());
+            this.addAll(original.getSubObjects());
         }
     }
 
@@ -221,7 +221,7 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void translate(final double xOffset, final double yOffset) {
-        final List<SrlObject> cache = getSubShapes();
+        final List<SrlObject> cache = getSubObjects();
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).translate(xOffset, yOffset);
         }
@@ -236,7 +236,7 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void scale(final double xFactor, final double yFactor) {
-        final List<SrlObject> cache = getSubShapes();
+        final List<SrlObject> cache = getSubObjects();
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).scale(xFactor, yFactor);
         }
@@ -252,7 +252,7 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override public void rotate(final double radians, final double xCenter, final double yCenter) {
-        final List<SrlObject> cache = getSubShapes();
+        final List<SrlObject> cache = getSubObjects();
         for (int i = 0; i < cache.size(); i++) {
             cache.get(i).rotate(radians, xCenter, yCenter);
         }
@@ -314,7 +314,7 @@ public class SrlShape extends SrlObject {
         final double[] xArray = new double[numChilds];
         final double[] yArray = new double[numChilds];
         long totalPoints = 0;
-        final List<SrlObject> cache = getSubShapes();
+        final List<SrlObject> cache = getSubObjects();
 
         // recursively gather averages.
         for (int index = 0; index < numChilds; index++) {
@@ -348,8 +348,8 @@ public class SrlShape extends SrlObject {
             return false;
         }
         // We know it is an SrlShape and they have the same number of children.
-        final List<SrlObject> otherCache = ((SrlShape) other).getSubShapes();
-        final List<SrlObject> localCache = this.getSubShapes();
+        final List<SrlObject> otherCache = ((SrlShape) other).getSubObjects();
+        final List<SrlObject> localCache = this.getSubObjects();
         boolean equal = true;
         for (int index = 0; index < otherCache.size() && equal; index++) {
             equal &= otherCache.get(index).deepEquals(localCache.get(index));
@@ -379,7 +379,7 @@ public class SrlShape extends SrlObject {
      */
     @SuppressWarnings("checkstyle:designforextension")
     @Override protected void calculateBBox() {
-        final List<SrlObject> cache = getSubShapes();
+        final List<SrlObject> cache = getSubObjects();
         final SrlBoundingBox[] subBoxes = new SrlBoundingBox[cache.size()];
         for (int i = 0; i < cache.size(); i++) {
             subBoxes[i] = cache.get(i).getBoundingBox();
@@ -401,7 +401,7 @@ public class SrlShape extends SrlObject {
     @SuppressWarnings("checkstyle:designforextension")
     @Override public double getMaxX() {
         double max = Double.NEGATIVE_INFINITY;
-        final List<SrlObject> shapeList = getSubShapes();
+        final List<SrlObject> shapeList = getSubObjects();
         for (int index = 0; index < shapeList.size(); index++) {
             final SrlObject shape = shapeList.get(index);
             max = Math.max(max, shape.getMaxX());
@@ -415,7 +415,7 @@ public class SrlShape extends SrlObject {
     @SuppressWarnings("checkstyle:designforextension")
     @Override public double getMaxY() {
         double max = Double.NEGATIVE_INFINITY;
-        final List<SrlObject> shapeList = getSubShapes();
+        final List<SrlObject> shapeList = getSubObjects();
         for (int index = 0; index < shapeList.size(); index++) {
             final SrlObject shape = shapeList.get(index);
             max = Math.max(max, shape.getMaxY());
@@ -429,7 +429,7 @@ public class SrlShape extends SrlObject {
     @SuppressWarnings("checkstyle:designforextension")
     @Override public double getMinX() {
         double min = Double.POSITIVE_INFINITY;
-        final List<SrlObject> shapeList = getSubShapes();
+        final List<SrlObject> shapeList = getSubObjects();
         for (int index = 0; index < shapeList.size(); index++) {
             final SrlObject shape = shapeList.get(index);
             min = Math.min(min, shape.getMinX());
@@ -443,7 +443,7 @@ public class SrlShape extends SrlObject {
     @SuppressWarnings("checkstyle:designforextension")
     @Override public double getMinY() {
         double min = Double.POSITIVE_INFINITY;
-        final List<SrlObject> shapeList = getSubShapes();
+        final List<SrlObject> shapeList = getSubObjects();
         for (int index = 0; index < shapeList.size(); index++) {
             final SrlObject shape = shapeList.get(index);
             min = Math.min(min, shape.getMinY());
@@ -540,7 +540,7 @@ public class SrlShape extends SrlObject {
      * @return the ith component
      */
     public final SrlObject get(final int index) {
-        return getSubShapes().get(index);
+        return getSubObjects().get(index);
     }
 
     /**
@@ -551,35 +551,123 @@ public class SrlShape extends SrlObject {
      * @return The number of objects.
      */
     public final int getNumChildren() {
-        return getSubShapes().size();
+        return getSubObjects().size();
     }
 
     /**
      * Gets a list of all of the objects that make up this shape.
      *
+     * Note that this returns all shapes not just the leaf nodes.
+     * Here is an example shape tree and how this method returns the shapes.
+     * <pre>
+     * KEY:  Shape = S, Stroke = T
+     * S1 is the shape this method is called on.
+     *       S1
+     *      /| \
+     *    S2 S3 S4
+     *   / |  |    \
+     *  T1 S5 T2   S6
+     *     |        |
+     *     T3      T4
+     *
+     * Resultant List:
+     * S1, S2, T1, S5, T3, S3, T2, S4, S6, T4
+     * </pre>
+     *
      * @return a list of {@link SrlObject}s.
      */
-    public final List<SrlObject> getRecursiveSubShapeList() {
+    public final List<SrlObject> getRecursiveSubObjectList() {
         final List<SrlObject> completeList = new ArrayList<SrlObject>();
         completeList.add(this);
-        final List<SrlObject> cache = getSubShapes();
+        final List<SrlObject> cache = getSubObjects();
         for (int index = 0; index < cache.size(); index++) {
             final SrlObject srlObject = cache.get(index);
             if (srlObject instanceof SrlShape) {
-                completeList.addAll(((SrlShape) srlObject).getRecursiveSubShapeList());
+                completeList.addAll(((SrlShape) srlObject).getRecursiveSubObjectList());
             }
         }
         return completeList;
     }
 
     /**
-     * Gets the list of subshapes.
+     * Gets a list of all of the strokes that make up this shape.
+     *
+     * <pre>
+     * KEY:  Shape = S, Stroke = T
+     * S1 is the shape this method is called on.
+     *       S1
+     *      /| \
+     *    S2 S3 S4
+     *   / |  |    \
+     *  T1 S5 T2   S6
+     *     |        |
+     *     T3      T4
+     *
+     * Resultant List:
+     * T1, T3, T2, T4
+     * </pre>
+     *
+     *
+     * @return a list of {@link SrlStroke}s.
+     */
+    public final List<SrlStroke> getRecursiveStrokeList() {
+        final List<SrlStroke> completeList = new ArrayList<>();
+        final List<SrlObject> cache = getSubObjects();
+        for (int index = 0; index < cache.size(); index++) {
+            final SrlObject srlObject = cache.get(index);
+            if (srlObject instanceof SrlShape) {
+                completeList.addAll(((SrlShape) srlObject).getRecursiveStrokeList());
+            } else if (srlObject instanceof SrlStroke) {
+                completeList.add((SrlStroke) srlObject);
+            }
+        }
+        return completeList;
+    }
+
+    /**
+     * Gets a list of all of the leaf shapes that make up this shape.
+     * These are shapes that do not contain any shapes but only contains strokes.
+     *
+     * <pre>
+     * KEY:  Shape = S, Stroke = T
+     * S1 is the shape this method is called on.
+     *       S1
+     *      /| \
+     *    S2 S3 S4
+     *   / |  |    \
+     *  T1 S5 T2   S6
+     *     |        |
+     *     T3      T4
+     *
+     * Resultant List:
+     * S5, S3, S6
+     * </pre>
+     *
+     * @return a list of {@link SrlShape}s.
+     */
+    public final List<SrlShape> getRecursiveLeafShapes() {
+        final List<SrlShape> completeList = new ArrayList<>();
+        final List<SrlObject> cache = getSubObjects();
+        for (int index = 0; index < cache.size(); index++) {
+            final SrlObject srlObject = cache.get(index);
+            if (srlObject instanceof SrlShape) {
+                final List<SrlShape> resultList = ((SrlShape) srlObject).getRecursiveLeafShapes();
+                if (resultList.isEmpty()) {
+                    completeList.add((SrlShape) srlObject);
+                }
+            }
+        }
+        return completeList;
+    }
+
+    /**
+     * Gets the list of sub-{@link SrlObject}s.
      * This list is not modifiable to modify the list you must go through the methods presented by this class.
      *
      * @return list of objects that make up this object.  <b>This should never return null.</b>
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public List<SrlObject> getSubShapes() {
+    public List<SrlObject> getSubObjects() {
         return Collections.unmodifiableList(mSubShapes);
     }
 
@@ -588,7 +676,7 @@ public class SrlShape extends SrlObject {
      * @return The first stroke in this shape. Null if the shape is empty.
      */
     public final SrlStroke getFirstStroke() {
-        if (this.getSubShapes().isEmpty()) {
+        if (this.getSubObjects().isEmpty()) {
             return null;
         }
         final SrlObject obj = this.get(0);
@@ -606,7 +694,7 @@ public class SrlShape extends SrlObject {
      * @return The last stroke in this shape. Null if the shape is empty.
      */
     public final SrlStroke getLastStroke() {
-        if (this.getSubShapes().isEmpty()) {
+        if (this.getSubObjects().isEmpty()) {
             return null;
         }
         final SrlObject obj = this.get(this.getNumChildren() - 1);
@@ -664,7 +752,7 @@ public class SrlShape extends SrlObject {
      * @return an iterator
      */
     public final Iterator<SrlObject> iterator() {
-        return getSubShapes().iterator();
+        return getSubObjects().iterator();
     }
 
     /**
