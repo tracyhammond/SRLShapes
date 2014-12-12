@@ -26,7 +26,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * Map of miscellaneous attributes (to store any attributes given for points
      * in a SketchML file that are not saved in other variables here).
      */
-    private Map<String, String> mAttributes;
+    private Map<String, Object> mAttributes;
 
     /**
      * The bounding box of the object.
@@ -110,10 +110,10 @@ public abstract class SrlObject extends AbstractSrlComponent {
      *
      * @return a clone of the attribute map
      */
-    public final Map<String, String> getAttributes() {
-        final HashMap<String, String> attrcopy = new HashMap<String, String>();
+    public final Map<String, Object> getAttributes() {
+        final HashMap<String, Object> attrcopy = new HashMap<>();
         if (mAttributes != null) {
-            for (Map.Entry<String, String> entry : mAttributes.entrySet()) {
+            for (Map.Entry<String, Object> entry : mAttributes.entrySet()) {
                 attrcopy.put(entry.getKey(), entry.getValue());
             }
         }
@@ -353,7 +353,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * @param key the name of the attribute
      * @return the value for the removed key, or null if key did not exist
      */
-    public final String removeAttribute(final String key) {
+    public final Object removeAttribute(final String key) {
         return mAttributes.remove(key);
     }
 
@@ -365,7 +365,7 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * @param value attribute value (Must be string)
      * @return the old value of the attribute, or null if none was set
      */
-    public final String setAttribute(final String key, final String value) {
+    public final Object setAttribute(final String key, final Object value) {
         return mAttributes.put(key, value);
     }
 
