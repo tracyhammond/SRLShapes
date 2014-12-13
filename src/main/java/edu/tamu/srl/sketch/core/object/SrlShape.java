@@ -652,12 +652,44 @@ public class SrlShape extends SrlObject {
             final SrlObject srlObject = cache.get(index);
             if (srlObject instanceof SrlShape) {
                 final List<SrlShape> resultList = ((SrlShape) srlObject).getRecursiveLeafShapes();
+                // does not use the isLeafShape because that is an extra recurse through the list.
                 if (resultList.isEmpty()) {
                     completeList.add((SrlShape) srlObject);
                 }
             }
         }
         return completeList;
+    }
+
+    /**
+     * True if the shape is a leaf Shape.
+     * A leaf shape is defined by being a shape that ony contains strokes and no other shapes.
+     *
+     * <pre>
+     * KEY:  Shape = S, Stroke = T
+     * S1 is the shape this method is called on.
+     *       S1
+     *      /| \
+     *    S2 S3 S4
+     *   / |  |    \
+     *  T1 S5 T2   S6
+     *     |        |
+     *     T3      T4
+     *
+     * Shapes that are considered leaf shapes.
+     * S5, S3, S6
+     * </pre>
+     * @return True if it is a leaf shape
+     */
+    public final boolean isLeafShape() {
+        final List<SrlObject> cache = getSubObjects();
+        for (int index = 0; index < cache.size(); index++) {
+            final SrlObject srlObject = cache.get(index);
+            if (!(srlObject instanceof SrlStroke)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
