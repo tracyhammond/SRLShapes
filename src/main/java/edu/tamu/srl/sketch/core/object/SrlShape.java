@@ -597,6 +597,8 @@ public class SrlShape extends SrlObject {
             final SrlObject srlObject = cache.get(index);
             if (srlObject instanceof SrlShape) {
                 completeList.addAll(((SrlShape) srlObject).getRecursiveSubObjectList());
+            } else {
+                completeList.add(srlObject);
             }
         }
         return completeList;
@@ -668,6 +670,8 @@ public class SrlShape extends SrlObject {
                 // does not use the isLeafShape because that is an extra recurse through the list.
                 if (resultList.isEmpty()) {
                     completeList.add((SrlShape) srlObject);
+                } else {
+                    completeList.addAll(resultList);
                 }
             }
         }
