@@ -699,4 +699,12 @@ public class SrlBoundingBox extends SrlVirtualObject {
     public final double getCenterY() {
         return (getMinY() + getMaxY()) / 2.0;
     }
+
+    /**
+     * @return A string representation of the bounding box.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public String toString() {
+        return "BBOX[ TL:" + mTopLeftCorner + " BR:" + mBottomRightCorner + "]";
+    }
 }
