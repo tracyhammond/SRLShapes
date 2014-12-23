@@ -17,30 +17,34 @@ import java.util.UUID;
  * All {@link SrlObject}s are able to be recognized.
  *
  * <p>Copyright Tracy Hammond, Sketch Recognition Lab, Texas A&amp;M University</p>
+ *
  * @author gigemjt
  */
 @SuppressWarnings({ "PMD.AbstractNaming", "PMD.AvoidDuplicateLiterals" })
 public abstract class SrlObject extends AbstractSrlComponent {
 
     /**
+     * A domain is a certain set of shapes that together form a greater meaning.
+     * This specifies what the domain is.
+     */
+    private String mDomain = null;
+
+    /**
      * Map of miscellaneous attributes (to store any attributes given for points
      * in a SketchML file that are not saved in other variables here).
      */
     private Map<String, Object> mAttributes;
-
     /**
      * The bounding box of the object.
      * This is the smaller vertical/horizontal rectangle that can encompass all of the points inside the shape.
      */
     private SrlBoundingBox mBoundingBox = null;
-
     /**
      * An object can be created by a user (like drawing a shape, or speaking a
      * phrase) or it can be created by a system (like a recognition of a higher
      * level shape).
      */
     private boolean mIsUserCreated = false;
-
     /**
      * The convex hull of the object.
      * The convex hull is defined as being the smallest convex polygon that can encompass the entire
@@ -63,7 +67,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
      *
      * Copies all values from the given object.
      *
-     * @param original The object that is being copied.
+     * @param original
+     *         The object that is being copied.
      */
     public SrlObject(final SrlObject original) {
         super(original);
@@ -76,8 +81,10 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * Accepts values that can only be set during construction.
      *
-     * @param time The time the shape was originally created.
-     * @param uuid   The unique identifier of the shape.
+     * @param time
+     *         The time the shape was originally created.
+     * @param uuid
+     *         The unique identifier of the shape.
      */
     public SrlObject(final long time, final UUID uuid) {
         super(time, uuid);
@@ -87,9 +94,12 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * Accepts values that can only be set during construction.
      *
-     * @param time          The time the shape was originally created.
-     * @param uuid            The unique identifier of the shape.
-     * @param isUserCreated True if the user created the stroke instead of the computer.
+     * @param time
+     *         The time the shape was originally created.
+     * @param uuid
+     *         The unique identifier of the shape.
+     * @param isUserCreated
+     *         True if the user created the stroke instead of the computer.
      */
     public SrlObject(final long time, final UUID uuid, final boolean isUserCreated) {
         this(time, uuid);
@@ -99,10 +109,30 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * Accepts a value saying if a user created the object.
      *
-     * @param isUserCreated True if the user created the stroke instead of the computer.
+     * @param isUserCreated
+     *         True if the user created the stroke instead of the computer.
      */
     public SrlObject(final boolean isUserCreated) {
         this.mIsUserCreated = isUserCreated;
+    }
+
+    /**
+     * A domain is a certain set of shapes that together form a greater meaning.
+     *
+     * @return the domain this {@link edu.tamu.srl.sketch.core.abstracted.SrlObject} is a part of.
+     */
+    public final String getDomain() {
+        return mDomain;
+    }
+
+    /**
+     * A domain is a certain set of shapes that together form a greater meaning.
+     *
+     * @param domain
+     *         the domain this {@link edu.tamu.srl.sketch.core.abstracted.SrlObject} is a part of.
+     */
+    public final void setDomain(final String domain) {
+        mDomain = domain;
     }
 
     /**
@@ -141,7 +171,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     }
 
     /**
-     * @param boundingBox a {@link edu.tamu.srl.sketch.core.virtual.SrlBoundingBox}.  This method will accept a null value.
+     * @param boundingBox
+     *         a {@link edu.tamu.srl.sketch.core.virtual.SrlBoundingBox}.  This method will accept a null value.
      */
     public final void setBoundingBox(final SrlBoundingBox boundingBox) {
         mBoundingBox = boundingBox;
@@ -175,7 +206,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     }
 
     /**
-     * @param convexHull a {@link SrlConvexHull}.  This method will accept a null value.
+     * @param convexHull
+     *         a {@link SrlConvexHull}.  This method will accept a null value.
      */
     public final void setConvexHull(final SrlConvexHull convexHull) {
         mConvexHull = convexHull;
@@ -195,7 +227,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * Performs a shallow equals.
      * By default this is called by the {@link #equals(Object)} method.
      *
-     * @param other the other SrlObject.
+     * @param other
+     *         the other SrlObject.
      * @return true if content is equal, false otherwise
      */
     @SuppressWarnings("checkstyle:designforextension")
@@ -262,7 +295,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * phrase) or it can be created by a system (like a recognition of a higher
      * level shape).
      *
-     * @param isUserCreated true if the user created the shape, else false.
+     * @param isUserCreated
+     *         true if the user created the shape, else false.
      */
 
     public final void setUserCreated(final boolean isUserCreated) {
@@ -340,7 +374,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * Checks if this object has the given attribute.
      *
-     * @param key The string name of the key of the attribute
+     * @param key
+     *         The string name of the key of the attribute
      * @return true if this object has the given key
      */
     public final boolean hasAttribute(final String key) {
@@ -350,7 +385,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * Removes the value and key of the specified attribute.
      *
-     * @param key the name of the attribute
+     * @param key
+     *         the name of the attribute
      * @return the value for the removed key, or null if key did not exist
      */
     public final Object removeAttribute(final String key) {
@@ -361,8 +397,10 @@ public abstract class SrlObject extends AbstractSrlComponent {
      * Sets an attribute value. Will overwrite any value currently set for that
      * attribute.
      *
-     * @param key   attribute name (Must be string)
-     * @param value attribute value (Must be string)
+     * @param key
+     *         attribute name (Must be string)
+     * @param value
+     *         attribute value (Must be string)
      * @return the old value of the attribute, or null if none was set
      */
     public final Object setAttribute(final String key, final Object value) {
@@ -417,7 +455,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * This bounding box is above the given value.
      *
-     * @param y the y value to compare against.
+     * @param y
+     *         the y value to compare against.
      * @return if the bottom edge of the bounding box is above the
      * given value; otherwise.
      */
@@ -429,7 +468,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * This bounding box is below the given value.
      *
-     * @param y the y value to compare against.
+     * @param y
+     *         the y value to compare against.
      * @return if the top edge of the bounding box is below the
      * given value; otherwise.
      */
@@ -441,7 +481,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * This bounding box is to the left of the given value.
      *
-     * @param x the x value to compare against.
+     * @param x
+     *         the x value to compare against.
      * @return if the right edge of the bounding box is to the left
      * of the given value;  otherwise.
      */
@@ -453,7 +494,8 @@ public abstract class SrlObject extends AbstractSrlComponent {
     /**
      * This bounding box is to the right of the given value.
      *
-     * @param x the x value to compare against.
+     * @param x
+     *         the x value to compare against.
      * @return if the left edge of the bounding box is to the right
      * of the given value; otherwise.
      */
@@ -472,4 +514,5 @@ public abstract class SrlObject extends AbstractSrlComponent {
     public final double getBoundingBoxDiagonalAngle() {
         return Math.atan2(getHeight(), getWidth());
     }
+
 }
