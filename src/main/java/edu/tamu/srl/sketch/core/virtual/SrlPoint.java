@@ -287,10 +287,13 @@ public class SrlPoint extends SrlVirtualObject {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("checkstyle:designforextension")
+    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:magicnumber" })
     @Override
     public int hashCode() {
-        return (int) (getX() + getY()) + (int) getTime();
+        double hash = 7;
+        hash = 71 * hash + this.getX();
+        hash = 71 * hash + this.getY();
+        return (int) hash;
     }
 
     /**
@@ -346,23 +349,41 @@ public class SrlPoint extends SrlVirtualObject {
         if (!(other instanceof SrlPoint)) {
             return false;
         }
-        final SrlPoint otherpoint = (SrlPoint) other;
-        if (getPressure() != otherpoint.getPressure()) {
+        final SrlPoint otherPoint = (SrlPoint) other;
+        if (getPressure() != otherPoint.getPressure()) {
             return false;
         }
-        if (getTiltX() != otherpoint.getTiltX()) {
+        if (getTiltX() != otherPoint.getTiltX()) {
             return false;
         }
-        if (getTiltY() != otherpoint.getTiltY()) {
+        if (getTiltY() != otherPoint.getTiltY()) {
             return false;
         }
-        if (getX() != otherpoint.getX()) {
+        if (getX() != otherPoint.getX()) {
             return false;
         }
-        if (getY() != otherpoint.getY()) {
+        if (getY() != otherPoint.getY()) {
             return false;
         }
-        if (getTime() != otherpoint.getTime()) {
+        if (getTime() != otherPoint.getTime()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Performs a location equality.
+     *
+     * This checks only the x and y
+     * @param otherPoint the other SrlObject.
+     * @return true if the location is equal
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public boolean locEquals(final SrlPoint otherPoint) {
+        if (getX() != otherPoint.getX()) {
+            return false;
+        }
+        if (getY() != otherPoint.getY()) {
             return false;
         }
         return true;
@@ -424,6 +445,17 @@ public class SrlPoint extends SrlVirtualObject {
      */
     public final double distance(final SrlPoint other) {
         return distanceToCenter(other);
+    }
+
+    /**
+     * Return the distance from the point specified by (otherX,otherY) to the center of this object.
+     *
+     * @param otherX the otherX value of the other point
+     * @param otherY the otherY value of the other point
+     * @return the distance
+     */
+    public final double distance(final double otherX, final double otherY) {
+        return distanceToCenter(otherX, otherY);
     }
 
     /**
@@ -548,5 +580,13 @@ public class SrlPoint extends SrlVirtualObject {
         mYList.remove(mYList.size() - 1);
         mCurrentElement -= 1;
         return this;
+    }
+
+    /**
+     * @return A string representation of the point.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public String toString() {
+        return "P[(" + this.getX() + ", " + this.getY() + ") T=" + this.getTime() + "]";
     }
 }
