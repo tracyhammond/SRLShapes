@@ -579,4 +579,12 @@ public class SrlStroke extends SrlObject {
     public final SrlDevice getDevice() {
         return mDevice;
     }
+
+    /**
+     * @return A string representation of the stroke.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public String toString() {
+        return "STR[" + this.getAuthor() + " ID:" + this.getId() + "]";
+    }
 }
