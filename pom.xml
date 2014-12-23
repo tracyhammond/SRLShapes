@@ -343,8 +343,8 @@
         <testLevel>0</testLevel>
         <minTestLevel>70</minTestLevel>
         <averageTestLevel>0</averageTestLevel>
-        <projectBranchLevel>${averageTestLevel}</projectBranchLevel>
-        <projectLineLevel>${averageTestLevel}</projectLineLevel>
+        <projectBranchLevel>10</projectBranchLevel>
+        <projectLineLevel>10</projectLineLevel>
         <packageBranchLevel>${averageTestLevel}</packageBranchLevel>
         <packageLineLevel>${averageTestLevel}</packageLineLevel>
 
