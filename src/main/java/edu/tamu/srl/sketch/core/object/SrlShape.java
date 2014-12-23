@@ -294,9 +294,22 @@ public class SrlShape extends SrlObject {
             return false;
         }
 
-        return this.mInterpretationId.equals(other.getId())
-                && this.mInterpretation.equals(((SrlShape) other).getInterpretation())
-                && this.mComplexity == ((SrlShape) other).getComplexity()
+        if (this.mInterpretationId != null) {
+            if (!this.mInterpretationId.equals(((SrlShape) other).getInterpretationId())) {
+                return false;
+            }
+        } else if (((SrlShape) other).getInterpretationId() != null) {
+            return false;
+        }
+
+        if (this.mInterpretation != null) {
+            if (!this.mInterpretation.equals(((SrlShape) other).getInterpretation())) {
+                return false;
+            }
+        } else if (((SrlShape) other).getInterpretation() != null) {
+            return false;
+        }
+        return this.mComplexity == ((SrlShape) other).getComplexity()
                 && this.mIsEndState == ((SrlShape) other).isEndState()
                 && this.isForced() == ((SrlShape) other).isForced()
                 && this.getNumChildren() == ((SrlShape) other).getNumChildren();
@@ -884,5 +897,13 @@ public class SrlShape extends SrlObject {
      */
     public final String getDescription() {
         return mDescription;
+    }
+
+    /**
+     * @return A string representation of the bounding box.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public String toString() {
+        return "SHA[" + this.getInterpretation() + " CONF:" + this.getConfidence() + " ID:" + this.getId() + "]";
     }
 }
