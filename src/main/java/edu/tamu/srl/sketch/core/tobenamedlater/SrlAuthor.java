@@ -54,4 +54,11 @@ public class SrlAuthor {
         return mName;
     }
 
+    /**
+     * @return A string representation of the author.
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public String toString() {
+        return "AUTH[" + this.getName() + "]";
+    }
 }
