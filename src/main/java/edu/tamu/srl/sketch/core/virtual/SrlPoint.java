@@ -55,6 +55,14 @@ public class SrlPoint extends SrlVirtualObject {
      */
     private List<Double> mYList = new ArrayList<Double>();
 
+    /**
+     * Hover is for points recorded that are not touching the screen.
+     * <br>
+     * An example of this is a pen that floating above the screen.
+     * <br>
+     * By default this value is false.
+     */
+    private boolean mIsHover = false;
 
     /**
      * Creates a point with the initial points at x,y.
@@ -111,6 +119,25 @@ public class SrlPoint extends SrlVirtualObject {
         this(x, y, time, uuid);
         setTilt(tiltX, tiltY);
         setPressure(pressure);
+    }
+
+    /**
+     * Creates a new point with the specified values.
+     *
+     * @param x        x value of the point.
+     * @param y        y value of the point.
+     * @param time     time stamp.
+     * @param uuid       point ID
+     * @param tiltX    the pen tiltX of the point.
+     * @param tiltY    the pen tiltY of the point.
+     * @param pressure the pressure at which the point was created.
+     * @param isHover if the point is recorded while hovering over the screen.
+     */
+    @SuppressWarnings({ "PMD.ShortVariable", "checkstyle:parameternumber" })
+    public SrlPoint(final double x, final double y, final long time, final UUID uuid, final double tiltX,
+            final double tiltY, final double pressure, final boolean isHover) {
+        this(x, y, time, uuid, tiltX, tiltY, pressure);
+        setIsHover(isHover);
     }
 
     /**
@@ -232,6 +259,24 @@ public class SrlPoint extends SrlVirtualObject {
      */
     public final void setTiltY(final double tiltY) {
         mTiltY = tiltY;
+    }
+
+    /**
+     * @return True if the point is hovering.
+     * @see #mIsHover
+     */
+    public final boolean isHover() {
+        return mIsHover;
+    }
+
+    /**
+     * Set the tilt of the point.
+     *
+     * @param isHover if the point is recorded while hovering over the screen.
+     * @see #mIsHover
+     */
+    public final void setIsHover(final boolean isHover) {
+        mIsHover = isHover;
     }
 
     /**
@@ -547,7 +592,6 @@ public class SrlPoint extends SrlVirtualObject {
         setTiltX(tiltX);
         setTiltY(tiltY);
     }
-
 
     /**
      * Translate the point in the amount x,y.
