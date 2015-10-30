@@ -10,17 +10,78 @@
     <packaging>jar</packaging>
 
 
+    <issueManagement>
+        <url>https://github.com/${githubLocation}/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/${githubLocation}</url>
+        <connection>scm:git:git://github.com/${githubLocation}.git</connection>
+        <developerConnection>scm:git:git@github.com:${githubLocation}.git</developerConnection>
+    </scm>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyleVersion}</version>
+                <configuration>
+                    <configLocation>${absoluteCheckstyleLocation}</configLocation>
+                    <suppressionsLocation>${checkstyleSuppressionLocation}</suppressionsLocation>
+                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugVersion}</version>
+                <configuration>
+                    <excludeFilterFile>${findbugSupressionLocation}</excludeFilterFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${coberturaVersion}</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6</version>
+                    </docletArtifact>
+                    <additionalparam>-views -all</additionalparam>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <build>
         <finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -29,6 +90,162 @@
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyleVersion}</version>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <configLocation>${absoluteCheckstyleLocation}</configLocation>
+                            <suppressionsLocation>${checkstyleSuppressionLocation}</suppressionsLocation>
+                            <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <checkstyle>
+                                <failsOnError>false</failsOnError>
+                            </checkstyle>
+                            <check>
+                                <failsOnError>true</failsOnError>
+                            </check>
+                        </configuration>
+                        <goals>
+                            <goal>checkstyle</goal>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${pmdVersion}</version>
+                <executions>
+                    <execution>
+                        <id>pmd</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rulesets>
+                                <ruleset>${pmdRuleset}</ruleset>
+                            </rulesets>
+                            <excludeFromFailureFile>${pmdExclude}</excludeFromFailureFile>
+                            <!-- <skip>${skip.pmd.check}</skip> -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>cpd</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>cpd-check</goal>
+                        </goals>
+                        <configuration>
+                            <excludeFromFailureFile>${cpdExclude}</excludeFromFailureFile>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugVersion}</version>
+                <configuration>
+                    <excludeFilterFile>${findbugSupressionLocation}</excludeFilterFile>
+                    <includeTests>false</includeTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${coberturaVersion}</version>
+                <configuration>
+                    <instrumentation>
+                        <ignores>
+                        </ignores>
+                        <excludes>
+                        </excludes>
+                    </instrumentation>
+                    <check>
+                        <haltOnFailure>true</haltOnFailure>
+                        <branchRate>${testLevel}</branchRate>
+                        <lineRate>${testLevel}</lineRate>
+                        <totalBranchRate>${projectBranchLevel}</totalBranchRate>
+                        <totalLineRate>${projectLineLevel}</totalLineRate>
+                        <packageLineRate>${packageBranchLevel}</packageLineRate>
+                        <packageBranchRate>${packageLineLevel}</packageBranchRate>
+                    </check>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                            <goal>cobertura</goal>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>2.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>effective-pom</goal>
+                        </goals>
+                        <configuration>
+                            <output>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}/effective-pom.xml</output>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -55,150 +272,58 @@
                     </items>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>${project.build.finalName}-run</finalName>
+                    <transformers>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <manifestEntries>
+                                <Build-Number>2</Build-Number>
+                            </manifestEntries>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${sitepluginVersion}</version>
+                <executions>
+                    <execution>
+                        <id>attach-descriptor</id>
+                        <goals>
+                            <goal>attach-descriptor</goal>
+                        </goals>
+                    </execution>
+                    <!--<execution>
+                        <id>create site</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                    </execution>-->
+                    <execution>
+                        <id>attach-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>2.3</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>shade</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <finalName>${project.build.finalName}-run</finalName>
-                        <transformers>
-                            <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                <manifestEntries>
-                                    <Build-Number>2</Build-Number>
-                                </manifestEntries>
-                            </transformer>
-                        </transformers>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyleVersion}</version>
-                    <executions>
-                        <execution>
-                            <id>checkstyle</id>
-                            <phase>validate</phase>
-                            <configuration>
-                                <configLocation>${absoluteCheckstyleLocation}</configLocation>
-                                <suppressionsLocation>${checkstyleSuppressionLocation}</suppressionsLocation>
-                                <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                                <encoding>UTF-8</encoding>
-                                <consoleOutput>true</consoleOutput>
-                                <checkstyle>
-                                    <failsOnError>false</failsOnError>
-                                </checkstyle>
-                                <check>
-                                    <failsOnError>true</failsOnError>
-                                </check>
-                            </configuration>
-                            <goals>
-                                <goal>checkstyle</goal>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>${pmdVersion}</version>
-                    <executions>
-                        <execution>
-                            <id>pmd</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <configuration>
-                                <rulesets>
-                                    <ruleset>${pmdRuleset}</ruleset>
-                                </rulesets>
-                                <excludeFromFailureFile>${pmdExclude}</excludeFromFailureFile>
-                                <!-- <skip>${skip.pmd.check}</skip> -->
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>cpd</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>cpd-check</goal>
-                            </goals>
-                            <configuration>
-                                <excludeFromFailureFile>${cpdExclude}</excludeFromFailureFile>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <verbose>true</verbose>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${findbugVersion}</version>
-                    <configuration>
-                        <excludeFilterFile>${findbugSupressionLocation}</excludeFilterFile>
-                        <includeTests>false</includeTests>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.17</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                    <version>${coberturaVersion}</version>
-                    <configuration>
-                        <instrumentation>
-                            <ignores>
-                            </ignores>
-                            <excludes>
-                            </excludes>
-                        </instrumentation>
-                        <check>
-                            <haltOnFailure>true</haltOnFailure>
-                            <branchRate>${testLevel}</branchRate>
-                            <lineRate>${testLevel}</lineRate>
-                            <totalBranchRate>${projectBranchLevel}</totalBranchRate>
-                            <totalLineRate>${projectLineLevel}</totalLineRate>
-                            <packageLineRate>${packageBranchLevel}</packageLineRate>
-                            <packageBranchRate>${packageLineLevel}</packageBranchRate>
-                        </check>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>clean</goal>
-                                <goal>cobertura</goal>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
     <properties>
@@ -210,16 +335,16 @@
         <checkstyleVersion>2.13</checkstyleVersion>
         <findbugVersion>3.0.0</findbugVersion>
         <powermock.version>1.5.6</powermock.version>
-        <sitepluginVersion>2.3.3</sitepluginVersion>
+        <sitepluginVersion>3.4</sitepluginVersion>
         <coberturaVersion>2.6</coberturaVersion>
         <pmdVersion>3.2</pmdVersion>
 
         <!-- testing -->
-        <testLevel>85</testLevel>
+        <testLevel>0</testLevel>
         <minTestLevel>70</minTestLevel>
-        <averageTestLevel>80</averageTestLevel>
-        <projectBranchLevel>${averageTestLevel}</projectBranchLevel>
-        <projectLineLevel>${averageTestLevel}</projectLineLevel>
+        <averageTestLevel>0</averageTestLevel>
+        <projectBranchLevel>10</projectBranchLevel>
+        <projectLineLevel>10</projectLineLevel>
         <packageBranchLevel>${averageTestLevel}</packageBranchLevel>
         <packageLineLevel>${averageTestLevel}</packageLineLevel>
 
@@ -238,7 +363,58 @@
         <cpdFile>exclude-cpd.properties</cpdFile>
         <absoluteConfigLocation>${parentConfigLocationDir}/config</absoluteConfigLocation>
 
+        <githubLocation>tracyhammond/SRLShapes</githubLocation>
         <parentConfigLocationDir>${basedir}</parentConfigLocationDir>
     </properties>
 
+    <dependencies>
+
+        <!-- checkstyle -->
+        <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${puppyVersion}</version>
+        </dependency>
+
+        <!-- END checkstyle -->
+
+        <!-- Test dependencies -->
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockitoVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junitVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-easymock</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- END Test dependencies -->
+    </dependencies>
 </project>
