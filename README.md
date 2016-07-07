@@ -1,6 +1,8 @@
 SRLShapes
 =========
 
+Apache License 2.0
+
 Repository to hold shape info: org.srl.shapes
 
 
