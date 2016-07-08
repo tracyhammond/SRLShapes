@@ -341,10 +341,10 @@
 
         <!-- testing -->
         <testLevel>0</testLevel>
-        <minTestLevel>70</minTestLevel>
+        <minTestLevel>0</minTestLevel>
         <averageTestLevel>0</averageTestLevel>
-        <projectBranchLevel>10</projectBranchLevel>
-        <projectLineLevel>10</projectLineLevel>
+        <projectBranchLevel>0</projectBranchLevel>
+        <projectLineLevel>0</projectLineLevel>
         <packageBranchLevel>${averageTestLevel}</packageBranchLevel>
         <packageLineLevel>${averageTestLevel}</packageLineLevel>
 
